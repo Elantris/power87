@@ -142,7 +142,7 @@ client.on('message', message => {
 
 client.login(config.TOKEN)
 
-// * save files to hard drive every 10 minutes
+// * clear memory every 10 minutes
 const interval = 10 * 60 * 1000
 setInterval(() => {
   let now = Date.now()
