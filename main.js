@@ -18,7 +18,7 @@ fs.readdirSync('./data/').forEach(v => {
 
 // * commands
 
-function termNew (message, args) { // add keywords to list
+function cmdNew (message, args) { // add keywords to list
   if (args.length < 3 || args[1].startsWith('_')) { // length 3
     message.channel.send(':no_entry_sign: **格式錯誤**: 87add `[關鍵字]` `[回應]`')
     return
@@ -41,7 +41,7 @@ function termNew (message, args) { // add keywords to list
   message.channel.send(`:smiling_imp: 關鍵字 **${args[1]}** 新增了項目 **${key}**`)
 }
 
-function termDelete (message, args) { // remove the response from the keyword
+function cmdDelete (message, args) { // remove the response from the keyword
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
     message.channel.send(':no_entry_sign: **格式錯誤**: 87remove `[關鍵字]` `[項目編號]`')
     return
@@ -64,7 +64,7 @@ function termDelete (message, args) { // remove the response from the keyword
   message.channel.send(`:fire: 移除了關鍵字 **${args[1]}** 的第 **${args[2]}** 個項目`)
 }
 
-function termList (message, args) {
+function cmdList (message, args) {
   if (args.length < 2) { // list all keywords from server
     let output = `:bookmark_tabs: 這個伺服器所有的關鍵字`
     output += '\n```'
@@ -75,6 +75,8 @@ function termList (message, args) {
     }
     output += '\n```'
     message.channel.send(output)
+  } else if (!res[message.guild.id][args[1]]) {
+    message.channel.send(`:no_entry_sign: **查詢錯誤**: 沒有 ${args[1]} 這個關鍵字`)
   } else { // list all responses of the keyword
     let output = `:bookmark_tabs: 關鍵字 **${args[1]}** 的回應列表`
     output += '\n```'
@@ -86,9 +88,30 @@ function termList (message, args) {
   }
 }
 
-function termRes (message, args) {
+function cmdClean (message, args) {
+  let limit = 20
+  if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {
+    limit = parseInt(args[1])
+    if (limit > 100) {
+      limit = 100
+    } else if (limit < 1) {
+      limit = 1
+    }
+  }
+  message.channel.fetchMessages({ limit })
+    .then((msgs) => {
+      msgs.array().forEach(m => {
+        if (m.deletable && (m.author.id === client.user.id || m.content.startsWith('87'))) {
+          m.delete()
+        }
+      })
+    })
+    .catch(console.error)
+}
+
+function cmdRes (message, args) {
   if (args.length === 1) {
-    message.channel.send('__**87**__ **87** 87')
+    message.channel.send('87 **87** __**87**__ __***87***__')
   } else {
     let resList = Object.keys(res[message.guild.id][args[1]])
     if (resList) {
@@ -102,19 +125,23 @@ function termRes (message, args) {
 }
 
 const commandList = {
-  add: termNew,
-  new: termNew,
+  add: cmdNew,
+  new: cmdNew,
 
-  delete: termDelete,
-  remove: termDelete,
-  del: termDelete,
-  rm: termDelete,
+  delete: cmdDelete,
+  remove: cmdDelete,
+  del: cmdDelete,
+  rm: cmdDelete,
 
-  list: termList,
-  ls: termList,
-  all: termList,
+  list: cmdList,
+  ls: cmdList,
+  all: cmdList,
 
-  '!': termRes
+  clean: cmdClean,
+  clear: cmdClean,
+  prune: cmdClean,
+
+  '!': cmdRes
 }
 
 // * main response
