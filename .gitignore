@@ -61,5 +61,5 @@ typings/
 .next
 
 tmp
-data
+data/*.json
 config.js
