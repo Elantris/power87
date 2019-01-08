@@ -1,0 +1,23 @@
+{
+  "name": "power87",
+  "version": "1.0.0",
+  "description": "A discord bot filled with 87 power.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elantris/power87.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Elantris/power87/issues"
+  },
+  "homepage": "https://github.com/Elantris/power87#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
+}
