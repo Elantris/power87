@@ -20,6 +20,7 @@ const cmdDel = require('./command/cmdDel')
 const cmdList = require('./command/cmdList')
 const cmdClean = require('./command/cmdClean')
 const cmdRes = require('./command/cmdRes')
+const cmdHelp = require('./command/cmdHelp')
 
 const commandList = {
   add: cmdAdd,
@@ -38,7 +39,8 @@ const commandList = {
   clear: cmdClean,
   prune: cmdClean,
 
-  '!': cmdRes
+  help: cmdHelp,
+  manual: cmdHelp
 }
 
 // * main response
@@ -57,8 +59,10 @@ client.on('message', message => {
     res[message.guild.id]._last = Date.now()
     let args = message.content.split(' ')
 
-    if (commandList[args[0].substring(2)]) {
-      commandList[args[0].substring(2)]({ client, res, message, args })
+    if (args[0] === '87') {
+      cmdRes({ res, message, args })
+    } else if (message.content[2] === '!' && commandList[args[0].substring(3)]) {
+      commandList[args[0].substring(3)]({ client, res, message, args })
     }
   }
 })

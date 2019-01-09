@@ -1,5 +1,6 @@
 module.exports = ({ res, message, args }) => {
   let output = ''
+
   if (args.length < 2) { // list all keywords from server
     output = `:bookmark_tabs: 這個伺服器所有的關鍵字\n\`\`\``
     for (let i in res[message.guild.id]) {
@@ -17,5 +18,6 @@ module.exports = ({ res, message, args }) => {
     }
     output += '\n```'
   }
+
   message.channel.send(output)
 }

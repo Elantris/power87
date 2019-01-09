@@ -2,7 +2,7 @@ const fs = require('fs')
 
 module.exports = ({ res, message, args }) => { // remove the response from the keyword
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
-    message.channel.send(':no_entry_sign: **格式錯誤**: 87remove `[關鍵字]` `[項目編號]`')
+    message.channel.send(':no_entry_sign: **格式錯誤**: 87!del `[關鍵字]` `[項目編號]`')
     return
   }
 
