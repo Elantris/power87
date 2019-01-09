@@ -16,7 +16,8 @@ module.exports = ({ res, message, args }) => { // add keywords to list
       key = parseInt(v)
     }
   })
-  key += 1 // get a position for new response
+  key += 1 // find an available key for new response
+
   res[message.guild.id][args[1]][key] = args.slice(2).join(' ')
   fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
 

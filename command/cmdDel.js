@@ -5,18 +5,20 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
     message.channel.send(':no_entry_sign: **格式錯誤**: 87remove `[關鍵字]` `[項目編號]`')
     return
   }
+
   if (!res[message.guild.id][args[1]]) {
     message.channel.send(`:no_entry_sign: **查詢錯誤**: 沒有 ${args[1]} 這個關鍵字`)
     return
   }
+
   if (!res[message.guild.id][args[1]][parseInt(args[2])]) {
     message.channel.send(`:no_entry_sign: **查詢錯誤**: 關鍵字 **${args[1]}** 第 ${parseInt(args[2])} 位置沒有東西`)
     return
   }
 
   delete res[message.guild.id][args[1]][parseInt(args[2])]
-  if (Object.keys(res[message.guild.id][args[1]]).length === 0) { // delete the keyword whose response list is empty
-    delete res[message.guild.id][args[1]]
+  if (Object.keys(res[message.guild.id][args[1]]).length === 0) {
+    delete res[message.guild.id][args[1]] // delete the keyword whose response list is empty
   }
   fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
 

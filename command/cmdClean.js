@@ -1,5 +1,6 @@
 module.exports = ({ client, message, args }) => {
   let limit = 20
+
   if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {
     limit = parseInt(args[1])
     if (limit > 100) {
@@ -8,7 +9,9 @@ module.exports = ({ client, message, args }) => {
       limit = 1
     }
   }
-  message.channel.fetchMessages({ limit })
+
+  message.channel
+    .fetchMessages({ limit })
     .then((msgs) => {
       msgs.array().forEach(m => {
         if (m.deletable && (m.author.id === client.user.id || m.content.startsWith('87'))) {
