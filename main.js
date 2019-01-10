@@ -25,21 +25,28 @@ const cmdHelp = require('./command/cmdHelp')
 const commandList = {
   add: cmdAdd,
   new: cmdAdd,
+  a: cmdAdd,
+  n: cmdAdd,
 
   delete: cmdDel,
   remove: cmdDel,
   del: cmdDel,
   rm: cmdDel,
+  d: cmdDel,
+  r: cmdDel,
 
   list: cmdList,
   ls: cmdList,
+  l: cmdList,
   all: cmdList,
 
   clean: cmdClean,
   clear: cmdClean,
   prune: cmdClean,
+  c: cmdClean,
 
   help: cmdHelp,
+  h: cmdHelp,
   manual: cmdHelp
 }
 
@@ -69,8 +76,8 @@ client.on('message', message => {
 
 client.login(config.TOKEN)
 
-// * release memories every 1 hour
-const interval = 60 * 60 * 1000
+// * release memories
+const interval = 10 * 60 * 1000
 setInterval(() => {
   let now = Date.now()
   for (let server in res) {

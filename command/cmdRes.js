@@ -1,6 +1,6 @@
 module.exports = ({ res, message, args }) => {
   if (args.length === 1) {
-    message.channel.send(':stuck_out_tongue_winking_eye: 87 **87** __**87**__ __***87***__') // default response
+    message.channel.send('87 **87** __**87**__ __***87***__') // default response
     return
   }
 

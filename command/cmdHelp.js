@@ -1,4 +1,4 @@
-const manualText = `:stuck_out_tongue_winking_eye: **Power87** 八七提醒機器人
+const manualText = `**Power87** 八七提醒機器人
 
 \`87!add\` __term__ __response__：新增回應
 \`87!del\` __term__ __position__：刪除特定回應

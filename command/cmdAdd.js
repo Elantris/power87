@@ -21,5 +21,5 @@ module.exports = ({ res, message, args }) => { // add keywords to list
   res[message.guild.id][args[1]][key] = args.slice(2).join(' ')
   fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
 
-  message.channel.send(`:stuck_out_tongue: 關鍵字 **${args[1]}** 新增了項目 **${key}**`)
+  message.channel.send(`:white_check_mark: 關鍵字 **${args[1]}** 新增了項目 **${key}**`)
 }
