@@ -2,7 +2,7 @@ const fs = require('fs')
 
 module.exports = ({ res, message, args }) => { // add keywords to list
   if (args.length < 3 || args[1].startsWith('_')) { // length 3
-    message.channel.send(':no_entry_sign: **格式錯誤**: 87!add `[關鍵字]` `[回應]`')
+    message.channel.send(':no_entry_sign: **格式錯誤**: `87!add` __關鍵字__ __回應__')
     return
   }
 

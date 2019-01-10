@@ -21,6 +21,7 @@ const cmdList = require('./command/cmdList')
 const cmdClean = require('./command/cmdClean')
 const cmdRes = require('./command/cmdRes')
 const cmdHelp = require('./command/cmdHelp')
+const cmdVote = require('./command/cmdVote')
 
 const commandList = {
   add: cmdAdd,
@@ -44,6 +45,9 @@ const commandList = {
   clear: cmdClean,
   prune: cmdClean,
   c: cmdClean,
+
+  vote: cmdVote,
+  v: cmdVote,
 
   help: cmdHelp,
   h: cmdHelp,
