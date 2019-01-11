@@ -10,13 +10,16 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     res[message.guild.id][args[1]] = {}
   }
 
-  let key = 0
-  Object.keys(res[message.guild.id][args[1]]).forEach(v => {
-    if (parseInt(v) > key) {
-      key = parseInt(v)
+  let key = 1
+  for (key; key <= 10; key++) {
+    if (!res[message.guild.id][args[1]][key]) {
+      break
     }
-  })
-  key += 1 // find an available key for new response
+  }
+  if (key === 11) {
+    message.channel.send(':no_entry_sign: **項目過多**: 先刪除掉一些項目騰出更多空間')
+    return
+  }
 
   res[message.guild.id][args[1]][key] = args.slice(2).join(' ')
   fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
