@@ -1,10 +1,5 @@
 module.exports = ({ res, message, args }) => {
-  if (args.length === 1) {
-    message.channel.send('87 **87** __**87**__ __***87***__') // default response
-    return
-  }
-
-  if (!res[message.guild.id][args[1]]) {
+  if (args.length === 1 || !res[message.guild.id][args[1]]) {
     return
   }
 
