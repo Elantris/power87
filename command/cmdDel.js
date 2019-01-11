@@ -1,6 +1,12 @@
 const fs = require('fs')
 
 module.exports = ({ res, message, args }) => { // remove the response from the keyword
+  let allowedRole = message.guild.roles.find(role => role.name === '87')
+  if (!allowedRole || !message.member.roles.has(allowedRole.id)) {
+    message.channel.send(':no_entry_sign: **權限不足**: 無法使用刪除指令')
+    return
+  }
+
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
     message.channel.send(':no_entry_sign: **格式錯誤**: `87!del` __關鍵字__ __項目編號__')
     return
