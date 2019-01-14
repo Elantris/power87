@@ -1,15 +1,31 @@
-const manualText = `**Power87** 八七提醒機器人
+const fs = require('fs')
+const alias = require('../alias')
+const encoding = 'utf8'
 
-\`87\` __term__：從特定關鍵字裡隨機挑選一個回應
-\`87\` __term__ __number__：從特定關鍵字裡挑出第 number 個回應
-
-管理指令：
-\`87!add\` __term__ __response__：新增回應
-\`87!del\` __term__ __position__：刪除特定回應
-\`87!list\` [term]：列出伺服器所有關鍵字或列出單一關鍵字的所有回應
-\`87!vote\` __subject__ [duration]：發起公投
-\`87!clean\` [amount]：清除機器人訊息、預設 20 則`
+const manuals = {
+  default: fs.readFileSync('./manual/default.md', { encoding }),
+  add: fs.readFileSync('./manual/add.md', { encoding }),
+  clean: fs.readFileSync('./manual/clean.md', { encoding }),
+  del: fs.readFileSync('./manual/del.md', { encoding }),
+  list: fs.readFileSync('./manual/list.md', { encoding }),
+  vote: fs.readFileSync('./manual/vote.md', { encoding })
+}
 
 module.exports = ({ message, args }) => {
-  message.channel.send(manualText)
+  if (args.length === 1) {
+    message.channel.send(manuals.default)
+    return
+  }
+
+  args[1] = args[1].toLowerCase()
+
+  if (alias[args[1]]) {
+    args[1] = alias[args[1]]
+  }
+
+  if (!manuals[args[1]]) {
+    message.channel.send(':no_entry_sign: **無效指令**')
+    return
+  }
+  message.channel.send(manuals[args[1]])
 }

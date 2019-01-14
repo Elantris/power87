@@ -31,31 +31,7 @@ const commandList = {
   list: cmdList,
   vote: cmdVote
 }
-
-const alias = {
-  new: 'add',
-  a: 'add',
-  n: 'add',
-
-  delete: 'del',
-  remove: 'del',
-  rm: 'del',
-  d: 'del',
-  r: 'del',
-
-  ls: 'list',
-  l: 'list',
-  all: 'list',
-
-  clear: 'clean',
-  prune: 'clean',
-  c: 'clean',
-
-  v: 'vote',
-
-  h: 'help',
-  manual: 'help'
-}
+const alias = require('./alias')
 
 // * main response
 client.on('message', message => {
