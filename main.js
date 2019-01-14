@@ -16,42 +16,45 @@ fs.readdirSync('./data/').forEach(v => {
 
 // * init commands
 const cmdAdd = require('./command/cmdAdd')
-const cmdDel = require('./command/cmdDel')
-const cmdList = require('./command/cmdList')
 const cmdClean = require('./command/cmdClean')
-const cmdRes = require('./command/cmdRes')
+const cmdDel = require('./command/cmdDel')
 const cmdHelp = require('./command/cmdHelp')
+const cmdList = require('./command/cmdList')
 const cmdVote = require('./command/cmdVote')
+const cmdRes = require('./command/cmdRes')
 
 const commandList = {
   add: cmdAdd,
-  new: cmdAdd,
-  a: cmdAdd,
-  n: cmdAdd,
-
-  delete: cmdDel,
-  remove: cmdDel,
-  del: cmdDel,
-  rm: cmdDel,
-  d: cmdDel,
-  r: cmdDel,
-
-  list: cmdList,
-  ls: cmdList,
-  l: cmdList,
-  all: cmdList,
-
   clean: cmdClean,
-  clear: cmdClean,
-  prune: cmdClean,
-  c: cmdClean,
-
-  vote: cmdVote,
-  v: cmdVote,
-
+  del: cmdDel,
   help: cmdHelp,
-  h: cmdHelp,
-  manual: cmdHelp
+  list: cmdList,
+  vote: cmdVote
+}
+
+const alias = {
+  new: 'add',
+  a: 'add',
+  n: 'add',
+
+  delete: 'del',
+  remove: 'del',
+  rm: 'del',
+  d: 'del',
+  r: 'del',
+
+  ls: 'list',
+  l: 'list',
+  all: 'list',
+
+  clear: 'clean',
+  prune: 'clean',
+  c: 'clean',
+
+  v: 'vote',
+
+  h: 'help',
+  manual: 'help'
 }
 
 // * main response
@@ -68,12 +71,18 @@ client.on('message', message => {
   // prefix is 87
   if (message.content.startsWith('87')) {
     res[message.guild.id]._last = Date.now()
-    let args = message.content.split(' ')
+    let args = message.content.replace(/  +/g, ' ').split(' ')
 
     if (args[0] === '87') {
       cmdRes({ res, message, args })
-    } else if (message.content[2] === '!' && commandList[args[0].substring(3)]) {
-      commandList[args[0].substring(3)]({ client, res, message, args })
+    } else if (message.content[2] === '!') {
+      let cmd = args[0].substring(3).toLowerCase()
+      if (alias[cmd]) {
+        cmd = alias[cmd]
+      }
+      if (commandList[cmd]) {
+        commandList[cmd]({ client, res, message, args })
+      }
     }
   }
 })
