@@ -24,7 +24,7 @@ module.exports = ({ res, message, args }) => { // add keywords to list
       break
     }
   }
-  if (key === maxResNum + 1) {
+  if (key > maxResNum) {
     message.channel.send(':no_entry_sign: **項目過多**: 先刪除一些項目以騰出更多空間')
     return
   }

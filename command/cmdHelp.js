@@ -1,6 +1,7 @@
 const manualText = `**Power87** 八七提醒機器人
 
 \`87\` __term__：從特定關鍵字裡隨機挑選一個回應
+\`87\` __term__ __number__：從特定關鍵字裡挑出第 number 個回應
 
 管理指令：
 \`87!add\` __term__ __response__：新增回應

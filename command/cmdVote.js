@@ -39,7 +39,7 @@ module.exports = ({ message, args }) => {
         output = '維持現狀'
       }
 
-      message.channel.send(`<@${message.author.id}> 發起了公投「**${args[1]}**」\n:white_check_mark: 同意 ${result[0]}、:x: 不同意 ${result[1]}\n\n最終結果：__**${output}**__`)
+      message.channel.send(`<@${message.author.id}> 發起了公投\n「**${args[1]}**」\n:white_check_mark: 同意 ${result[0]}、:x: 不同意 ${result[1]}\n\n最終結果：__**${output}**__`)
     })
     .catch(console.error)
 }
