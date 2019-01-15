@@ -9,12 +9,22 @@ module.exports = ({ res, message, args }) => {
       }
     }
     output += '\n```'
-    message.channel.send(output)
+    message.channel.send({
+      embed: {
+        color: 0xffe066,
+        description: output
+      }
+    })
     return
   }
 
   if (!res[message.guild.id][args[1]]) {
-    message.channel.send(`:no_entry_sign: **查詢錯誤**: 沒有 ${args[1]} 這個關鍵字`)
+    message.channel.send({
+      embed: {
+        color: 0xffa8a8,
+        description: `:no_entry_sign: **查詢錯誤**: 沒有 ${args[1]} 這個關鍵字`
+      }
+    })
     return
   }
 
@@ -25,5 +35,10 @@ module.exports = ({ res, message, args }) => {
   }
   output += '\n```'
 
-  message.channel.send(output)
+  message.channel.send({
+    embed: {
+      color: 0xffe066,
+      description: output
+    }
+  })
 }

@@ -28,5 +28,10 @@ module.exports = ({ message, args }) => {
     message.channel.send(':no_entry_sign: **無效指令**')
     return
   }
-  message.channel.send(manuals[args[1]])
+  message.channel.send({
+    embed: {
+      color: 0xffe066,
+      description: manuals[args[1]]
+    }
+  })
 }
