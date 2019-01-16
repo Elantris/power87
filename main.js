@@ -45,7 +45,7 @@ client.on('message', message => {
   }
 
   // prefix is 87
-  if (message.content.startsWith('87')) {
+  if (!message.author.bot && message.content.startsWith('87')) {
     res[message.guild.id]._last = Date.now()
     let args = message.content.replace(/  +/g, ' ').split(' ')
 
