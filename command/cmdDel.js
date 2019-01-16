@@ -1,6 +1,7 @@
 const fs = require('fs')
 
 module.exports = ({ res, message, args }) => { // remove the response from the keyword
+  // check roles of user
   let allowedRole = message.guild.roles.find(role => role.name === '87')
   if (!allowedRole || !message.member.roles.has(allowedRole.id)) {
     message.channel.send({
@@ -12,6 +13,7 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
     return
   }
 
+  // check command format
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
     message.channel.send({
       embed: {
@@ -22,6 +24,7 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
     return
   }
 
+  // check term exists
   if (!res[message.guild.id][args[1]]) {
     message.channel.send({
       embed: {
@@ -32,6 +35,7 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
     return
   }
 
+  // check response exists
   if (!res[message.guild.id][args[1]][parseInt(args[2])]) {
     message.channel.send({
       embed: {
@@ -42,6 +46,7 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
     return
   }
 
+  // delete response
   delete res[message.guild.id][args[1]][parseInt(args[2])]
   if (Object.keys(res[message.guild.id][args[1]]).length === 0) {
     delete res[message.guild.id][args[1]] // delete the keyword whose response list is empty
