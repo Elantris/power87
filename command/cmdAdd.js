@@ -9,7 +9,7 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **格式錯誤**: `87!add` __關鍵字__ __回應__'
+        description: ':no_entry_sign: **格式錯誤**'
       }
     })
     return
@@ -20,7 +20,7 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **字數過多**: 關鍵字長度必須小於 20 個字'
+        description: ':no_entry_sign: **字數過多**'
       }
     })
     return
@@ -33,7 +33,7 @@ module.exports = ({ res, message, args }) => { // add keywords to list
       message.channel.send({
         embed: {
           color: 0xffa8a8,
-          description: ':no_entry_sign: **關鍵字過多**: 先刪除一些關鍵字底下的所有回應'
+          description: ':no_entry_sign: **關鍵字過多**'
         }
       })
       return
@@ -52,20 +52,21 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **項目過多**: 先刪除一些項目以騰出更多空間'
+        description: ':no_entry_sign: **項目過多**'
       }
     })
     return
   }
 
   // add term and response
-  res[message.guild.id][args[1]][key] = args.slice(2).join(' ')
+  let newResponse = args.slice(2).join(' ')
+  res[message.guild.id][args[1]][key] = newResponse
   fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
 
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:white_check_mark: 關鍵字 **${args[1]}** 新增了項目 **${key}**`
+      description: `:white_check_mark: 你說 **87 ${args[1]}** 我說 **${newResponse}**`
     }
   })
 }

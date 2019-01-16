@@ -4,7 +4,7 @@ module.exports = ({ message, args }) => {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **格式錯誤**: `87!vote` __公投主題__ [公投時間]'
+        description: ':no_entry_sign: **格式錯誤**'
       }
     })
     return
@@ -19,7 +19,7 @@ module.exports = ({ message, args }) => {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
-          description: ':no_entry_sign: 發起公投的允許投票時間為 1 ~ 30 分鐘'
+          description: ':no_entry_sign: **時間錯誤**'
         }
       })
       return
@@ -46,9 +46,9 @@ module.exports = ({ message, args }) => {
 
       let output = ''
       if (result[0] - result[1] > 0) {
-        output = '通過'
+        output = ':white_check_mark: 通過'
       } else if (result[0] - result[1] < 0) {
-        output = '不通過'
+        output = ':x: 不通過'
       } else {
         output = '維持現狀'
       }
@@ -56,7 +56,15 @@ module.exports = ({ message, args }) => {
       message.channel.send({
         embed: {
           color: 0xffe066,
-          description: `<@${message.author.id}> 發起了公投\n「**${args[1]}**」\n:white_check_mark: 同意 ${result[0]}、:x: 不同意 ${result[1]}\n\n最終結果：__**${output}**__`
+          title: `:scroll: 「${args[1]}」`,
+          description: `\n<@${message.author.id}> 發起了 ${parseInt(duration / 60000)} 分鐘的公投`,
+          fields: [{
+            name: '統計票數',
+            value: `同意 ${result[0]} 票、不同意 ${result[1]} 票`
+          }, {
+            name: '最終結果',
+            value: `__**${output}**__`
+          }]
         }
       })
     })

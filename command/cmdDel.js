@@ -2,12 +2,19 @@ const fs = require('fs')
 
 module.exports = ({ res, message, args }) => { // remove the response from the keyword
   // check roles of user
-  let allowedRole = message.guild.roles.find(role => role.name === '87')
-  if (!allowedRole || !message.member.roles.has(allowedRole.id)) {
+  let roles = message.member.roles.array()
+  let flag = true
+  for (let i in roles) {
+    if (roles[i].name.includes('87')) {
+      flag = false
+      break
+    }
+  }
+  if (flag) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **權限不足**: 無法使用刪除指令'
+        description: ':no_entry_sign: **權限不足**'
       }
     })
     return
@@ -18,29 +25,18 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **格式錯誤**: `87!del` __關鍵字__ __項目編號__'
+        description: ':no_entry_sign: **格式錯誤**'
       }
     })
     return
   }
 
-  // check term exists
-  if (!res[message.guild.id][args[1]]) {
+  // check term and response exists
+  if (!res[message.guild.id][args[1]] || !res[message.guild.id][args[1]][parseInt(args[2])]) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: `:no_entry_sign: **查詢錯誤**: 沒有 ${args[1]} 這個關鍵字`
-      }
-    })
-    return
-  }
-
-  // check response exists
-  if (!res[message.guild.id][args[1]][parseInt(args[2])]) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: `:no_entry_sign: **查詢錯誤**: 關鍵字 **${args[1]}** 第 ${parseInt(args[2])} 位置沒有東西`
+        description: `:no_entry_sign: **查詢錯誤**`
       }
     })
     return
@@ -56,7 +52,7 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:fire: 移除了關鍵字 **${args[1]}** 的第 **${args[2]}** 個項目`
+      description: `:fire: 移除了 **${args[1]}** 的第 **${args[2]}** 個項目`
     }
   })
 }
