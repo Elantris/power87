@@ -4,7 +4,8 @@ const maxTermNum = 50
 const maxResNum = 20
 
 module.exports = ({ res, message, args }) => { // add keywords to list
-  if (args.length < 3 || args[1].startsWith('_')) { // length 3
+  // check command format
+  if (args.length < 3 || args[1].startsWith('_') || Number.isSafeInteger(parseInt(args[1]))) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -14,9 +15,21 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     return
   }
 
-  if (!res[message.guild.id][args[1]]) { // init response list for certain keyword
-    let termNum = Object.keys(res[message.guild.id]).length - 1
-    if (termNum === maxTermNum) {
+  // check term legnth
+  if (args[1].length > 20) {
+    message.channel.send({
+      embed: {
+        color: 0xffa8a8,
+        description: ':no_entry_sign: **字數過多**: 關鍵字長度必須小於 20 個字'
+      }
+    })
+    return
+  }
+
+  // init response list of term
+  if (!res[message.guild.id][args[1]]) {
+    let currentTermNum = Object.keys(res[message.guild.id]).length - 1
+    if (currentTermNum === maxTermNum) {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
@@ -28,6 +41,7 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     res[message.guild.id][args[1]] = {}
   }
 
+  // check length of response list
   let key = 1
   for (key; key <= maxResNum; key++) {
     if (!res[message.guild.id][args[1]][key]) {
@@ -44,6 +58,7 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     return
   }
 
+  // add term and response
   res[message.guild.id][args[1]][key] = args.slice(2).join(' ')
   fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
 
