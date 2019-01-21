@@ -1,16 +1,9 @@
 const fs = require('fs')
+const isModerator = require('../isModerator')
 
 module.exports = ({ res, message, args }) => { // remove the response from the keyword
   // check roles of user
-  let roles = message.member.roles.array()
-  let flag = true
-  for (let i in roles) {
-    if (roles[i].name.includes('87')) {
-      flag = false
-      break
-    }
-  }
-  if (flag) {
+  if (!isModerator({ message })) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,

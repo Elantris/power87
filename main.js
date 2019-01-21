@@ -15,23 +15,16 @@ fs.readdirSync('./data/').forEach(v => {
 })
 
 // * init commands
-const cmdAdd = require('./command/cmdAdd')
-const cmdClean = require('./command/cmdClean')
-const cmdDel = require('./command/cmdDel')
-const cmdHelp = require('./command/cmdHelp')
-const cmdList = require('./command/cmdList')
-const cmdVote = require('./command/cmdVote')
-const cmdRes = require('./command/cmdRes')
-
 const commandList = {
-  add: cmdAdd,
-  clean: cmdClean,
-  del: cmdDel,
-  help: cmdHelp,
-  list: cmdList,
-  vote: cmdVote
+  add: require('./command/cmdAdd'),
+  clean: require('./command/cmdClean'),
+  del: require('./command/cmdDel'),
+  help: require('./command/cmdHelp'),
+  list: require('./command/cmdList'),
+  vote: require('./command/cmdVote')
 }
 const alias = require('./alias')
+const cmdRes = require('./command/cmdRes')
 
 // * main response
 client.on('message', message => {
@@ -66,7 +59,7 @@ client.on('message', message => {
 client.login(config.TOKEN)
 
 // * release memories
-const interval = 10 * 60 * 1000
+const interval = 10 * 60 * 1000 // 1hr
 setInterval(() => {
   let now = Date.now()
   for (let server in res) {

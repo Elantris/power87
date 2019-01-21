@@ -9,6 +9,7 @@ module.exports = ({ client, message, args }) => {
       limit = 1
     }
   }
+  limit += 1 // include user command
 
   message.channel
     .fetchMessages({ limit })
