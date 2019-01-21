@@ -30,10 +30,6 @@ const alias = require('./alias')
 
 // * main response
 client.on('message', message => {
-  if (message.author.bot || !message.content.startsWith('87')) {
-    return
-  }
-
   // restore data from save file
   if (!res[message.guild.id]) {
     if (serverExits[message.guild.id]) {
@@ -44,18 +40,23 @@ client.on('message', message => {
   }
   res[message.guild.id]._last = Date.now()
 
+  // punishment
   if (res[message.guild.id]._punishments && res[message.guild.id]._punishments[message.author.id] && !isModerator({ message })) {
-    if (Date.now() < res[message.guild.id]._punishments[message.author.id]) {
-      message.channel.send({
-        embed: {
-          color: 0xffa8a8,
-          description: `:zipper_mouth: <@${message.author.id}> 閉嘴`
-        }
-      })
-      return
-    } else {
-      delete res[message.guild.id]._punishments[message.author.id]
+    res[message.guild.id]._punishments[message.author.id]--
+    if (res[message.guild.id]._punishments[message.author.id] === 0) {
+      fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
     }
+    message.channel.send({
+      embed: {
+        color: 0xffa8a8,
+        description: `:zipper_mouth: <@${message.author.id}> 閉嘴`
+      }
+    })
+    return
+  }
+
+  if (message.author.bot || !message.content.startsWith('87')) {
+    return
   }
 
   let args = message.content.replace(/  +/g, ' ').split(' ')

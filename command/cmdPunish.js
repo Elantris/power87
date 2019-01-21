@@ -23,28 +23,37 @@ module.exports = ({ res, message, args }) => {
   }
 
   const targetId = message.mentions.users.array()[0].id
-  let duration = 1
-  let argTime = parseInt(args[2])
+  let times = 1
 
-  if (args[2] && Number.isSafeInteger(argTime)) {
-    if (argTime < 1) {
-      argTime = 1
-    } else if (argTime > 30) {
-      argTime = 30
+  if (args[2]) {
+    if (!Number.isSafeInteger(parseInt(args[2]))) {
+      message.channel.send({
+        embed: {
+          color: 0xffa8a8,
+          description: ':no_entry_sign: **次數錯誤**'
+        }
+      })
+      return
     }
-    duration *= argTime
+
+    times = parseInt(args[2])
+    if (times < 1) {
+      times = 1
+    } else if (times > 5) {
+      times = 5
+    }
   }
 
   if (!res[message.guild.id]._punishments) {
     res[message.guild.id]._punishments = {}
   }
 
-  res[message.guild.id]._punishments[targetId] = Date.now() + duration * 60000
+  res[message.guild.id]._punishments[targetId] = times
   fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:zipper_mouth: 禁止 <@${targetId}> 使用指令 ${duration} 分鐘`
+      description: `:zipper_mouth: <@${targetId}> 請你閉嘴`
     }
   })
 }
