@@ -2,6 +2,7 @@ const fs = require('fs')
 const Discord = require('discord.js')
 const config = require('./config')
 const client = new Discord.Client()
+const isModerator = require('./isModerator')
 
 client.on('ready', () => {
   console.log('I am ready!')
@@ -43,7 +44,7 @@ client.on('message', message => {
   }
   res[message.guild.id]._last = Date.now()
 
-  if (res[message.guild.id]._punishments && res[message.guild.id]._punishments[message.author.id]) {
+  if (res[message.guild.id]._punishments && res[message.guild.id]._punishments[message.author.id] && !isModerator({ message })) {
     if (Date.now() < res[message.guild.id]._punishments[message.author.id]) {
       message.channel.send({
         embed: {
