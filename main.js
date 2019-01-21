@@ -9,49 +9,64 @@ client.on('ready', () => {
 
 // * get server list
 let res = {}
-let serverList = {}
+let serverExits = {}
 fs.readdirSync('./data/').forEach(v => {
-  serverList[v.split('.json')[0]] = 1
+  serverExits[v.split('.json')[0]] = 1
 })
 
 // * init commands
-const commandList = {
+const commands = {
   add: require('./command/cmdAdd'),
   clean: require('./command/cmdClean'),
   del: require('./command/cmdDel'),
   help: require('./command/cmdHelp'),
   list: require('./command/cmdList'),
-  vote: require('./command/cmdVote')
+  punish: require('./command/cmdPunish'),
+  vote: require('./command/cmdVote'),
+  res: require('./command/cmdRes')
 }
 const alias = require('./alias')
-const cmdRes = require('./command/cmdRes')
 
 // * main response
 client.on('message', message => {
+  if (message.author.bot || !message.content.startsWith('87')) {
+    return
+  }
+
   // restore data from save file
   if (!res[message.guild.id]) {
-    if (serverList[message.guild.id]) {
+    if (serverExits[message.guild.id]) {
       res[message.guild.id] = require(`./data/${message.guild.id}`)
     } else {
       res[message.guild.id] = {}
     }
   }
+  res[message.guild.id]._last = Date.now()
 
-  // prefix is 87
-  if (!message.author.bot && message.content.startsWith('87')) {
-    res[message.guild.id]._last = Date.now()
-    let args = message.content.replace(/  +/g, ' ').split(' ')
+  if (res[message.guild.id]._punishments && res[message.guild.id]._punishments[message.author.id]) {
+    if (Date.now() < res[message.guild.id]._punishments[message.author.id]) {
+      message.channel.send({
+        embed: {
+          color: 0xffa8a8,
+          description: `:zipper_mouth: <@${message.author.id}> 閉嘴`
+        }
+      })
+      return
+    } else {
+      delete res[message.guild.id]._punishments[message.author.id]
+    }
+  }
 
-    if (args[0] === '87') {
-      cmdRes({ res, message, args })
-    } else if (message.content[2] === '!') {
-      let cmd = args[0].substring(3).toLowerCase()
-      if (alias[cmd]) {
-        cmd = alias[cmd]
-      }
-      if (commandList[cmd]) {
-        commandList[cmd]({ client, res, message, args })
-      }
+  let args = message.content.replace(/  +/g, ' ').split(' ')
+  if (args[0] === '87') {
+    commands.res({ res, message, args })
+  } else if (message.content[2] === '!') {
+    let cmd = args[0].substring(3).toLowerCase()
+    if (alias[cmd]) {
+      cmd = alias[cmd]
+    }
+    if (commands[cmd]) {
+      commands[cmd]({ client, res, message, args })
     }
   }
 })
@@ -65,7 +80,7 @@ setInterval(() => {
   for (let server in res) {
     if (now - res[server]._last > 6 * interval) {
       fs.writeFileSync(`./data/${server}.json`, JSON.stringify(res[server]), { encoding: 'utf8' })
-      serverList[server] = 1
+      serverExits[server] = 1
       delete res[server]
     }
   }

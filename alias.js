@@ -17,6 +17,8 @@ const alias = {
   prune: 'clean',
   c: 'clean',
 
+  p: 'punish',
+
   v: 'vote',
 
   h: 'help',

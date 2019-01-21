@@ -9,6 +9,7 @@ const manuals = {
   del: fs.readFileSync('./manual/del.md', { encoding }),
   help: fs.readFileSync('./manual/help.md', { encoding }),
   list: fs.readFileSync('./manual/list.md', { encoding }),
+  punish: fs.readFileSync('./manual/punish.md', { encoding }),
   vote: fs.readFileSync('./manual/vote.md', { encoding })
 }
 
