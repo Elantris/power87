@@ -2,7 +2,6 @@ const fs = require('fs')
 const Discord = require('discord.js')
 const config = require('./config')
 const client = new Discord.Client()
-const isModerator = require('./isModerator')
 
 client.on('ready', () => {
   console.log('I am ready!')
@@ -22,7 +21,6 @@ const commands = {
   del: require('./command/cmdDel'),
   help: require('./command/cmdHelp'),
   list: require('./command/cmdList'),
-  punish: require('./command/cmdPunish'),
   vote: require('./command/cmdVote'),
   res: require('./command/cmdRes')
 }
@@ -30,6 +28,10 @@ const alias = require('./alias')
 
 // * main response
 client.on('message', message => {
+  if (message.author.bot || !message.content.startsWith('87')) {
+    return
+  }
+
   // restore data from save file
   if (!res[message.guild.id]) {
     if (serverExits[message.guild.id]) {
@@ -39,25 +41,6 @@ client.on('message', message => {
     }
   }
   res[message.guild.id]._last = Date.now()
-
-  // punishment
-  if (res[message.guild.id]._punishments && res[message.guild.id]._punishments[message.author.id] && !isModerator({ message })) {
-    res[message.guild.id]._punishments[message.author.id]--
-    if (res[message.guild.id]._punishments[message.author.id] === 0) {
-      fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
-    }
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: `:zipper_mouth: <@${message.author.id}> 閉嘴`
-      }
-    })
-    return
-  }
-
-  if (message.author.bot || !message.content.startsWith('87')) {
-    return
-  }
 
   let args = message.content.replace(/  +/g, ' ').split(' ')
   if (args[0] === '87') {

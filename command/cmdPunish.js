@@ -53,7 +53,7 @@ module.exports = ({ res, message, args }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:zipper_mouth: <@${targetId}> 請你閉嘴`
+      description: `:zipper_mouth: <@${message.author.id}> 要 <@${targetId}> 閉嘴`
     }
   })
 }
