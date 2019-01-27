@@ -15,19 +15,19 @@ module.exports = ({ res, message, args }) => {
 
   if (args.length === 1) {
     // list all keywords from server
-    output += `所有關鍵字 (${Object.keys(res[message.guild.id]).length - 1}/50)\n`
+    output += `所有關鍵字 [${Object.keys(target).length - 1}/50]\n`
     for (let i in target) {
       if (i.startsWith('_')) {
         continue
       }
-      output += `\n${i}`
+      output += `\n${i} (${Object.keys(target[i]).length})`
     }
   } else {
     // list all responses of the keyword
-    output += `**${args[1]}** 的回應列表\n`
     target = res[message.guild.id][args[1]]
+    output += `**${args[1]}** 的回應列表 [${Object.keys(target).length}/20]\n`
     for (let i in target) {
-      output += `\n${i.toString().padStart(2)}. ${target[i]}`
+      output += `\n${i}. ${target[i]}`
     }
   }
   output += '\n'

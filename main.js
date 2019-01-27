@@ -15,16 +15,12 @@ fs.readdirSync('./data/').forEach(v => {
 })
 
 // * init commands
-const commands = {
-  add: require('./command/cmdAdd'),
-  clean: require('./command/cmdClean'),
-  del: require('./command/cmdDel'),
-  help: require('./command/cmdHelp'),
-  list: require('./command/cmdList'),
-  vote: require('./command/cmdVote'),
-  res: require('./command/cmdRes')
-}
+let commands = {}
 const alias = require('./alias')
+fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEach(filename => {
+  let cmd = filename.split('.js')[0]
+  commands[cmd] = require(`./command/${cmd}`)
+})
 
 // * main response
 client.on('message', message => {
@@ -42,14 +38,13 @@ client.on('message', message => {
   }
   res[message.guild.id]._last = Date.now()
 
+  // process command
   let args = message.content.replace(/  +/g, ' ').split(' ')
   if (args[0] === '87') {
     commands.res({ res, message, args })
   } else if (message.content[2] === '!') {
     let cmd = args[0].substring(3).toLowerCase()
-    if (alias[cmd]) {
-      cmd = alias[cmd]
-    }
+    cmd = alias[cmd] || cmd
     if (commands[cmd]) {
       commands[cmd]({ client, res, message, args })
     }

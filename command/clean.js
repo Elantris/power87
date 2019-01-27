@@ -3,8 +3,8 @@ module.exports = ({ client, message, args }) => {
 
   if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {
     limit = parseInt(args[1])
-    if (limit > 100) {
-      limit = 100
+    if (limit > 99) {
+      limit = 99
     } else if (limit < 1) {
       limit = 1
     }
@@ -13,7 +13,7 @@ module.exports = ({ client, message, args }) => {
 
   message.channel
     .fetchMessages({ limit })
-    .then((msgs) => {
+    .then(msgs => {
       msgs.array().forEach(m => {
         if (m.deletable && (m.author.id === client.user.id || m.content.startsWith('87'))) {
           m.delete()

@@ -11,11 +11,12 @@ module.exports = ({ message, args }) => {
   }
 
   let duration = 60000 // 1 minute
+  let multiply = 1
 
   // check custom duration number
   if (args[2] && Number.isSafeInteger(parseInt(args[2]))) {
-    let tmp = parseInt(args[2])
-    if (tmp < 1 || tmp > 30) {
+    multiply = parseInt(args[2])
+    if (multiply < 1 || multiply > 30) {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
@@ -24,7 +25,6 @@ module.exports = ({ message, args }) => {
       })
       return
     }
-    duration *= tmp
   }
 
   // add react for voting
@@ -37,33 +37,33 @@ module.exports = ({ message, args }) => {
 
   // result
   const filter = (reaction, user) => reaction.emoji.name === '✅' || reaction.emoji.name === '❌'
-  message.awaitReactions(filter, { time: duration })
+  message.awaitReactions(filter, { time: duration * multiply })
     .then(collected => {
       let result = [0, 0]
       collected.array().forEach((v, i) => {
         result[i] = v.count - 1
       })
 
-      let output = ''
+      let outcome = ''
       if (result[0] - result[1] > 0) {
-        output = ':white_check_mark: 通過'
+        outcome = ':white_check_mark: 通過'
       } else if (result[0] - result[1] < 0) {
-        output = ':x: 不通過'
+        outcome = ':x: 不通過'
       } else {
-        output = '維持現狀'
+        outcome = '維持現狀'
       }
 
       message.channel.send({
         embed: {
           color: 0xffe066,
           title: `:scroll: 「${args[1]}」`,
-          description: `\n<@${message.author.id}> 發起了 ${parseInt(duration / 60000)} 分鐘的公投`,
+          description: `\n<@${message.author.id}> 發起了 ${multiply} 分鐘的公投`,
           fields: [{
             name: '統計票數',
             value: `同意 ${result[0]} 票、不同意 ${result[1]} 票`
           }, {
             name: '最終結果',
-            value: `__**${output}**__`
+            value: `__**${outcome}**__`
           }]
         }
       })

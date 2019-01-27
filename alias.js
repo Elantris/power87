@@ -3,26 +3,20 @@ const alias = {
   a: 'add',
   n: 'add',
 
-  delete: 'del',
-  remove: 'del',
-  rm: 'del',
-  d: 'del',
-  r: 'del',
+  clear: 'clean',
+  c: 'clean',
+
+  del: 'delete',
+  d: 'delete',
+
+  h: 'help',
+  manual: 'help',
 
   ls: 'list',
   l: 'list',
   all: 'list',
 
-  clear: 'clean',
-  prune: 'clean',
-  c: 'clean',
-
-  p: 'punish',
-
-  v: 'vote',
-
-  h: 'help',
-  manual: 'help'
+  v: 'vote'
 }
 
 module.exports = alias

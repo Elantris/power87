@@ -15,8 +15,11 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     return
   }
 
+  let serverId = message.guild.id
+  let term = args[1]
+
   // check term legnth
-  if (args[1].length > 20) {
+  if (term.length > 20) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -27,24 +30,24 @@ module.exports = ({ res, message, args }) => { // add keywords to list
   }
 
   // init response list of term
-  if (!res[message.guild.id][args[1]]) {
-    let currentTermNum = Object.keys(res[message.guild.id]).length - 1
-    if (currentTermNum === maxTermNum) {
+  if (!res[serverId][term]) {
+    let currentTermNum = Object.keys(res[serverId]).length - 1
+    if (currentTermNum >= maxTermNum) {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
-          description: ':no_entry_sign: **關鍵字過多**'
+          description: ':no_entry_sign: **伺服器關鍵字過多**'
         }
       })
       return
     }
-    res[message.guild.id][args[1]] = {}
+    res[serverId][term] = {}
   }
 
   // check length of response list
   let key = 1
   for (key; key <= maxResNum; key++) {
-    if (!res[message.guild.id][args[1]][key]) {
+    if (!res[serverId][term][key]) {
       break
     }
   }
@@ -60,13 +63,13 @@ module.exports = ({ res, message, args }) => { // add keywords to list
 
   // add term and response
   let newResponse = args.slice(2).join(' ')
-  res[message.guild.id][args[1]][key] = newResponse
-  fs.writeFileSync(`./data/${message.guild.id}.json`, JSON.stringify(res[message.guild.id]), { encoding: 'utf8' })
+  res[serverId][term][key] = newResponse
+  fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(res[serverId]), { encoding: 'utf8' })
 
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:white_check_mark: 你說 **87 ${args[1]}** 我說 **${newResponse}**`
+      description: `:white_check_mark: 你說 **87 ${term} ${key}** 我說 **${newResponse}**`
     }
   })
 }
