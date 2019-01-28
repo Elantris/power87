@@ -9,9 +9,9 @@ client.on('ready', () => {
 
 // * get server list
 let res = {}
-let serverExits = {}
+let serverExist = {}
 fs.readdirSync('./data/').forEach(v => {
-  serverExits[v.split('.json')[0]] = 1
+  serverExist[v.split('.json')[0]] = 1
 })
 
 // * init commands
@@ -30,7 +30,7 @@ client.on('message', message => {
 
   // restore data from save file
   if (!res[message.guild.id]) {
-    if (serverExits[message.guild.id]) {
+    if (serverExist[message.guild.id]) {
       res[message.guild.id] = require(`./data/${message.guild.id}`)
     } else {
       res[message.guild.id] = {}
@@ -60,7 +60,7 @@ setInterval(() => {
   for (let server in res) {
     if (now - res[server]._last > 6 * interval) {
       fs.writeFileSync(`./data/${server}.json`, JSON.stringify(res[server]), { encoding: 'utf8' })
-      serverExits[server] = 1
+      serverExist[server] = 1
       delete res[server]
     }
   }
