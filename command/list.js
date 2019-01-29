@@ -1,6 +1,6 @@
-module.exports = ({ res, message, args }) => {
+module.exports = ({ message, args, cache, serverId }) => {
   // check command format
-  if (args.length > 1 && !res[message.guild.id][args[1]]) {
+  if (args.length > 1 && !cache[serverId].responses[args[1]]) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -10,7 +10,7 @@ module.exports = ({ res, message, args }) => {
     return
   }
 
-  let target = res[message.guild.id]
+  let target = cache[serverId].responses
   let output = ':bookmark_tabs: '
 
   if (args.length === 1) {
@@ -24,7 +24,7 @@ module.exports = ({ res, message, args }) => {
     }
   } else {
     // list all responses of the keyword
-    target = res[message.guild.id][args[1]]
+    target = cache[serverId].responses[args[1]]
     output += `**${args[1]}** 的回應列表 [${Object.keys(target).length}/20]\n`
     for (let i in target) {
       output += `\n${i}. ${target[i]}`

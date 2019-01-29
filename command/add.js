@@ -3,7 +3,7 @@ const fs = require('fs')
 const maxTermNum = 50
 const maxResNum = 20
 
-module.exports = ({ res, message, args }) => { // add keywords to list
+module.exports = ({ message, args, cache, serverId }) => { // add keywords to list
   // check command format
   if (args.length < 3 || args[1].startsWith('_') || Number.isSafeInteger(parseInt(args[1]))) {
     message.channel.send({
@@ -15,7 +15,6 @@ module.exports = ({ res, message, args }) => { // add keywords to list
     return
   }
 
-  let serverId = message.guild.id
   let term = args[1]
 
   // check term legnth
@@ -30,8 +29,8 @@ module.exports = ({ res, message, args }) => { // add keywords to list
   }
 
   // init response list of term
-  if (!res[serverId][term]) {
-    let currentTermNum = Object.keys(res[serverId]).length - 1
+  if (!cache[serverId].responses[term]) {
+    let currentTermNum = Object.keys(cache[serverId].responses).length - 1
     if (currentTermNum >= maxTermNum) {
       message.channel.send({
         embed: {
@@ -41,17 +40,17 @@ module.exports = ({ res, message, args }) => { // add keywords to list
       })
       return
     }
-    res[serverId][term] = {}
+    cache[serverId].responses[term] = {}
   }
 
   // check length of response list
-  let key = 1
-  for (key; key <= maxResNum; key++) {
-    if (!res[serverId][term][key]) {
+  let emptyPosition = 1
+  for (emptyPosition; emptyPosition <= maxResNum; emptyPosition++) {
+    if (!cache[serverId].responses[term][emptyPosition]) {
       break
     }
   }
-  if (key > maxResNum) {
+  if (emptyPosition > maxResNum) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -63,13 +62,13 @@ module.exports = ({ res, message, args }) => { // add keywords to list
 
   // add term and response
   let newResponse = args.slice(2).join(' ')
-  res[serverId][term][key] = newResponse
-  fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(res[serverId]), { encoding: 'utf8' })
+  cache[serverId].responses[term][emptyPosition] = newResponse
+  fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
 
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:white_check_mark: 你說 **87 ${term} ${key}** 我說 **${newResponse}**`
+      description: `:white_check_mark: 你說 **87 ${term} ${emptyPosition}** 我說 **${newResponse}**`
     }
   })
 }

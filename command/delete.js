@@ -1,7 +1,7 @@
 const fs = require('fs')
 const isModerator = require('../isModerator')
 
-module.exports = ({ res, message, args }) => { // remove the response from the keyword
+module.exports = ({ message, args, cache, serverId }) => { // remove the response from the keyword
   // check roles of user
   if (!isModerator(message.member.roles.array())) {
     message.channel.send({
@@ -24,12 +24,11 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
     return
   }
 
-  let serverId = message.guild.id
   let term = args[1]
-  let key = parseInt(args[2])
+  let position = parseInt(args[2])
 
   // check term and response exists
-  if (!res[serverId][term] || !res[serverId][term][key]) {
+  if (!cache[serverId].responses[term] || !Number.isSafeInteger(position) || !cache[serverId].responses[term][position]) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -40,16 +39,16 @@ module.exports = ({ res, message, args }) => { // remove the response from the k
   }
 
   // delete response
-  delete res[serverId][term][key]
-  if (Object.keys(res[serverId][term]).length === 0) {
-    delete res[message.guild.id][term] // delete the keyword whose response list is empty
+  delete cache[serverId].responses[term][position]
+  if (Object.keys(cache[serverId].responses[term]).length === 0) {
+    delete cache[serverId].responses[term] // delete the keyword whose response list is empty
   }
-  fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(res[serverId]), { encoding: 'utf8' })
+  fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
 
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:fire: 移除了 **${term}** 的第 **${key}** 個項目`
+      description: `:fire: 移除了 **${term}** 的第 **${position}** 個項目`
     }
   })
 }

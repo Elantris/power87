@@ -8,7 +8,6 @@ client.on('ready', () => {
 })
 
 // * get server list
-let res = {}
 let serverExist = {}
 fs.readdirSync('./data/').forEach(v => {
   serverExist[v.split('.json')[0]] = 1
@@ -23,45 +22,54 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 })
 
 // * main response
+let cache = {}
 client.on('message', message => {
   if (message.author.bot || !message.content.startsWith('87')) {
     return
   }
 
+  let serverId = message.guild.id
+
   // restore data from save file
-  if (!res[message.guild.id]) {
-    if (serverExist[message.guild.id]) {
-      res[message.guild.id] = require(`./data/${message.guild.id}`)
+  if (!cache[serverId]) {
+    if (serverExist[serverId]) {
+      cache[serverId] = require(`./data/${serverId}`)
     } else {
-      res[message.guild.id] = {}
+      cache[serverId] = {
+        last: 0,
+        responses: {},
+        energies: {}
+      }
     }
   }
-  res[message.guild.id]._last = Date.now()
+  cache[serverId].last = Date.now()
 
   // process command
+  let cmd = ''
   let args = message.content.replace(/  +/g, ' ').split(' ')
   if (args[0] === '87') {
-    commands.res({ res, message, args })
+    cmd = 'res'
   } else if (message.content[2] === '!') {
-    let cmd = args[0].substring(3).toLowerCase()
+    cmd = args[0].substring(3).toLowerCase()
     cmd = alias[cmd] || cmd
-    if (commands[cmd]) {
-      commands[cmd]({ client, res, message, args })
-    }
+  }
+
+  if (commands[cmd]) {
+    commands[cmd]({ client, message, args, cache, serverId })
   }
 })
 
 client.login(config.TOKEN)
 
 // * release memories
-const interval = 10 * 60 * 1000 // 1hr
+const interval = 60 * 1000 // 1 min
 setInterval(() => {
   let now = Date.now()
-  for (let server in res) {
-    if (now - res[server]._last > 6 * interval) {
-      fs.writeFileSync(`./data/${server}.json`, JSON.stringify(res[server]), { encoding: 'utf8' })
-      serverExist[server] = 1
-      delete res[server]
+  for (let serverId in cache) {
+    if (now - cache[serverId].last > 60 * interval) { // 1 hr
+      fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
+      serverExist[serverId] = 1
+      delete cache[serverId]
     }
   }
 }, interval)
