@@ -1,5 +1,5 @@
 **Power87** 清除回應
-替代指令：clean, clear, c
+替代指令：clean, clear
 
 語法：
 ```

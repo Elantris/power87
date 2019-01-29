@@ -4,7 +4,6 @@ const alias = {
   n: 'add',
 
   clear: 'clean',
-  c: 'clean',
 
   del: 'delete',
   d: 'delete',
