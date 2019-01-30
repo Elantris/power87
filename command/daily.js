@@ -23,7 +23,7 @@ module.exports = ({ message, cache, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:battery: <@${userId}> 獲得 10 點 87 能量`
+      description: `:battery: <@${userId}> 獲得 10 點八七能量`
     }
   })
 }

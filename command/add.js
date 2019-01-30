@@ -1,15 +1,16 @@
 const fs = require('fs')
+const isModerator = require('../isModerator')
 
 const maxTermNum = 50
 const maxResNum = 20
 
 module.exports = ({ message, args, cache, serverId, userId }) => { // add keywords to list
   // check user energy
-  if (cache[serverId].energies[userId].amount < 10) {
+  if (!isModerator(message.member.roles.array()) && cache[serverId].energies[userId].amount < 10) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **87 能量不足**'
+        description: ':no_entry_sign: **八七能量不足**'
       }
     })
     return

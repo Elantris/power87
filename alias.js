@@ -8,6 +8,8 @@ const alias = {
   del: 'delete',
   d: 'delete',
 
+  e: 'energy',
+
   h: 'help',
   manual: 'help',
 
