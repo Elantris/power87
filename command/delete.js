@@ -1,9 +1,10 @@
 const fs = require('fs')
-const isModerator = require('../isModerator')
 
-module.exports = ({ message, args, cache, serverId, userId }) => { // remove the response from the keyword
+const energyCost = 20
+
+module.exports = ({ args, cache, message, moderator, serverId, userId }) => { // remove the response from the keyword
   // check user energy
-  if (!isModerator(message.member.roles.array()) && cache[serverId].energies[userId].amount < 20) {
+  if (!moderator && cache[serverId].energies[userId].amount < energyCost) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -44,7 +45,10 @@ module.exports = ({ message, args, cache, serverId, userId }) => { // remove the
     delete cache[serverId].responses[term] // delete the keyword whose response list is empty
   }
   fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
-  cache[serverId].energies[userId].amount -= 20
+
+  if (!moderator) {
+    cache[serverId].energies[userId].amount -= energyCost
+  }
 
   message.channel.send({
     embed: {

@@ -2,6 +2,9 @@ const fs = require('fs')
 const Discord = require('discord.js')
 const config = require('./config')
 const client = new Discord.Client()
+
+const alias = require('./alias')
+const isModerator = require('./isModerator')
 const energy = require('./energy')
 
 // * get server list
@@ -12,7 +15,6 @@ fs.readdirSync('./data/').forEach(v => {
 
 // * init commands
 let commands = {}
-const alias = require('./alias')
 fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEach(filename => {
   let cmd = filename.split('.js')[0]
   commands[cmd] = require(`./command/${cmd}`)
@@ -63,7 +65,8 @@ client.on('message', message => {
   }
 
   if (commands[cmd]) {
-    commands[cmd]({ client, message, args, cache, serverId, userId })
+    let moderator = isModerator(message.member.roles.array())
+    commands[cmd]({ args, cache, client, message, moderator, serverId, userId })
   }
 })
 

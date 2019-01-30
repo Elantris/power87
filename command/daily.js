@@ -1,6 +1,6 @@
 const moment = require('moment')
 
-module.exports = ({ message, cache, serverId, userId }) => {
+module.exports = ({ cache, message, serverId, userId }) => {
   let nowTime = moment().format('YYYYMMDDHH')
 
   if (!cache[serverId].energies[userId].lastDaily) {

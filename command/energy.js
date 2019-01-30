@@ -1,4 +1,4 @@
-module.exports = ({ message, cache, serverId, userId }) => {
+module.exports = ({ cache, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,

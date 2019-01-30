@@ -8,7 +8,7 @@ fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach
   manuals[cmd] = fs.readFileSync(`./manual/${cmd}.md`, { encoding })
 })
 
-module.exports = ({ message, args }) => {
+module.exports = ({ args, message }) => {
   if (args.length === 1) {
     message.channel.send(manuals.default)
     return

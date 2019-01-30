@@ -1,4 +1,4 @@
-module.exports = ({ message, args }) => {
+module.exports = ({ args, message }) => {
   // check command foramt
   if (args.length < 2) {
     message.channel.send({

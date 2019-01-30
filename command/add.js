@@ -1,12 +1,12 @@
 const fs = require('fs')
-const isModerator = require('../isModerator')
 
 const maxTermNum = 50
 const maxResNum = 20
+const energyCost = 10
 
-module.exports = ({ message, args, cache, serverId, userId }) => { // add keywords to list
+module.exports = ({ args, cache, message, moderator, serverId, userId }) => { // add keywords to list
   // check user energy
-  if (!isModerator(message.member.roles.array()) && cache[serverId].energies[userId].amount < 10) {
+  if (!moderator && cache[serverId].energies[userId].amount < energyCost) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -76,7 +76,10 @@ module.exports = ({ message, args, cache, serverId, userId }) => { // add keywor
   let newResponse = args.slice(2).join(' ')
   cache[serverId].responses[term][emptyPosition] = newResponse
   fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
-  cache[serverId].energies[userId].amount -= 10
+
+  if (!moderator) {
+    cache[serverId].energies[userId].amount -= energyCost
+  }
 
   message.channel.send({
     embed: {

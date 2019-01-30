@@ -1,4 +1,4 @@
-module.exports = ({ message, args, cache, serverId }) => {
+module.exports = ({ args, cache, message, serverId }) => {
   // check command format
   if (args.length > 1 && !cache[serverId].responses[args[1]]) {
     message.channel.send({

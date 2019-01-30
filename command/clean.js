@@ -1,4 +1,4 @@
-module.exports = ({ client, message, args }) => {
+module.exports = ({ args, client, message }) => {
   let limit = 20
 
   if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {

@@ -1,4 +1,4 @@
-module.exports = ({ message, args, cache, serverId }) => {
+module.exports = ({ args, cache, message, serverId }) => {
   let term = args[1]
 
   // check command format
