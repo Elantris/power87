@@ -1,13 +1,13 @@
 const fs = require('fs')
 const isModerator = require('../isModerator')
 
-module.exports = ({ message, args, cache, serverId }) => { // remove the response from the keyword
-  // check roles of user
-  if (!isModerator(message.member.roles.array())) {
+module.exports = ({ message, args, cache, serverId, userId }) => { // remove the response from the keyword
+  // check user energy
+  if (!isModerator(message.member.roles.array()) && cache[serverId].energies[userId].amount < 20) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **權限不足**'
+        description: ':no_entry_sign: **87 能量不足**'
       }
     })
     return
@@ -44,6 +44,7 @@ module.exports = ({ message, args, cache, serverId }) => { // remove the respons
     delete cache[serverId].responses[term] // delete the keyword whose response list is empty
   }
   fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
+  cache[serverId].energies[userId].amount -= 20
 
   message.channel.send({
     embed: {

@@ -3,7 +3,18 @@ const fs = require('fs')
 const maxTermNum = 50
 const maxResNum = 20
 
-module.exports = ({ message, args, cache, serverId }) => { // add keywords to list
+module.exports = ({ message, args, cache, serverId, userId }) => { // add keywords to list
+  // check user energy
+  if (cache[serverId].energies[userId].amount < 10) {
+    message.channel.send({
+      embed: {
+        color: 0xffa8a8,
+        description: ':no_entry_sign: **87 能量不足**'
+      }
+    })
+    return
+  }
+
   // check command format
   if (args.length < 3 || args[1].startsWith('_') || Number.isSafeInteger(parseInt(args[1]))) {
     message.channel.send({
@@ -64,6 +75,7 @@ module.exports = ({ message, args, cache, serverId }) => { // add keywords to li
   let newResponse = args.slice(2).join(' ')
   cache[serverId].responses[term][emptyPosition] = newResponse
   fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
+  cache[serverId].energies[userId].amount -= 10
 
   message.channel.send({
     embed: {
