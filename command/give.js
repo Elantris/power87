@@ -18,7 +18,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
-        description: ':no_entry_sign: **能量不足**'
+        description: ':no_entry_sign: **八七能量不足**'
       }
     })
     return

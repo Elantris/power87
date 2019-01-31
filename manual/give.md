@@ -6,7 +6,7 @@
 87!give user amount
 ```
 __user__ 標籤一名使用者
-__amount__ 一個大於 2 的整數數值
+__amount__ 大於 2 的整數數值
 
 範例：
 ```

@@ -5,7 +5,7 @@
 ```
 87!help [command]
 ```
-__command__ 查詢指令
+__command__ 指令字串
 
 範例：
 ```
