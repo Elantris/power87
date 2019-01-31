@@ -1,5 +1,5 @@
 const prizes = [100, 50, 30, 25, 20, 10, 5, 3, 1, 0]
-const level = [ 13, 26, 52, 104, 208, 416, 832, 1664, 3328, 10000 ]
+const level = [13, 26, 52, 104, 208, 416, 832, 1664, 3328, 10000]
 const items = {
   100: [':gem:'],
   50: [':whale:'],
@@ -22,12 +22,6 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   }
 
   if (nowTime - energies[userId].lastFish < cooldownTime) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **冷卻期間**'
-      }
-    })
     return
   }
   energies[userId].lastFish = nowTime
@@ -51,7 +45,6 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   }
 
   let luck = Math.random() * 10000
-  console.log(luck)
   let multiplier = 0
   for (let i in prizes) {
     if (luck < level[i]) {
