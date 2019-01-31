@@ -30,7 +30,7 @@ const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
           return
         }
 
-        members.forEach(member => {
+        members.filter(member => !(member.deaf || member.mute)).forEach(member => {
           let userId = member.id
           if (!energies[userId]) {
             inition({ energies, userId })
