@@ -1,7 +1,7 @@
 const energy = require('../energy')
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
-  if (args.length !== 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 5) {
+  if (args.length !== 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 2) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -11,7 +11,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     return
   }
 
-  let targetUser = message.mentions.users.array()[0]
+  let targetUser = message.mentions.users.array()[0].id
   let exchange = parseInt(args[2])
 
   if (energies[userId].amount < exchange) {
