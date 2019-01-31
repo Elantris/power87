@@ -1,13 +1,13 @@
 const moment = require('moment')
 
-module.exports = ({ cache, message, serverId, userId }) => {
+module.exports = ({ database, energies, message, serverId, userId }) => {
   let nowTime = moment().format('YYYYMMDDHH')
 
-  if (!cache[serverId].energies[userId].lastDaily) {
-    cache[serverId].energies[userId].lastDaily = ''
+  if (!energies[userId].lastDaily) {
+    energies[userId].lastDaily = ''
   }
 
-  if (cache[serverId].energies[userId].lastDaily === nowTime) {
+  if (energies[userId].lastDaily === nowTime) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -17,8 +17,10 @@ module.exports = ({ cache, message, serverId, userId }) => {
     return
   }
 
-  cache[serverId].energies[userId].amount += 10
-  cache[serverId].energies[userId].lastDaily = nowTime
+  energies[userId].amount += 10
+  energies[userId].lastDaily = nowTime
+
+  database.ref(`/energies/${serverId}`).update(energies)
 
   message.channel.send({
     embed: {

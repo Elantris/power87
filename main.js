@@ -1,19 +1,16 @@
 const fs = require('fs')
 const Discord = require('discord.js')
+const firebase = require('firebase')
+
 const config = require('./config')
 const client = new Discord.Client()
+firebase.initializeApp(config.FIREBASE)
+let database = firebase.database()
 
 const alias = require('./alias')
-const isModerator = require('./isModerator')
 const energy = require('./energy')
 
-// * get server list
-let serverExist = {}
-fs.readdirSync('./data/').forEach(v => {
-  serverExist[v.split('.json')[0]] = 1
-})
-
-// * init commands
+// * load commands
 let commands = {}
 fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEach(filename => {
   let cmd = filename.split('.js')[0]
@@ -21,7 +18,6 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 })
 
 // * main response
-let cache = {}
 client.on('message', message => {
   if (message.author.bot) {
     return
@@ -30,63 +26,40 @@ client.on('message', message => {
   let serverId = message.guild.id
   let userId = message.author.id
 
-  // restore data from save file
-  if (!cache[serverId]) {
-    if (serverExist[serverId]) {
-      cache[serverId] = require(`./data/${serverId}`)
+  firebase.database().ref(`/energies/${serverId}`).once('value').then(snapshot => {
+    // prevent default
+    let energies = snapshot.val() || { _keep: 1 }
+
+    if (!energies[userId]) {
+      // prevent default
+      energy.inition({ energies, userId })
+    }
+
+    if (!message.content.startsWith('87')) {
+      energy.gainFromMessage({ energies, userId })
+      firebase.database().ref(`/energies/${serverId}`).update(energies)
     } else {
-      cache[serverId] = {
-        last: 0,
-        responses: {},
-        energies: {}
+      // process command
+      let userCmd = ''
+      let args = message.content.replace(/  +/g, ' ').split(' ')
+
+      if (args[0] === '87') {
+        userCmd = 'res'
+      } else if (message.content[2] === '!') {
+        userCmd = args[0].substring(3).toLowerCase()
+        userCmd = alias[userCmd] || userCmd
+      }
+
+      if (commands[userCmd]) {
+        commands[userCmd]({ args, client, database, energies, message, serverId, userId })
       }
     }
-  }
-  cache[serverId].last = Date.now()
-
-  // energy system
-  if (!cache[serverId].energies[userId]) {
-    energy.inition({ cache, serverId, userId })
-  }
-
-  if (!message.content.startsWith('87')) {
-    energy.gainFromMessage({ cache, serverId, userId })
-    return
-  }
-
-  // process command
-  let cmd = ''
-  let args = message.content.replace(/  +/g, ' ').split(' ')
-  if (args[0] === '87') {
-    cmd = 'res'
-  } else if (message.content[2] === '!') {
-    cmd = args[0].substring(3).toLowerCase()
-    cmd = alias[cmd] || cmd
-  }
-
-  if (commands[cmd]) {
-    let moderator = isModerator(message.member.roles.array())
-    commands[cmd]({ args, cache, client, message, moderator, serverId, userId })
-  }
+  })
 })
 
 client.login(config.TOKEN)
 
 client.on('ready', () => {
   console.log('I am ready!')
-  energy.gainFromVoiceChannel({ client, cache, serverExist })
+  energy.gainFromVoiceChannel({ client, database })
 })
-
-// * release memories
-const interval = 60 * 1000 // 1 min
-setInterval(() => {
-  let nowTime = Date.now()
-  for (let serverId in cache) {
-    fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
-    serverExist[serverId] = 1
-
-    if (nowTime - cache[serverId].last > 60 * interval) { // 1 hr
-      delete cache[serverId]
-    }
-  }
-}, 10 * interval)

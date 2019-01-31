@@ -1,8 +1,8 @@
-const energyCost = 5
+const energyCost = 2
 
-module.exports = ({ cache, message, moderator, serverId, userId }) => {
+module.exports = ({ energies, message, serverId, userId }) => {
   // check user energy
-  if (!moderator && cache[serverId].energies[userId].amount < energyCost) {
+  if (energies[userId].amount < energyCost) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -11,17 +11,17 @@ module.exports = ({ cache, message, moderator, serverId, userId }) => {
     })
     return
   }
-
-  if (!moderator) {
-    cache[serverId].energies[userId].amount -= energyCost
-  }
+  energies[userId].amount -= energyCost
 
   let output = `:battery: 八七能量排行榜\n\n`
   let rank = []
-  for (let userId in cache[serverId].energies) {
+  for (let userId in energies) {
+    if (userId.startsWith('_')) {
+      continue
+    }
     rank.push({
       userId,
-      amount: cache[serverId].energies[userId].amount
+      amount: energies[userId].amount
     })
   }
   rank.sort((a, b) => b.amount - a.amount)

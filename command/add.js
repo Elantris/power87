@@ -1,12 +1,10 @@
-const fs = require('fs')
-
-const maxTermNum = 50
-const maxResNum = 20
+const maxTermNum = 100
+const maxResNum = 50
 const energyCost = 10
 
-module.exports = ({ args, cache, message, moderator, serverId, userId }) => { // add keywords to list
+module.exports = ({ args, database, energies, message, serverId, userId }) => { // add keywords to list
   // check user energy
-  if (!moderator && cache[serverId].energies[userId].amount < energyCost) {
+  if (energies[userId].amount < energyCost) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -40,51 +38,54 @@ module.exports = ({ args, cache, message, moderator, serverId, userId }) => { //
     return
   }
 
-  // init response list of term
-  if (!cache[serverId].responses[term]) {
-    let currentTermNum = Object.keys(cache[serverId].responses).length - 1
-    if (currentTermNum >= maxTermNum) {
+  database.ref(`/responses/${serverId}`).once('value').then(snapshot => {
+    let responses = snapshot.val() || { _keep: 1 }
+
+    if (!responses[term]) {
+      // check number of terms in server
+      let currentTermNum = Object.keys(responses).length - 1
+      if (currentTermNum >= maxTermNum) {
+        message.channel.send({
+          embed: {
+            color: 0xffa8a8,
+            description: ':no_entry_sign: **伺服器關鍵字過多**'
+          }
+        })
+        return
+      }
+      responses[term] = {}
+    }
+
+    // check length of response list
+    let emptyPosition = 1
+    for (emptyPosition; emptyPosition <= maxResNum; emptyPosition++) {
+      if (!responses[term][emptyPosition]) {
+        break
+      }
+    }
+    if (emptyPosition > maxResNum) {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
-          description: ':no_entry_sign: **伺服器關鍵字過多**'
+          description: ':no_entry_sign: **項目過多**'
         }
       })
       return
     }
-    cache[serverId].responses[term] = {}
-  }
 
-  // check length of response list
-  let emptyPosition = 1
-  for (emptyPosition; emptyPosition <= maxResNum; emptyPosition++) {
-    if (!cache[serverId].responses[term][emptyPosition]) {
-      break
-    }
-  }
-  if (emptyPosition > maxResNum) {
+    // add term and response
+    let newResponse = args.slice(2).join(' ')
+    responses[term][emptyPosition] = newResponse
+    energies[userId].amount -= energyCost
+
+    database.ref(`/responses/${serverId}`).update(responses)
+    database.ref(`/energies/${serverId}`).update(energies)
+
     message.channel.send({
       embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **項目過多**'
+        color: 0xffe066,
+        description: `:white_check_mark: 你說 **87 ${term} ${emptyPosition}** 我說 **${newResponse}**`
       }
     })
-    return
-  }
-
-  // add term and response
-  let newResponse = args.slice(2).join(' ')
-  cache[serverId].responses[term][emptyPosition] = newResponse
-  fs.writeFileSync(`./data/${serverId}.json`, JSON.stringify(cache[serverId]), { encoding: 'utf8' })
-
-  if (!moderator) {
-    cache[serverId].energies[userId].amount -= energyCost
-  }
-
-  message.channel.send({
-    embed: {
-      color: 0xffe066,
-      description: `:white_check_mark: 你說 **87 ${term} ${emptyPosition}** 我說 **${newResponse}**`
-    }
   })
 }

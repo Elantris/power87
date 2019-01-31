@@ -1,21 +1,39 @@
-module.exports = ({ args, cache, message, serverId }) => {
-  let term = args[1]
-
-  // check command format
-  if (args.length === 1 || !cache[serverId].responses[term]) {
+module.exports = ({ args, database, message, serverId }) => {
+  if (args.length === 1) {
     return
   }
 
-  let candidates = Object.keys(cache[serverId].responses[term])
-  let choice = candidates[Math.floor(Math.random() * candidates.length)] // random pick a response from list
+  let term = args[1]
 
-  if (args.length >= 3) {
-    let position = parseInt(args[2])
-    if (!Number.isSafeInteger(position) || !cache[serverId].responses[term][position]) {
+  database.ref(`/responses/${serverId}`).once('value').then(snapshot => {
+    let responses = snapshot.val()
+
+    // check command format
+    if (!responses[term]) {
       return
     }
-    choice = position // pick specific response
-  }
 
-  message.channel.send(cache[serverId].responses[term][choice])
+    let candidates = Object.keys(responses[term])
+    let choice
+
+    if (args.length >= 3) {
+      // pick specific response
+      let position = parseInt(args[2])
+      if (!Number.isSafeInteger(position) || !responses[term][position]) {
+        message.channel.send({
+          embed: {
+            color: 0xffa8a8,
+            description: `:no_entry_sign: **查詢錯誤**`
+          }
+        })
+        return
+      }
+      choice = position
+    } else {
+      // random pick a response from list
+      choice = candidates[Math.floor(Math.random() * candidates.length)]
+    }
+
+    message.channel.send(responses[term][choice])
+  })
 }
