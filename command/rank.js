@@ -1,31 +1,40 @@
-const energyCost = 2
+const cooldownTime = 60 * 60 * 1000 // 1hr
 
-module.exports = ({ energies, message, serverId, userId }) => {
-  // check user energy
-  if (energies[userId].amount < energyCost) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **八七能量不足**'
-      }
-    })
-    return
+module.exports = ({ database, energies, message, serverId, userId }) => {
+  if (!energies._rank) {
+    energies._rank = {
+      _last: 0
+    }
   }
-  energies[userId].amount -= energyCost
 
-  let output = `:battery: 八七能量排行榜\n\n`
-  let rank = []
-  for (let userId in energies) {
-    if (userId.startsWith('_')) {
+  let nowTime = Date.now()
+  if (nowTime - energies._rank._last > cooldownTime) {
+    energies._rank._last = nowTime
+    let tmpRank = []
+    for (let userId in energies) {
+      if (userId.startsWith('_')) {
+        continue
+      }
+      tmpRank.push({
+        userId,
+        amount: energies[userId].amount
+      })
+    }
+    tmpRank = tmpRank.sort((a, b) => b.amount - a.amount).slice(0, 5)
+    for (let i in tmpRank) {
+      energies._rank[Math.floor(i) + 1] = tmpRank[i]
+    }
+    database.ref(`/energies/${serverId}`).update(energies)
+  }
+
+  let output = `:battery: 八七能量排行榜\n`
+
+  for (let i in energies._rank) {
+    if (i.startsWith('_')) {
       continue
     }
-    rank.push({
-      userId,
-      amount: energies[userId].amount
-    })
+    output += `\n${i}. <@${energies._rank[i].userId}>: ${energies._rank[i].amount}`
   }
-  rank.sort((a, b) => b.amount - a.amount)
-  output += rank.slice(0, 5).map((user, index) => `${index + 1}. <@${user.userId}>: ${user.amount}`).join('\n')
 
   message.channel.send({
     embed: {
