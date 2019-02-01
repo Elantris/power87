@@ -1,4 +1,4 @@
-const cooldownTime = 60 * 60 * 1000 // 1hr
+const cooldownTime = 10 * 60 * 1000 // 10 min
 
 module.exports = ({ database, energies, message, serverId, userId }) => {
   if (!energies._rank) {
