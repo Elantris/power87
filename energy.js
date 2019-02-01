@@ -1,7 +1,7 @@
 const inition = ({ energies, userId }) => {
   energies[userId] = {
-    amount: 50,
-    lastMessage: 0
+    a: 50, // amount
+    lM: 0 // last Message
   }
 }
 
@@ -12,9 +12,9 @@ const cooldownTime = {
 
 const gainFromMessage = ({ energies, userId }) => {
   let nowTime = Date.now()
-  if (nowTime - energies[userId].lastMessage > cooldownTime.lastMessage) {
-    energies[userId].amount += 1
-    energies[userId].lastMessage = nowTime
+  if (nowTime - energies[userId].lM > cooldownTime.lastMessage) {
+    energies[userId].a += 1
+    energies[userId].lM = nowTime
   }
 }
 
@@ -35,7 +35,7 @@ const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
           if (!energies[userId]) {
             inition({ energies, userId })
           }
-          energies[userId].amount += 1
+          energies[userId].a += 1
         })
       })
 

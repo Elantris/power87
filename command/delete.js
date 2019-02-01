@@ -2,7 +2,7 @@ const energyCost = 20
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => { // remove the response from the keyword
   // check user energy
-  if (energies[userId].amount < energyCost) {
+  if (energies[userId].a < energyCost) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -41,7 +41,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
     }
 
     responses[term][position] = null
-    energies[userId].amount -= energyCost
+    energies[userId].a -= energyCost
 
     database.ref(`/responses/${serverId}`).update(responses)
     database.ref(`/energies/${serverId}`).update(energies)

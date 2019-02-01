@@ -14,7 +14,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   let targetUser = message.mentions.users.array()[0].id
   let exchange = parseInt(args[2])
 
-  if (energies[userId].amount < exchange) {
+  if (energies[userId].a < exchange) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -29,8 +29,8 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   if (!energies[targetUser]) {
     energy.inition({ energies, userId: targetUser })
   }
-  energies[targetUser].amount += gainEnergy
-  energies[userId].amount -= exchange
+  energies[targetUser].a += gainEnergy
+  energies[userId].a -= exchange
   database.ref(`/energies/${serverId}`).update(energies)
 
   message.channel.send({

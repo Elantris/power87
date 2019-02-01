@@ -1,30 +1,30 @@
 const prizes = [100, 50, 30, 25, 20, 10, 5, 3, 1, 0]
 const level = [13, 26, 52, 104, 208, 416, 832, 1664, 3328, 10000]
 const items = {
-  100: [':gem:'],
-  50: [':whale:'],
-  30: [':whale2:'],
-  25: [':shark:'],
-  20: [':dolphin:'],
-  10: [':turtle:'],
-  5: [':blowfish:'],
-  3: [':tropical_fish:'],
-  1: [':fish:'],
-  0: [':wrench:', ':gear:', ':paperclip:', ':paperclips:', ':shopping_cart:', ':unlock:', ':mans_shoe:', ':sandal:', ':closed_umbrella:', ':eyeglasses:']
+  100: ['gem'],
+  50: ['whale', 'whale2'],
+  30: ['shark'],
+  25: ['dolphin'],
+  20: ['penguin'],
+  10: ['turtle'],
+  5: ['blowfish'],
+  3: ['tropical_fish'],
+  1: ['fish'],
+  0: ['baby_bottle', 'closed_umbrella', 'eyeglasses', 'gear', 'mans_shoe', 'paperclip', 'paperclips', 'sandal', 'shopping_cart', 'spoon', 'unlock', 'wastebasket', 'wrench']
 }
 const cooldownTime = 10000
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   // check cooldown time
   let nowTime = Date.now()
-  if (!energies[userId].lastFish) {
-    energies[userId].lastFish = 0
+  if (!energies[userId].lF) {
+    energies[userId].lF = 0
   }
 
-  if (nowTime - energies[userId].lastFish < cooldownTime) {
+  if (nowTime - energies[userId].lF < cooldownTime) {
     return
   }
-  energies[userId].lastFish = nowTime
+  energies[userId].lF = nowTime
 
   let energyCost = 1
   if (args[1] && Number.isSafeInteger(parseInt(args[1]))) {
@@ -40,7 +40,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     }
   }
 
-  if (energies[userId].amount < energyCost) {
+  if (energies[userId].a < energyCost) {
     message.channel.send({
       embed: {
         color: 0xffa8a8,
@@ -58,7 +58,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
       break
     }
   }
-  energies[userId].amount += energyCost * (multiplier - 1)
+  energies[userId].a += energyCost * (multiplier - 1)
   database.ref(`/energies/${serverId}`).update(energies)
 
   let item = Math.floor(Math.random() * items[multiplier].length)
@@ -66,7 +66,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:fishing_pole_and_fish: ${message.member.displayName}釣到了 ${items[multiplier][item]}！總共獲得了 ${energyCost * multiplier} 點八七能量`
+      description: `:fishing_pole_and_fish: ${message.member.displayName} 釣到了 :${items[multiplier][item]}:！總共獲得了 ${energyCost * multiplier} 點八七能量`
     }
   })
 }

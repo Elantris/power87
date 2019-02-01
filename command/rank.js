@@ -17,10 +17,10 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
       }
       tmpRank.push({
         userId,
-        amount: energies[userId].amount
+        a: energies[userId].a
       })
     }
-    tmpRank = tmpRank.sort((a, b) => b.amount - a.amount).slice(0, 5)
+    tmpRank = tmpRank.sort((a, b) => b.a - a.a).slice(0, 5)
     for (let i in tmpRank) {
       energies._rank[Math.floor(i) + 1] = tmpRank[i]
     }
@@ -33,7 +33,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
     if (i.startsWith('_')) {
       continue
     }
-    output += `\n${i}. <@${energies._rank[i].userId}>: ${energies._rank[i].amount}`
+    output += `\n${i}. <@${energies._rank[i].userId}>: ${energies._rank[i].a}`
   }
 
   message.channel.send({
