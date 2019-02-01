@@ -1,7 +1,7 @@
 const moment = require('moment')
 
 module.exports = ({ database, energies, message, serverId, userId }) => {
-  let nowTime = moment().format('YYYYMMDDHH')
+  let nowTime = moment().format('YYYYMMDD')
 
   if (!energies[userId].lastDaily) {
     energies[userId].lastDaily = ''
