@@ -1,5 +1,5 @@
 **Power87** 查看能量
-替代指令：energy, e
+可用指令：energy, e
 
 語法：
 ```

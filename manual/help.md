@@ -1,5 +1,5 @@
 **Power87** 功能說明
-替代指令：help, h, manual
+可用指令：help, h, manual
 
 語法：
 ```

@@ -1,5 +1,5 @@
 **Power87** 刪除回應
-替代指令：delete, del, d
+可用指令：delete, del, d
 
 語法：
 ```

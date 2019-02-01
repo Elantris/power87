@@ -66,7 +66,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:fishing_pole_and_fish: **${message.member.displayName}** 釣到了 **${items[multiplier][item]}**！總共獲得了 ${energyCost * multiplier} 點八七能量`
+      description: `:fishing_pole_and_fish: ${message.member.displayName}釣到了 ${items[multiplier][item]}！總共獲得了 ${energyCost * multiplier} 點八七能量`
     }
   })
 }
