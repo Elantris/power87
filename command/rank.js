@@ -24,7 +24,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
     for (let i in tmpRank) {
       energies._rank[Math.floor(i) + 1] = tmpRank[i]
     }
-    database.ref(`/energies/${serverId}`).update(energies)
+    database.ref(`/energies/${serverId}/_rank`).update(energies._rank)
   }
 
   let output = `:battery: 八七能量排行榜\n`

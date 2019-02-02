@@ -1,5 +1,5 @@
 const prizes = [100, 50, 30, 25, 20, 10, 5, 3, 1, 0]
-const level = [13, 26, 52, 104, 208, 416, 832, 1664, 3328, 10000]
+const level = [ 1, 3, 8, 23, 70, 215, 666, 2064, 6397, 10000 ]
 const items = {
   100: ['gem'],
   50: ['whale', 'whale2'],
@@ -12,7 +12,7 @@ const items = {
   1: ['fish'],
   0: ['baby_bottle', 'closed_umbrella', 'eyeglasses', 'gear', 'mans_shoe', 'paperclip', 'paperclips', 'sandal', 'shopping_cart', 'spoon', 'unlock', 'wastebasket', 'wrench']
 }
-const cooldownTime = 10000
+const cooldownTime = 30000
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   // check cooldown time
@@ -29,7 +29,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   let energyCost = 1
   if (args[1] && Number.isSafeInteger(parseInt(args[1]))) {
     energyCost = parseInt(args[1])
-    if (energyCost < 1 || energyCost > 100) {
+    if (energyCost < 1 || energyCost > 10) {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
@@ -59,7 +59,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     }
   }
   energies[userId].a += energyCost * (multiplier - 1)
-  database.ref(`/energies/${serverId}`).update(energies)
+  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 
   let item = Math.floor(Math.random() * items[multiplier].length)
 

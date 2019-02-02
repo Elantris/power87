@@ -79,7 +79,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
     energies[userId].a -= energyCost
 
     database.ref(`/responses/${serverId}`).update(responses)
-    database.ref(`/energies/${serverId}`).update(energies)
+    database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 
     message.channel.send({
       embed: {

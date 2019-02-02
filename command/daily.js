@@ -20,7 +20,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
   energies[userId].a += 10
   energies[userId].lD = nowTime
 
-  database.ref(`/energies/${serverId}`).update(energies)
+  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 
   message.channel.send({
     embed: {

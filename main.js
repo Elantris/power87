@@ -29,6 +29,9 @@ client.on('message', message => {
   firebase.database().ref(`/energies/${serverId}`).once('value').then(snapshot => {
     // prevent default
     let energies = snapshot.val() || { _keep: 1 }
+    if (energies[userId]._ban === 1) {
+      return
+    }
 
     if (!energies[userId]) {
       // prevent default

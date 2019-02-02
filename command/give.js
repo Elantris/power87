@@ -11,7 +11,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     return
   }
 
-  let targetUser = message.mentions.users.array()[0].id
+  let targetId = message.mentions.users.array()[0].id
   let exchange = parseInt(args[2])
 
   if (energies[userId].a < exchange) {
@@ -26,17 +26,18 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
 
   let gainEnergy = Math.floor(exchange * 0.7)
 
-  if (!energies[targetUser]) {
-    energy.inition({ energies, userId: targetUser })
+  if (!energies[targetId]) {
+    energy.inition({ energies, userId: targetId })
   }
-  energies[targetUser].a += gainEnergy
   energies[userId].a -= exchange
-  database.ref(`/energies/${serverId}`).update(energies)
+  energies[targetId].a += gainEnergy
+  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
+  database.ref(`/energies/${serverId}/${targetId}`).update(energies[targetId])
 
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:money_mouth: <@${userId}> 消耗了 ${exchange} 點八七能量，<@${targetUser}> 獲得了 ${gainEnergy} 點八七能量`
+      description: `:money_mouth: <@${userId}> 消耗了 ${exchange} 點八七能量，<@${targetId}> 獲得了 ${gainEnergy} 點八七能量`
     }
   })
 }
