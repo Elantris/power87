@@ -44,7 +44,7 @@ client.on('message', message => {
     }
 
     // ban list
-    if (energies[userId]._ban && energies[userId]._ban > 9) {
+    if (energies[userId]._ban && energies[userId]._ban > 49) {
       banList[userId] = Date.now() + 24 * 60 * 60 * 1000
       energies[userId]._ban = null
       database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])

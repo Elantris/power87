@@ -1,5 +1,5 @@
-const prizes = [500, 300, 200, 100, 50, 30, 10, 5, 2, 0]
-const level = [ 1, 3, 6, 14, 35, 88, 226, 577, 1476, 10000 ]
+const prizes = [500, 300, 100, 50, 30, 10, 5, 3, 1, 0]
+const level = [2, 6, 16, 44, 128, 370, 1071, 3105, 9005, 10000]
 const items = {
   100: ['gem'],
   50: ['whale', 'whale2'],
@@ -32,10 +32,10 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   }
   energies[userId].lF = nowTime
 
-  let energyCost = 5
+  let energyCost = 2
   if (args[1] && Number.isSafeInteger(parseInt(args[1]))) {
     energyCost = parseInt(args[1])
-    if (energyCost < 5 || energyCost > 100) {
+    if (energyCost < 2 || energyCost > 10) {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
@@ -45,7 +45,6 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
       return
     }
   }
-
   if (energies[userId].a < energyCost) {
     message.channel.send({
       embed: {
@@ -64,7 +63,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
       break
     }
   }
-  energies[userId].a += energyCost * (multiplier - 1)
+  energies[userId].a += (energyCost - 1) * multiplier
   database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 
   let item = Math.floor(Math.random() * items[multiplier].length)
@@ -72,7 +71,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:fishing_pole_and_fish: ${message.member.displayName} 釣到了 :${items[multiplier][item]}:！總共獲得了 ${energyCost * multiplier} 點八七能量`
+      description: `:fishing_pole_and_fish: ${message.member.displayName} 消耗了 2 點能量釣到了 :${items[multiplier][item]}:！總共獲得了 ${energyCost * multiplier} 點八七能量`
     }
   })
 }
