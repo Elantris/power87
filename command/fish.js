@@ -1,5 +1,5 @@
-const prizes = [100, 50, 30, 25, 20, 10, 5, 3, 1, 0]
-const level = [ 1, 3, 8, 23, 70, 215, 666, 2064, 6397, 10000 ]
+const prizes = [500, 300, 200, 100, 50, 30, 10, 5, 2, 0]
+const level = [ 1, 3, 6, 14, 35, 88, 226, 577, 1476, 10000 ]
 const items = {
   100: ['gem'],
   50: ['whale', 'whale2'],
@@ -32,10 +32,10 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   }
   energies[userId].lF = nowTime
 
-  let energyCost = 1
+  let energyCost = 5
   if (args[1] && Number.isSafeInteger(parseInt(args[1]))) {
     energyCost = parseInt(args[1])
-    if (energyCost < 1 || energyCost > 10) {
+    if (energyCost < 5 || energyCost > 100) {
       message.channel.send({
         embed: {
           color: 0xffa8a8,
