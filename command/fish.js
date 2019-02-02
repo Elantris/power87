@@ -51,7 +51,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
       break
     }
   }
-  energies[userId].a += multiplier
+  energies[userId].a += multiplier - energyCost
   database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 
   let item = Math.floor(Math.random() * items[multiplier].length)
