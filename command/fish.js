@@ -33,18 +33,6 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   energies[userId].lF = nowTime
 
   let energyCost = 2
-  if (args[1] && Number.isSafeInteger(parseInt(args[1]))) {
-    energyCost = parseInt(args[1])
-    if (energyCost < 2 || energyCost > 10) {
-      message.channel.send({
-        embed: {
-          color: 0xffa8a8,
-          description: ':no_entry_sign: **超出範圍**'
-        }
-      })
-      return
-    }
-  }
   if (energies[userId].a < energyCost) {
     message.channel.send({
       embed: {
@@ -63,7 +51,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
       break
     }
   }
-  energies[userId].a += (energyCost - 1) * multiplier
+  energies[userId].a += multiplier
   database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 
   let item = Math.floor(Math.random() * items[multiplier].length)
@@ -71,7 +59,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:fishing_pole_and_fish: ${message.member.displayName} 釣到了 :${items[multiplier][item]}:！總共獲得了 ${energyCost * multiplier} 點八七能量`
+      description: `:fishing_pole_and_fish: ${message.member.displayName} 釣到了 :${items[multiplier][item]}:！獲得了 ${multiplier} 點八七能量`
     }
   })
 }
