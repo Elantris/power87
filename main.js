@@ -18,24 +18,37 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 })
 
 // * main response
+let banList = {}
 client.on('message', message => {
   if (message.author.bot) {
     return
   }
 
-  let serverId = message.guild.id
   let userId = message.author.id
+  let serverId = message.guild.id
+
+  if (banList[userId]) {
+    if (Date.now() > banList[userId]) {
+      delete banList[userId]
+    } else {
+      return
+    }
+  }
 
   firebase.database().ref(`/energies/${serverId}`).once('value').then(snapshot => {
     // prevent default
     let energies = snapshot.val() || { _keep: 1 }
-    if (energies[userId]._ban === 1) {
-      return
-    }
 
     if (!energies[userId]) {
-      // prevent default
       energy.inition({ energies, userId })
+    }
+
+    // ban list
+    if (energies[userId]._ban && energies[userId]._ban > 9) {
+      banList[userId] = Date.now() + 24 * 60 * 60 * 1000
+      energies[userId]._ban = null
+      database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
+      return
     }
 
     if (!message.content.startsWith('87')) {

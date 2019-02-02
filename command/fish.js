@@ -12,7 +12,7 @@ const items = {
   1: ['fish'],
   0: ['baby_bottle', 'closed_umbrella', 'eyeglasses', 'gear', 'mans_shoe', 'paperclip', 'paperclips', 'sandal', 'shopping_cart', 'spoon', 'unlock', 'wastebasket', 'wrench']
 }
-const cooldownTime = 30000
+const cooldownTime = 15000
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   // check cooldown time
@@ -22,6 +22,12 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   }
 
   if (nowTime - energies[userId].lF < cooldownTime) {
+    if (!energies[userId]._ban) {
+      energies[userId]._ban = 0
+    }
+    energies[userId]._ban++
+    energies[userId].lF = nowTime + cooldownTime
+    database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
     return
   }
   energies[userId].lF = nowTime
