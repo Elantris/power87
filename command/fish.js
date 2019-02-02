@@ -1,11 +1,11 @@
 const prizes = [500, 300, 100, 50, 30, 10, 5, 3, 1, 0]
 const level = [2, 6, 16, 44, 128, 370, 1071, 3105, 9005, 10000]
 const items = {
-  100: ['gem'],
-  50: ['whale', 'whale2'],
-  30: ['shark'],
-  25: ['dolphin'],
-  20: ['penguin'],
+  500: ['gem'],
+  300: ['whale', 'whale2'],
+  100: ['shark'],
+  50: ['dolphin'],
+  30: ['penguin'],
   10: ['turtle'],
   5: ['blowfish'],
   3: ['tropical_fish'],
