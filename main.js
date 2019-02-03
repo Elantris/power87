@@ -62,7 +62,7 @@ client.on('message', message => {
     }
 
     if (!message.content.startsWith('87')) {
-      energy.gainFromMessage({ energies, database, message, userId, serverId })
+      energy.gainFromMessage({ energies, database, message, serverId, userId })
     } else {
       // process command
       let userCmd = ''

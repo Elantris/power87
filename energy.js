@@ -16,7 +16,7 @@ const gainFromMessage = ({ energies, database, message, userId, serverId }) => {
     energies[userId].a += 1
     energies[userId].lM = cmdTime
   }
-  database.ref(`/energies/${serverId}`).update(energies)
+  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 }
 
 const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
