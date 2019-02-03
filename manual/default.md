@@ -12,7 +12,7 @@
 `87!energy`：查看八七能量點數
 `87!rank`：能量排行榜
 `87!fish`：釣魚
-`87!give`：贈與能量
+`87!give` __usertag__ __amount__：贈與能量
 
 `87!vote` __subject__ [duration]：發起公投
 `87!help` [command]：指令說明

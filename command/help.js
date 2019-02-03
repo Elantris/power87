@@ -1,5 +1,6 @@
 const fs = require('fs')
 const alias = require('../alias')
+const sendErrorMessage = require('../sendErrorMessage')
 const encoding = 'utf8'
 
 let manuals = {}
@@ -18,7 +19,7 @@ module.exports = ({ args, message }) => {
   cmd = alias[cmd] || cmd
 
   if (!manuals[cmd]) {
-    message.channel.send(':no_entry_sign: **無效指令**')
+    sendErrorMessage(message, 'ERROR_NOT_FOUND')
     return
   }
 

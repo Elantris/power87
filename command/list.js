@@ -1,15 +1,12 @@
+const sendErrorMessage = require('../sendErrorMessage')
+
 module.exports = ({ args, database, message, serverId }) => {
   database.ref(`/responses/${serverId}`).once('value').then(snapshot => {
     let responses = snapshot.val() || { _keep: 1 }
 
     // check command format
     if (args.length > 1 && !responses[args[1]]) {
-      message.channel.send({
-        embed: {
-          color: 0xffa8a8,
-          description: `:no_entry_sign: **查詢錯誤**`
-        }
-      })
+      sendErrorMessage(message, 'ERROR_NOT_FOUND')
       return
     }
 

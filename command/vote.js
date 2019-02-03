@@ -1,28 +1,20 @@
+const sendErrorMessage = require('../sendErrorMessage')
+
 module.exports = ({ args, message }) => {
   // check command foramt
   if (args.length < 2) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **格式錯誤**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_FORMAT')
     return
   }
 
   let duration = 60000 // 1 minute
-  let multiply = 1
+  let multiplier = 1
 
   // check custom duration number
   if (args[2] && Number.isSafeInteger(parseInt(args[2]))) {
-    multiply = parseInt(args[2])
-    if (multiply < 1 || multiply > 30) {
-      message.channel.send({
-        embed: {
-          color: 0xffa8a8,
-          description: ':no_entry_sign: **時間錯誤**'
-        }
-      })
+    multiplier = parseInt(args[2])
+    if (multiplier < 1 || multiplier > 30) {
+      sendErrorMessage(message, 'ERROR_TIME')
       return
     }
   }
@@ -37,7 +29,7 @@ module.exports = ({ args, message }) => {
 
   // result
   const filter = (reaction, user) => reaction.emoji.name === '✅' || reaction.emoji.name === '❌'
-  message.awaitReactions(filter, { time: duration * multiply })
+  message.awaitReactions(filter, { time: duration * multiplier })
     .then(collected => {
       let result = [0, 0]
       collected.array().forEach((v, i) => {
@@ -57,7 +49,7 @@ module.exports = ({ args, message }) => {
         embed: {
           color: 0xffe066,
           title: `:scroll: 「${args[1]}」`,
-          description: `\n<@${message.author.id}> 發起了 ${multiply} 分鐘的公投`,
+          description: `\n<@${message.author.id}> 發起了 ${multiplier} 分鐘的公投`,
           fields: [{
             name: '統計票數',
             value: `同意 ${result[0]} 票、不同意 ${result[1]} 票`

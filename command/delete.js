@@ -1,25 +1,17 @@
+const sendErrorMessage = require('../sendErrorMessage')
+
 const energyCost = 20
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => { // remove the response from the keyword
   // check user energy
   if (energies[userId].a < energyCost) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **八七能量不足**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_NO_ENERGY')
     return
   }
 
   // check command format
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **格式錯誤**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_FORMAT')
     return
   }
 
@@ -31,12 +23,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
 
     // check term and response exists
     if (!Number.isSafeInteger(position) || !responses[term] || !responses[term][position]) {
-      message.channel.send({
-        embed: {
-          color: 0xffa8a8,
-          description: `:no_entry_sign: **查詢錯誤**`
-        }
-      })
+      sendErrorMessage(message, 'ERROR_NOT_FOUND')
       return
     }
 
@@ -49,7 +36,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
     message.channel.send({
       embed: {
         color: 0xffe066,
-        description: `:fire: 移除了 **${term}** 的第 **${position}** 個項目`
+        description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目`
       }
     })
   })

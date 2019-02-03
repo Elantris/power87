@@ -1,3 +1,5 @@
+const sendErrorMessage = require('../sendErrorMessage')
+
 const prizes = [500, 300, 100, 50, 30, 10, 5, 3, 1, 0]
 const level = [2, 6, 16, 44, 128, 370, 1071, 3105, 9005, 10000]
 const items = {
@@ -16,11 +18,11 @@ const cooldownTime = 15000
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   // check cooldown time
-  let nowTime = Date.now()
+  let cmdTime = message.createdAt.getTime()
   if (!energies[userId].lF) {
     energies[userId].lF = 0 // last fish
   }
-  if (nowTime - energies[userId].lF < cooldownTime) {
+  if (cmdTime - energies[userId].lF < cooldownTime) {
     if (!energies[userId]._ban) {
       energies[userId]._ban = 0
     }
@@ -28,17 +30,12 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
     return
   }
-  energies[userId].lF = nowTime
+  energies[userId].lF = cmdTime
 
   // check energy
   let energyCost = 2
   if (energies[userId].a < energyCost) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **八七能量不足**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_NO_ENERGY')
     return
   }
 

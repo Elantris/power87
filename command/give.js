@@ -1,13 +1,9 @@
 const energy = require('../energy')
+const sendErrorMessage = require('../sendErrorMessage')
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   if (args.length !== 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 2) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **格式錯誤**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_FORMAT')
     return
   }
 
@@ -15,12 +11,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   let exchange = parseInt(args[2])
 
   if (energies[userId].a < exchange) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **八七能量不足**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_NO_ENERGY')
     return
   }
 

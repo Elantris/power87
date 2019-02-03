@@ -1,3 +1,5 @@
+const sendErrorMessage = require('../sendErrorMessage')
+
 module.exports = ({ args, database, message, serverId }) => {
   if (args.length === 1) {
     return
@@ -20,12 +22,7 @@ module.exports = ({ args, database, message, serverId }) => {
       // pick specific response
       let position = parseInt(args[2])
       if (!Number.isSafeInteger(position) || !responses[term][position]) {
-        message.channel.send({
-          embed: {
-            color: 0xffa8a8,
-            description: `:no_entry_sign: **查詢錯誤**`
-          }
-        })
+        sendErrorMessage(message, 'ERROR_NOT_FOUND')
         return
       }
       choice = position

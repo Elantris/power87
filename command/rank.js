@@ -7,9 +7,9 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
     }
   }
 
-  let nowTime = Date.now()
-  if (nowTime - energies._rank._last > cooldownTime) {
-    energies._rank._last = nowTime
+  let cmdTime = message.createdAt.getTime()
+  if (cmdTime - energies._rank._last > cooldownTime) {
+    energies._rank._last = cmdTime
     let tmpRank = []
     for (let userId in energies) {
       if (userId.startsWith('_')) {

@@ -1,4 +1,5 @@
 const moment = require('moment')
+const sendErrorMessage = require('../sendErrorMessage')
 
 module.exports = ({ database, energies, message, serverId, userId }) => {
   let nowTime = moment().format('YYYYMMDD')
@@ -8,12 +9,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
   }
 
   if (energies[userId].lD === nowTime) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: `:no_entry_sign: 冷卻期間`
-      }
-    })
+    sendErrorMessage(message, 'ERROR_ALREADY_DAILY')
     return
   }
 
@@ -25,7 +21,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:battery: ${message.member.displayName}獲得 10 點八七能量`
+      description: `:battery: ${message.member.displayName} 獲得 10 點八七能量`
     }
   })
 }

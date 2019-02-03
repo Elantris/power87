@@ -34,7 +34,7 @@ client.on('message', message => {
 
   // check ban list
   if (banlist[userId]) {
-    if (Date.now() > banlist[userId]) {
+    if (message.createdAt.getTime() > banlist[userId]) {
       let ban = {}
       ban[userId] = null
       database.ref(`/banlist/`).update(ban)
@@ -54,7 +54,7 @@ client.on('message', message => {
     // add user to ban list
     if (energies[userId]._ban && energies[userId]._ban > 19) {
       let ban = {}
-      ban[userId] = Date.now() + 24 * 60 * 60 * 1000
+      ban[userId] = message.createdAt.getTime() + 24 * 60 * 60 * 1000
       energies[userId]._ban = null
       database.ref('/banlist/').update(ban)
       database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
@@ -62,7 +62,7 @@ client.on('message', message => {
     }
 
     if (!message.content.startsWith('87')) {
-      energy.gainFromMessage({ energies, database, userId })
+      energy.gainFromMessage({ energies, database, message, userId, serverId })
     } else {
       // process command
       let userCmd = ''

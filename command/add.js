@@ -1,3 +1,5 @@
+const sendErrorMessage = require('../sendErrorMessage')
+
 const maxTermNum = 100
 const maxResNum = 50
 const energyCost = 10
@@ -5,23 +7,13 @@ const energyCost = 10
 module.exports = ({ args, database, energies, message, serverId, userId }) => { // add keywords to list
   // check user energy
   if (energies[userId].a < energyCost) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **八七能量不足**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_NO_ENERGY')
     return
   }
 
   // check command format
   if (args.length < 3 || args[1].startsWith('_') || Number.isSafeInteger(parseInt(args[1]))) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **格式錯誤**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_FORMAT')
     return
   }
 
@@ -29,12 +21,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
 
   // check term legnth
   if (term.length > 20) {
-    message.channel.send({
-      embed: {
-        color: 0xffa8a8,
-        description: ':no_entry_sign: **字數過多**'
-      }
-    })
+    sendErrorMessage(message, 'ERROR_LENGTH_EXCEED')
     return
   }
 
@@ -45,12 +32,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
       // check number of terms in server
       let currentTermNum = Object.keys(responses).length - 1
       if (currentTermNum >= maxTermNum) {
-        message.channel.send({
-          embed: {
-            color: 0xffa8a8,
-            description: ':no_entry_sign: **伺服器關鍵字過多**'
-          }
-        })
+        sendErrorMessage(message, 'ERROR_TERMS_EXCEED')
         return
       }
       responses[term] = {}
@@ -64,12 +46,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
       }
     }
     if (emptyPosition > maxResNum) {
-      message.channel.send({
-        embed: {
-          color: 0xffa8a8,
-          description: ':no_entry_sign: **項目過多**'
-        }
-      })
+      sendErrorMessage(message, 'ERROR_RES_EXCEED')
       return
     }
 
