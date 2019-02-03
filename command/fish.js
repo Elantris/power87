@@ -18,20 +18,19 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   // check cooldown time
   let nowTime = Date.now()
   if (!energies[userId].lF) {
-    energies[userId].lF = 0
+    energies[userId].lF = 0 // last fish
   }
-
   if (nowTime - energies[userId].lF < cooldownTime) {
     if (!energies[userId]._ban) {
       energies[userId]._ban = 0
     }
     energies[userId]._ban++
-    energies[userId].lF = nowTime + cooldownTime
     database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
     return
   }
   energies[userId].lF = nowTime
 
+  // check energy
   let energyCost = 2
   if (energies[userId].a < energyCost) {
     message.channel.send({
@@ -43,6 +42,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     return
   }
 
+  // main function
   let luck = Math.random() * 10000
   let multiplier = 0
   for (let i in prizes) {

@@ -10,12 +10,13 @@ const cooldownTime = {
   voiceChannel: 6 * 60 * 1000 // 6 min
 }
 
-const gainFromMessage = ({ energies, userId }) => {
+const gainFromMessage = ({ energies, database, userId, serverId }) => {
   let nowTime = Date.now()
   if (nowTime - energies[userId].lM > cooldownTime.lastMessage) {
     energies[userId].a += 1
     energies[userId].lM = nowTime
   }
+  database.ref(`/energies/${serverId}`).update(energies)
 }
 
 const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
