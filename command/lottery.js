@@ -95,7 +95,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     return
   }
 
-  if (energies[userId] < energyCost) {
+  if (energies[userId].a < energyCost) {
     sendErrorMessage(message, 'ERROR_NO_ENERGY')
     return
   }
