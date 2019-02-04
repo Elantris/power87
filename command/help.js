@@ -1,6 +1,6 @@
 const fs = require('fs')
-const alias = require('../alias')
-const sendErrorMessage = require('../sendErrorMessage')
+const alias = require('../util/alias')
+const sendErrorMessage = require('../util/sendErrorMessage')
 const encoding = 'utf8'
 
 let manuals = {}

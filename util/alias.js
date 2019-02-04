@@ -1,4 +1,4 @@
-const alias = {
+module.exports = {
   new: 'add',
   a: 'add',
   n: 'add',
@@ -19,5 +19,3 @@ const alias = {
 
   v: 'vote'
 }
-
-module.exports = alias

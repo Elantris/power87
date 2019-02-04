@@ -1,4 +1,4 @@
-const sendErrorMessage = require('../sendErrorMessage')
+const sendErrorMessage = require('../util/sendErrorMessage')
 
 const prizes = [500, 300, 100, 50, 30, 10, 5, 3, 1, 0]
 const level = [2, 6, 16, 44, 128, 370, 1071, 3105, 9005, 10000]
@@ -14,24 +14,8 @@ const items = {
   1: ['fish'],
   0: ['baby_bottle', 'closed_umbrella', 'eyeglasses', 'gear', 'mans_shoe', 'paperclip', 'paperclips', 'sandal', 'shopping_cart', 'spoon', 'unlock', 'wastebasket', 'wrench']
 }
-const cooldownTime = 15000
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
-  // check cooldown time
-  let cmdTime = message.createdAt.getTime()
-  if (!energies[userId].lF) {
-    energies[userId].lF = 0 // last fish
-  }
-  if (cmdTime - energies[userId].lF < cooldownTime) {
-    if (!energies[userId]._ban) {
-      energies[userId]._ban = 0
-    }
-    energies[userId]._ban++
-    database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
-    return
-  }
-  energies[userId].lF = cmdTime
-
   // check energy
   let energyCost = 2
   if (energies[userId].a < energyCost) {

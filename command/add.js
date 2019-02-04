@@ -1,4 +1,4 @@
-const sendErrorMessage = require('../sendErrorMessage')
+const sendErrorMessage = require('../util/sendErrorMessage')
 
 const maxTermNum = 100
 const maxResNum = 50

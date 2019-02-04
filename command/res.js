@@ -1,4 +1,4 @@
-const sendErrorMessage = require('../sendErrorMessage')
+const sendErrorMessage = require('../util/sendErrorMessage')
 
 module.exports = ({ args, database, message, serverId }) => {
   if (args.length === 1) {

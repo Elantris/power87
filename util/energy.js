@@ -1,22 +1,12 @@
 const inition = ({ energies, userId }) => {
   energies[userId] = {
-    a: 50, // amount
-    lM: 0 // last Message
+    a: 50 // amount
   }
 }
 
-const cooldownTime = {
+const intervalTime = {
   lastMessage: 2 * 60 * 1000, // 2 min
   voiceChannel: 6 * 60 * 1000 // 6 min
-}
-
-const gainFromMessage = ({ energies, database, message, userId, serverId }) => {
-  let cmdTime = message.createdAt.getTime()
-  if (cmdTime - energies[userId].lM > cooldownTime.lastMessage) {
-    energies[userId].a += 1
-    energies[userId].lM = cmdTime
-  }
-  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 }
 
 const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
@@ -43,10 +33,9 @@ const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
       database.ref(`/energies/${serverId}`).update(energies)
     })
   })
-}, cooldownTime.voiceChannel)
+}, intervalTime.voiceChannel)
 
 module.exports = {
   inition,
-  gainFromMessage,
   gainFromVoiceChannel
 }

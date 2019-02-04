@@ -1,5 +1,5 @@
-const energy = require('../energy')
-const sendErrorMessage = require('../sendErrorMessage')
+const energy = require('../util/energy')
+const sendErrorMessage = require('../util/sendErrorMessage')
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   if (args.length !== 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 2) {

@@ -13,8 +13,9 @@ database.ref('/banlist').on('value', snapshot => {
   banlist = snapshot.val()
 })
 
-const alias = require('./alias')
-const energy = require('./energy')
+const alias = require('./util/alias')
+const isCoolingDown = require('./util/isCoolingDown')
+const energy = require('./util/energy')
 
 // * load commands
 let commands = {}
@@ -43,43 +44,55 @@ client.on('message', message => {
     }
   }
 
-  database.ref(`/energies/${serverId}`).once('value').then(snapshot => {
-    // prevent default
-    let energies = snapshot.val() || { _keep: 1 }
+  if (!message.content.startsWith('87')) {
+    if (!isCoolingDown({ userCmd: 'gainFromMessage', message, serverId, userId })) {
+      // gain energies from text channel
+      database.ref(`/energies/${serverId}`).once('value').then(snapshot => {
+        let energies = snapshot.val() || { _keep: 1 }
 
-    if (!energies[userId]) {
-      energy.inition({ energies, userId })
+        if (!energies[userId]) {
+          energy.inition({ energies, userId })
+        }
+
+        energies[userId].a += 1
+        database.ref(`/energies/${serverId}`).update(energies)
+      })
+    }
+  } else {
+    // process command
+    let userCmd = ''
+    let args = message.content.replace(/  +/g, ' ').split(' ')
+
+    if (args[0] === '87') {
+      userCmd = 'res'
+    } else if (message.content[2] === '!') {
+      userCmd = args[0].substring(3).toLowerCase()
+      userCmd = alias[userCmd] || userCmd
     }
 
-    // add user to ban list
-    if (energies[userId]._ban && energies[userId]._ban > 19) {
-      let ban = {}
-      ban[userId] = message.createdAt.getTime() + 24 * 60 * 60 * 1000
-      energies[userId]._ban = null
-      database.ref('/banlist/').update(ban)
-      database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
-      return
-    }
+    if (commands[userCmd] && !isCoolingDown({ userCmd, message, serverId, userId })) {
+      database.ref(`/energies/${serverId}`).once('value').then(snapshot => {
+        // prevent default
+        let energies = snapshot.val() || { _keep: 1 }
 
-    if (!message.content.startsWith('87')) {
-      energy.gainFromMessage({ energies, database, message, serverId, userId })
-    } else {
-      // process command
-      let userCmd = ''
-      let args = message.content.replace(/  +/g, ' ').split(' ')
+        if (!energies[userId]) {
+          energy.inition({ energies, userId })
+        }
 
-      if (args[0] === '87') {
-        userCmd = 'res'
-      } else if (message.content[2] === '!') {
-        userCmd = args[0].substring(3).toLowerCase()
-        userCmd = alias[userCmd] || userCmd
-      }
+        // add user to ban list
+        if (energies[userId]._ban && energies[userId]._ban > 19) {
+          let ban = {}
+          ban[userId] = message.createdAt.getTime() + 24 * 60 * 60 * 1000
+          energies[userId]._ban = null
+          database.ref('/banlist/').update(ban)
+          database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
+          return
+        }
 
-      if (commands[userCmd]) {
         commands[userCmd]({ args, client, database, energies, message, serverId, userId })
-      }
+      })
     }
-  })
+  }
 })
 
 client.login(config.TOKEN)

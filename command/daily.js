@@ -1,5 +1,5 @@
 const moment = require('moment')
-const sendErrorMessage = require('../sendErrorMessage')
+const sendErrorMessage = require('../util//sendErrorMessage')
 
 module.exports = ({ database, energies, message, serverId, userId }) => {
   let nowTime = moment().format('YYYYMMDD')

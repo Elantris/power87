@@ -1,5 +1,5 @@
 const moment = require('moment')
-const sendErrorMessage = require('../sendErrorMessage')
+const sendErrorMessage = require('../util/sendErrorMessage')
 
 const numberRangeMax = 50
 const energyRangeMin = 10

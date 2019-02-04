@@ -1,4 +1,4 @@
-const sendErrorMessage = require('../sendErrorMessage')
+const sendErrorMessage = require('../util/sendErrorMessage')
 
 module.exports = ({ args, message }) => {
   // check command foramt

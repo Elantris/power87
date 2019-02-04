@@ -1,4 +1,4 @@
-const sendErrorMessage = require('../sendErrorMessage')
+const sendErrorMessage = require('../util/sendErrorMessage')
 
 module.exports = ({ args, database, message, serverId }) => {
   database.ref(`/responses/${serverId}`).once('value').then(snapshot => {
