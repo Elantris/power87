@@ -1,4 +1,4 @@
-const cooldownTime = 10 * 60 * 1000 // 10 min
+const updateInterval = 10 * 60 * 1000 // 10 min
 
 module.exports = ({ database, energies, message, serverId, userId }) => {
   if (!energies._rank) {
@@ -8,7 +8,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
   }
 
   let cmdTime = message.createdAt.getTime()
-  if (cmdTime - energies._rank._last > cooldownTime) {
+  if (cmdTime - energies._rank._last > updateInterval) {
     energies._rank._last = cmdTime
     let tmpRank = []
     for (let userId in energies) {
