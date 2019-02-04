@@ -23,11 +23,11 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
       }
     }
 
-    let output = `:moneybag: __彩券 ${energies._lottery._last}__ 開出了號碼「**${lotteryNumber}**」`
+    let output = `:moneybag: __彩券 ${energies._lottery._last}__ 開出的號碼是「**${lotteryNumber}**」\n\n`
     if (Object.keys(winners).length === 0) {
-      output += `，無人中獎，獎勵能量點數歸零`
+      output += `無人中獎，獎勵能量點數歸零`
     } else {
-      output += `，累計 **${energies._lottery._prize}** 點八七能量，恭喜得主：\n`
+      output += `累計 **${energies._lottery._prize}** 點八七能量，恭喜得主：\n`
 
       winners.sort((a, b) => b.energy - a.energy)
       winners.forEach((winner, index) => {
@@ -58,10 +58,31 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
 
   // check lottery today
   if (args.length === 1) {
-    let output = `:moneybag: __彩券 ${today}__ 目前累計 **${energies._lottery._prize}** 點八七能量`
-    if (energies._lottery[userId]) {
-      output += `\n\n:yen: ${message.member.displayName} 已對號碼 **${energies._lottery[userId].g}** 累計下注 **${energies._lottery[userId].e}** 點八七能量`
+    let output = `:moneybag: __彩券 ${today}__ 目前累計 **${energies._lottery._prize}** 點八七能量\n`
+
+    let tickets = []
+    for (let userId in energies._lottery) {
+      if (userId.startsWith('_')) {
+        continue
+      }
+      tickets.push({
+        u: userId, // user id
+        g: energies._lottery[userId].g, // guess number
+        e: energies._lottery[userId].e // energies
+      })
     }
+    tickets.sort((a, b) => b.g - a.g || b.e - a.e)
+
+    let result = {}
+    tickets.forEach((ticket, index) => {
+      result[ticket.g] = result[ticket.g] || []
+      result[ticket.g].push(ticket)
+    })
+
+    for (let g in result) {
+      output += `\n${g}: ` + result[g].map(user => `<@${user.u}> (${user.e})`).join('、')
+    }
+
     message.channel.send({
       embed: {
         color: 0xffe066,
