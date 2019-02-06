@@ -5,7 +5,6 @@ const inition = ({ energies, userId }) => {
 }
 
 const intervalTime = {
-  lastMessage: 2 * 60 * 1000, // 2 min
   voiceChannel: 6 * 60 * 1000 // 6 min
 }
 
@@ -15,13 +14,24 @@ const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
     database.ref(`/energies/${serverId}`).once('value').then(snapshot => {
       let energies = snapshot.val() || { _keep: 1 }
 
-      guild.channels.array().filter(channel => channel.type === 'voice').forEach(channel => {
+      guild.channels.array().forEach(channel => {
+        if (channel.type !== 'voice') {
+          return
+        }
+
         let members = channel.members.array()
         if (members.length === 0) {
           return
         }
 
-        members.filter(member => !(member.deaf || member.mute)).forEach(member => {
+        const isAFK = channel.name.startsWith('🔋')
+        const filter = member => (isAFK && member.deaf && member.mute) || (!isAFK && !member.deaf && !member.mute)
+
+        members.forEach(member => {
+          if (!filter) {
+            return
+          }
+
           let userId = member.id
           if (!energies[userId]) {
             inition({ energies, userId })

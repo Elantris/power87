@@ -10,12 +10,15 @@ module.exports = ({ message }) => {
       },
       author: {
         name: 'Elantris',
-        url: 'https://elantris.github.io',
+        url: 'https://github.com/Elantris',
         icon_url: 'https://elantris.github.io/profile.jpg'
       },
       fields: [{
-        name: ':credit_card: Donation',
-        value: 'Opay:'
+        name: ':orange_book: Dev Note',
+        value: 'This project is still in development.\nhttps://hackmd.io/s/VkLSj2pOJW'
+      }, {
+        name: ':credit_card: Donation Links',
+        value: '(NTD) Opay Donation\n<>\n(ETH) 0x Donate\nhttps://0xdonate.io/#/donate?addr=0x175021BACC450F44b895e2Cdcf384810351A4ECE'
       }]
     }
   })
