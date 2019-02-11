@@ -1,12 +1,12 @@
-**Power87** 新增關鍵字
+新增關鍵字
 可用指令：add, new, a, n
 
 語法：
 ```
 87!add term response
 ```
-__term__ 中間不含空格的字串
-__response__ 包含空格的其餘所有字
+`term` 中間不含空格的字串
+`response` 包含空格的其餘所有內容
 
 範例：
 ```
