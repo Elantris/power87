@@ -33,11 +33,5 @@ module.exports = ({ message, serverId }) => {
     }
   }
 
-  message.channel.send({
-    embed: {
-      color: 0xffe066,
-      title: 'Members of Roles',
-      description: output
-    }
-  })
+  message.channel.send(output)
 }
