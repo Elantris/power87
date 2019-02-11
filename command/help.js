@@ -11,7 +11,12 @@ fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach
 
 module.exports = ({ args, message }) => {
   if (args.length === 1) {
-    message.channel.send(manuals.default)
+    message.channel.send({
+      embed: {
+        color: 0xffe066,
+        description: manuals.default
+      }
+    })
     return
   }
 
