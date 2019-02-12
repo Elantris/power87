@@ -1,10 +1,11 @@
 const sendErrorMessage = require('../util/sendErrorMessage')
 
-const prizes = [100, 50, 30, 20, 10, 5, 3, 2.4, 1.1, 0.4]
+const prizes = [100, 50, 30, 20, 10, 5.12, 3.24, 2.56, 1.21, 0.08]
 const poolEnergyCost = {
   0: 1,
   1: 10,
-  2: 100
+  2: 100,
+  3: 1000
 }
 const items = {
   0: ['gem'],
@@ -19,9 +20,10 @@ const items = {
   9: ['baby_bottle', 'closed_umbrella', 'eyeglasses', 'gear', 'mans_shoe', 'paperclip', 'paperclips', 'sandal', 'shopping_cart', 'spoon', 'unlock', 'wastebasket', 'wrench']
 }
 const chances = {
-  0: [5, 14, 35, 71, 143, 572, 1144, 2288, 4290, 10000],
-  1: [4, 11, 27, 55, 110, 440, 880, 1760, 3300, 10000],
-  2: [4, 10, 25, 50, 100, 400, 800, 1600, 3000, 10000]
+  0: [6, 15, 37, 75, 150, 600, 1200, 2400, 4500, 10000],
+  1: [5, 13, 32, 65, 130, 520, 1040, 2080, 3900, 10000],
+  2: [4, 11, 27, 55, 110, 440, 880, 1760, 3300, 10000],
+  3: [4, 10, 26, 52, 105, 420, 840, 1680, 3150, 10000]
 }
 
 module.exports = ({ args, database, energies, message, serverId, userId }) => {

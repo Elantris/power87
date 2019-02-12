@@ -4,7 +4,7 @@
   "description": "A discord bot filled with 87 power.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "update": "git pull; pm2 stop power87; pm2 reset power87; pm2 start power87"
   },
   "repository": {
     "type": "git",
