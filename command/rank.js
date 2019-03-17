@@ -7,7 +7,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
     }
   }
 
-  let cmdTime = message.createdAt.getTime()
+  let cmdTime = message.createdTimestamp
   if (cmdTime - energies._rank._last > updateInterval) {
     energies._rank._last = cmdTime
     let tmpRank = []

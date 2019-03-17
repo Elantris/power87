@@ -31,7 +31,7 @@ const isCoolingDown = ({ userCmd, message, serverId, userId }) => {
   commandLast[userId][userCmd] = commandLast[userId][userCmd] || 0
 
   // calculate cooldown time
-  let messageTime = message.createdAt.getTime()
+  let messageTime = message.createdTimestamp
   let cooldownTime = commandCooldown[userCmd] || 5000
   if (messageTime - commandLast[userId][userCmd] < cooldownTime) {
     return true

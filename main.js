@@ -8,6 +8,7 @@ firebase.initializeApp(config.FIREBASE)
 let database = firebase.database()
 
 // * banlist inition
+let logs = {}
 let banlist = {}
 database.ref('/banlist').on('value', snapshot => {
   banlist = snapshot.val()
@@ -55,7 +56,7 @@ client.on('message', message => {
       database.ref(`/energies/${serverId}`).update(energies)
     })
   } else {
-    // process command
+    // parse command
     let userCmd = ''
     let args = message.content.replace(/  +/g, ' ').split(' ')
 
@@ -66,10 +67,29 @@ client.on('message', message => {
       userCmd = alias[userCmd] || userCmd
     }
 
+    // repeat detection
+    logs[userId] = logs[userId] || {}
+    logs[userId][userCmd] = logs[userId][userCmd] || []
+    logs[userId][userCmd].push({
+      t: message.createdTimestamp,
+      c: message.content
+    })
+
+    if (logs[userId][userCmd].length === 40) {
+      logs[userId][userCmd] = logs[userId][userCmd].filter(log => log.t > message.createdTimestamp - 10 * 60 * 1000)
+      if (logs[userId][userCmd].length === 40) {
+        database.ref(`/banlist/${userId}`).set(1)
+        fs.writeFileSync(`./banlist/${userId}.txt`, logs[userId][userCmd].map(log => `${log.t}: ${log.c}`).join('\n'), { encoding: 'utf8' })
+        delete logs[userId]
+        return
+      }
+    }
+
     if (!commands[userCmd] || isCoolingDown({ userCmd, message, serverId, userId })) {
       return
     }
 
+    // call command
     database.ref(`/energies/${serverId}`).once('value').then(snapshot => {
       // prevent default
       let energies = snapshot.val() || { _keep: 1 }
