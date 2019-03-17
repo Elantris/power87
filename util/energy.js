@@ -1,3 +1,11 @@
+const firebase = require('firebase')
+
+let database = firebase.database()
+let banlist = {}
+database.ref('/banlist').on('value', snapshot => {
+  banlist = snapshot.val()
+})
+
 const inition = ({ energies, userId }) => {
   energies[userId] = {
     a: 50 // amount
@@ -28,7 +36,7 @@ const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
         const filter = member => (isAFK && member.deaf && member.mute) || (!isAFK && !member.deaf && !member.mute)
 
         members.forEach(member => {
-          if (!filter) {
+          if (!filter || banlist[member.id]) {
             return
           }
 

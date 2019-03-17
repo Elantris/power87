@@ -35,7 +35,7 @@ client.on('message', message => {
   // check banlist
   let userId = message.author.id
   if (banlist[userId]) {
-    if (banlist[userId] > message.createdTimestamp) {
+    if (banlist[userId] < message.createdTimestamp) {
       database.ref(`/banlist/${userId}`).set(null)
     } else {
       return
