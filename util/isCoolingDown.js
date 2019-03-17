@@ -1,19 +1,19 @@
 const commandCooldown = {
-  add: 3,
-  delete: 3,
+  add: 2,
+  delete: 2,
   list: 10,
 
   energy: 10,
   rank: 30,
   daily: 30,
-  give: 3,
+  give: 2,
   fish: 15,
   lottery: 10,
 
-  help: 3,
+  help: 2,
   clean: 10,
   vote: 30,
-  repo: 3,
+  repo: 10,
 
   res: 1,
   gainFromMessage: 120

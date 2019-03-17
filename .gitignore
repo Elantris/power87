@@ -62,3 +62,4 @@ typings/
 
 tmp
 config.js
+banlist/*.txt

@@ -14,11 +14,14 @@ module.exports = ({ message }) => {
         icon_url: 'https://elantris.github.io/profile.jpg'
       },
       fields: [{
-        name: ':orange_book: Dev Note',
+        name: ':bookmark_tabs: Dev Note',
         value: 'This project is still in development.\nhttps://hackmd.io/s/VkLSj2pOJW'
       }, {
+        name: ':loudspeaker: Report or Suggest',
+        value: 'https://docs.google.com/forms/d/e/1FAIpQLSfFihvHKnQ4Ax3DbqogQ6c0MPJeaoIfFkOTnlOSu24pcM1J1A/viewform?usp=sf_link'
+      }, {
         name: ':credit_card: Donation Links',
-        value: '(NTD) Opay Donation\n<>\n(ETH) 0x Donate\nhttps://0xdonate.io/#/donate?addr=0x175021BACC450F44b895e2Cdcf384810351A4ECE'
+        value: '(NTD) Opay Donation\n\n(ETH) 0x Donate\nhttps://0xdonate.io/#/donate?addr=0x175021BACC450F44b895e2Cdcf384810351A4ECE'
       }]
     }
   })

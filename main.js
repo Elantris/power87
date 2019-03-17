@@ -27,16 +27,19 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 
 // * main response
 client.on('message', message => {
-  if (message.author.bot) {
+  let serverId = message.guild.id
+  if (message.author.bot || banlist[serverId]) {
     return
   }
 
+  // check banlist
   let userId = message.author.id
-  let serverId = message.guild.id
-
-  // check ban list
-  if (banlist[userId] || banlist[serverId]) {
-    return
+  if (banlist[userId]) {
+    if (banlist[userId] > message.createdTimestamp) {
+      database.ref(`/banlist/${userId}`).set(null)
+    } else {
+      return
+    }
   }
 
   if (!message.content.startsWith('87')) {
@@ -68,18 +71,18 @@ client.on('message', message => {
     }
 
     // repeat detection
-    logs[userId] = logs[userId] || {}
-    logs[userId][userCmd] = logs[userId][userCmd] || []
-    logs[userId][userCmd].push({
+    logs[userId] = logs[userId] || []
+    // logs[userId][userCmd] = logs[userId][userCmd] || []
+    logs[userId].push({
       t: message.createdTimestamp,
       c: message.content
     })
 
-    if (logs[userId][userCmd].length === 40) {
-      logs[userId][userCmd] = logs[userId][userCmd].filter(log => log.t > message.createdTimestamp - 10 * 60 * 1000)
-      if (logs[userId][userCmd].length === 40) {
-        database.ref(`/banlist/${userId}`).set(1)
-        fs.writeFileSync(`./banlist/${userId}.txt`, logs[userId][userCmd].map(log => `${log.t}: ${log.c}`).join('\n'), { encoding: 'utf8' })
+    if (logs[userId].length === 75) {
+      logs[userId] = logs[userId].filter(log => log.t > message.createdTimestamp - 10 * 60 * 1000) // 10 min
+      if (logs[userId].length === 75) {
+        database.ref(`/banlist/${userId}`).set(message.createdTimestamp + 6 * 60 * 60 * 1000) // 6 hr
+        fs.writeFileSync(`./banlist/${userId}.txt`, logs[userId].map(log => `${log.t}: ${log.c}`).join('\n'), { encoding: 'utf8' })
         delete logs[userId]
         return
       }
