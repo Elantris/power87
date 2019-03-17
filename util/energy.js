@@ -36,7 +36,7 @@ const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
         const filter = member => (isAFK && member.deaf && member.mute) || (!isAFK && !member.deaf && !member.mute)
 
         members.forEach(member => {
-          if (!filter || banlist[member.id]) {
+          if (banlist[member.id] || !filter(member)) {
             return
           }
 
