@@ -19,7 +19,7 @@
   "homepage": "https://github.com/Elantris/power87#readme",
   "dependencies": {
     "discord.js": "^11.4.2",
-    "firebase": "^5.8.2",
+    "firebase": "^5.9.0",
     "moment": "^2.24.0"
   }
 }

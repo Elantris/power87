@@ -34,14 +34,8 @@ client.on('message', message => {
   let serverId = message.guild.id
 
   // check ban list
-  if (banlist[userId]) {
-    if (banlist[userId] > message.createdAt.getTime()) {
-      return
-    }
-
-    let ban = {}
-    ban[userId] = null
-    database.ref(`/banlist/`).update(ban)
+  if (banlist[userId] || banlist[serverId]) {
+    return
   }
 
   if (!message.content.startsWith('87')) {
@@ -84,16 +78,6 @@ client.on('message', message => {
         energy.inition({ energies, userId })
       }
 
-      // add user to ban list
-      if (energies[userId]._ban && energies[userId]._ban > 19) {
-        let ban = {}
-        ban[userId] = message.createdAt.getTime() + 24 * 60 * 60 * 1000
-        energies[userId]._ban = null
-        database.ref('/banlist/').update(ban)
-        database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
-        return
-      }
-
       commands[userCmd]({ args, client, database, energies, message, serverId, userId })
     })
   }
@@ -102,6 +86,6 @@ client.on('message', message => {
 client.login(config.TOKEN)
 
 client.on('ready', () => {
-  console.log('I am ready!')
+  console.log(`Logged in as ${client.user.tag}!`)
   energy.gainFromVoiceChannel({ client, database })
 })

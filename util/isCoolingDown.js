@@ -1,19 +1,19 @@
 const commandCooldown = {
-  add: 1,
-  delete: 1,
-  list: 5,
+  add: 3,
+  delete: 3,
+  list: 10,
 
-  energy: 5,
-  rank: 5,
-  daily: 5,
-  give: 1,
+  energy: 10,
+  rank: 30,
+  daily: 30,
+  give: 3,
   fish: 15,
-  lottery: 1,
+  lottery: 10,
 
-  help: 1,
+  help: 3,
   clean: 10,
-  vote: 5,
-  repo: 1,
+  vote: 30,
+  repo: 3,
 
   res: 1,
   gainFromMessage: 120
@@ -32,7 +32,7 @@ const isCoolingDown = ({ userCmd, message, serverId, userId }) => {
 
   // calculate cooldown time
   let messageTime = message.createdAt.getTime()
-  let cooldownTime = commandCooldown[userCmd] || 1000
+  let cooldownTime = commandCooldown[userCmd] || 5000
   if (messageTime - commandLast[userId][userCmd] < cooldownTime) {
     return true
   }
