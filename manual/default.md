@@ -13,7 +13,7 @@
 `87!rank`：能量排行榜
 `87!daily`：每日簽到
 `87!give` __usertag__ __amount__：贈與能量
-`87!fish` [spot]：釣魚
+`87!slot` [energy] [message]：拉霸幾
 `87!lottery` [number] [energy]：樂透彩券
 
 其他：

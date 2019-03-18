@@ -17,7 +17,7 @@ module.exports = ({ message }) => {
         name: ':bookmark_tabs: Dev Note',
         value: 'This project is still in development.\nhttps://hackmd.io/s/VkLSj2pOJW'
       }, {
-        name: ':loudspeaker: Report or Suggest',
+        name: ':loudspeaker: Report and Suggest',
         value: 'https://docs.google.com/forms/d/e/1FAIpQLSfFihvHKnQ4Ax3DbqogQ6c0MPJeaoIfFkOTnlOSu24pcM1J1A/viewform?usp=sf_link'
       }, {
         name: ':credit_card: Donation Links',

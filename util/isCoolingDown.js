@@ -6,16 +6,17 @@ const commandCooldown = {
   energy: 10,
   rank: 30,
   daily: 30,
-  give: 2,
+  give: 5,
   fish: 15,
   lottery: 10,
+  slot: 15,
 
   help: 2,
   clean: 10,
   vote: 30,
-  repo: 10,
+  repo: 30,
 
-  res: 1,
+  res: 2,
   gainFromMessage: 120
 }
 
