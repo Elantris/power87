@@ -3,7 +3,7 @@ const commandCooldown = {
   delete: 2,
   list: 10,
 
-  energy: 10,
+  energy: 5,
   rank: 30,
   daily: 30,
   give: 5,
@@ -11,7 +11,7 @@ const commandCooldown = {
   lottery: 10,
   slot: 15,
 
-  help: 2,
+  help: 5,
   clean: 10,
   vote: 30,
   repo: 30,

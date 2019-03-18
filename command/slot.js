@@ -60,15 +60,11 @@ const items = [{
 
 const totalWeight = 240
 
-// 87!slot
-// 87!slot 12
-// 87!slot RRRR
-// 87!slot __amount__ [others]
-
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   let energyCost = 1
   let announcement = []
 
+  // parse parameters
   if (args.length > 1) {
     announcement = args.slice(1)
     if (Number.isSafeInteger(parseInt(args[1]))) {
@@ -86,6 +82,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
     return
   }
 
+  // main function
   let result = []
   for (let i = 0; i < 3; i++) {
     let luck = Math.random() * totalWeight
