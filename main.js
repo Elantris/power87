@@ -22,8 +22,17 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 
 // * main response
 let logs = {}
+let allowlist = {}
+let banlist = {}
+database.ref('/allowlist').on('value', snapshot => {
+  allowlist = snapshot.val()
+})
+database.ref('/banlist').on('value', snapshot => {
+  banlist = snapshot.val()
+})
+
 client.on('message', message => {
-  if (message.author.bot || isBanned(message.guild.id) || isBanned(message.author.id)) {
+  if (message.author.bot || isBanned(allowlist, banlist, message.guild.id) || isBanned(allowlist, banlist, message.author.id)) {
     return
   }
 

@@ -20,7 +20,16 @@ const gainFromTextChannel = ({ database, guildId, userId }) => {
 }
 
 const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
-  client.guilds.filter(guild => !isBanned(guild.id)).tap(guild => {
+  let allowlist = {}
+  let banlist = {}
+  database.ref('/allowlist').on('value', snapshot => {
+    allowlist = snapshot.val()
+  })
+  database.ref('/banlist').on('value', snapshot => {
+    banlist = snapshot.val()
+  })
+
+  client.guilds.filter(guild => !isBanned(allowlist, banlist, guild.id)).tap(guild => {
     let guildId = guild.id
 
     database.ref(`/energies/${guildId}`).once('value').then(snapshot => {
@@ -30,7 +39,7 @@ const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
         const isAFK = channel.name.startsWith('🔋')
         const isQualified = member => (isAFK && member.deaf && member.mute) || (!isAFK && !member.deaf && !member.mute)
 
-        channel.members.filter(member => !isBanned(member.id)).filter(isQualified).tap(member => {
+        channel.members.filter(member => !isBanned(allowlist, banlist, member.id)).filter(isQualified).tap(member => {
           let userId = member.id
           if (!energies[userId]) {
             inition({ energies, userId })
