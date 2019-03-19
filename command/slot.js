@@ -63,6 +63,7 @@ const totalWeight = 240
 module.exports = ({ args, database, energies, message, serverId, userId }) => {
   let energyCost = 1
   let announcement = []
+  let announcementDisplay = ''
 
   // parse parameters
   if (args.length > 1) {
@@ -75,6 +76,14 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
       announcement = args.slice(2)
     } else {
       announcement = args.slice(1)
+    }
+
+    if (announcement.length) {
+      announcementDisplay = `說完「**${announcement.join(' ')}**」之後`
+      if (announcementDisplay.length > 50) {
+        sendErrorMessage(message, 'ERROR_LENGTH_EXCEED')
+        return
+      }
     }
   }
 
@@ -112,11 +121,6 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
 
   // response
-  let announcementMessage = ''
-  if (announcement.length) {
-    announcementMessage = `說完「**${announcement.join(' ')}**」之後`
-  }
-
   let resultDescription = ''
   if (multiplier === 0) {
     resultDisplay += `| : : : : **LOST** : : : : |`
@@ -135,7 +139,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:tickets: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${announcementMessage}投注了 ${energyCost} 點八七能量，${resultDescription}`
+      description: `:tickets: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${announcementDisplay}投注了 ${energyCost} 點八七能量，${resultDescription}`
     }
   })
 }
