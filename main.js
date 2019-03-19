@@ -32,7 +32,7 @@ database.ref('/banlist').on('value', snapshot => {
 })
 
 client.on('message', message => {
-  if (message.author.bot || isBanned(allowlist, banlist, message.guild.id) || isBanned(allowlist, banlist, message.author.id)) {
+  if (message.author.bot || isBanned.guild(allowlist, banlist, message.guild.id) || isBanned.user(banlist, message.author.id)) {
     return
   }
 
