@@ -6,7 +6,7 @@
 87!give usertag amount
 ```
 `usertag` @標記一名使用者
-`amount` 大於 2 的整數數值
+`amount` 正整數
 
 範例：
 ```
