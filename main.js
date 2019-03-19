@@ -1,22 +1,17 @@
 const fs = require('fs')
-const Discord = require('discord.js')
-const firebase = require('firebase')
-
 const config = require('./config')
-const client = new Discord.Client()
-firebase.initializeApp(config.FIREBASE)
-let database = firebase.database()
 
-// * banlist inition
-let logs = {}
-let banlist = {}
-database.ref('/banlist').on('value', snapshot => {
-  banlist = snapshot.val()
-})
+const Discord = require('discord.js')
+const client = new Discord.Client()
+
+const firebase = require('firebase')
+firebase.initializeApp(config.FIREBASE)
+const database = firebase.database()
 
 const alias = require('./util/alias')
-const isCoolingDown = require('./util/isCoolingDown')
 const energy = require('./util/energy')
+const isBanned = require('./util/isBanned')
+const isCoolingDown = require('./util/isCoolingDown')
 
 // * load commands
 let commands = {}
@@ -26,38 +21,20 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 })
 
 // * main response
+let logs = {}
 client.on('message', message => {
-  let serverId = message.guild.id
-  if (message.author.bot || banlist[serverId]) {
+  if (message.author.bot || isBanned(message.guild.id) || isBanned(message.author.id)) {
     return
   }
 
-  // check banlist
+  let guildId = message.guild.id
   let userId = message.author.id
-  if (banlist[userId]) {
-    if (banlist[userId] < message.createdTimestamp) {
-      database.ref(`/banlist/${userId}`).set(null)
-    } else {
-      return
-    }
-  }
 
   if (!message.content.startsWith('87')) {
-    // gain energies from text channel
-    if (isCoolingDown({ userCmd: 'gainFromMessage', message, serverId, userId })) {
+    if (isCoolingDown({ userCmd: 'gainFromMessage', message, guildId, userId })) {
       return
     }
-
-    database.ref(`/energies/${serverId}`).once('value').then(snapshot => {
-      let energies = snapshot.val() || { _keep: 1 }
-
-      if (!energies[userId]) {
-        energy.inition({ energies, userId })
-      }
-
-      energies[userId].a += 1
-      database.ref(`/energies/${serverId}`).update(energies)
-    })
+    energy.gainFromTextChannel({ database, guildId, userId })
   } else {
     // parse command
     let userCmd = ''
@@ -77,30 +54,27 @@ client.on('message', message => {
       c: message.content
     })
 
-    if (logs[userId].length === 60) {
+    if (logs[userId].length === 50) {
       logs[userId] = logs[userId].filter(log => log.t > message.createdTimestamp - 10 * 60 * 1000) // 10 min
-      if (logs[userId].length === 60) {
-        database.ref(`/banlist/${userId}`).set(message.createdTimestamp + 6 * 60 * 60 * 1000) // 6 hr
+      if (logs[userId].length === 50) {
+        database.ref(`/banlist/${userId}`).set(1)
         fs.writeFileSync(`./banlist/${userId}.txt`, logs[userId].map(log => `${log.t}: ${log.c}`).join('\n'), { encoding: 'utf8' })
         delete logs[userId]
         return
       }
     }
 
-    if (!commands[userCmd] || isCoolingDown({ userCmd, message, serverId, userId })) {
+    if (!commands[userCmd] || isCoolingDown({ userCmd, message, guildId, userId })) {
       return
     }
 
     // call command
-    database.ref(`/energies/${serverId}`).once('value').then(snapshot => {
-      // prevent default
+    database.ref(`/energies/${guildId}`).once('value').then(snapshot => {
       let energies = snapshot.val() || { _keep: 1 }
-
       if (!energies[userId]) {
         energy.inition({ energies, userId })
       }
-
-      commands[userCmd]({ args, client, database, energies, message, serverId, userId })
+      commands[userCmd]({ args, client, database, energies, message, guildId, userId })
     })
   }
 })

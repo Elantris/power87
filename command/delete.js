@@ -2,7 +2,7 @@ const sendErrorMessage = require('../util/sendErrorMessage')
 
 const energyCost = 20
 
-module.exports = ({ args, database, energies, message, serverId, userId }) => { // remove the response from the keyword
+module.exports = ({ args, database, energies, message, guildId, userId }) => { // remove the response from the keyword
   // check user energy
   if (energies[userId].a < energyCost) {
     sendErrorMessage(message, 'ERROR_NO_ENERGY')
@@ -18,7 +18,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
   let term = args[1]
   let position = parseInt(args[2])
 
-  database.ref(`/responses/${serverId}`).once('value').then(snapshot => {
+  database.ref(`/responses/${guildId}`).once('value').then(snapshot => {
     let responses = snapshot.val()
 
     // check term and response exists
@@ -30,8 +30,8 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
     responses[term][position] = null
     energies[userId].a -= energyCost
 
-    database.ref(`/responses/${serverId}`).update(responses)
-    database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
+    database.ref(`/responses/${guildId}`).update(responses)
+    database.ref(`/energies/${guildId}/${userId}`).update(energies[userId])
 
     message.channel.send({
       embed: {

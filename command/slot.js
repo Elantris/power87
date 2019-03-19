@@ -54,13 +54,17 @@ const items = [{
   weight: 5
 }, {
   prize: 0,
-  symbol: ':pill:',
+  symbol: ':paperclip:',
+  weight: 5
+}, {
+  prize: 0,
+  symbol: ':wastebasket:',
   weight: 5
 }]
 
-const totalWeight = 240
+const totalWeight = 245
 
-module.exports = ({ args, database, energies, message, serverId, userId }) => {
+module.exports = ({ args, database, energies, message, guildId, userId }) => {
   let energyCost = 1
   let announcement = []
   let announcementDisplay = ''
@@ -118,7 +122,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
 
   let energyGain = energyCost * multiplier
   energies[userId].a += energyGain - energyCost
-  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
+  database.ref(`/energies/${guildId}/${userId}`).update(energies[userId])
 
   // response
   let resultDescription = ''

@@ -1,7 +1,7 @@
 const sendErrorMessage = require('../util/sendErrorMessage')
 
-module.exports = ({ args, database, message, serverId }) => {
-  database.ref(`/responses/${serverId}`).once('value').then(snapshot => {
+module.exports = ({ args, database, message, guildId }) => {
+  database.ref(`/responses/${guildId}`).once('value').then(snapshot => {
     let responses = snapshot.val() || { _keep: 1 }
 
     // check command format

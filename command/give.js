@@ -1,7 +1,7 @@
 const energy = require('../util/energy')
 const sendErrorMessage = require('../util/sendErrorMessage')
 
-module.exports = ({ args, database, energies, message, serverId, userId }) => {
+module.exports = ({ args, database, energies, message, guildId, userId }) => {
   if (args.length !== 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 2) {
     sendErrorMessage(message, 'ERROR_FORMAT')
     return
@@ -22,8 +22,8 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   }
   energies[userId].a -= exchange
   energies[targetId].a += gainEnergy
-  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
-  database.ref(`/energies/${serverId}/${targetId}`).update(energies[targetId])
+  database.ref(`/energies/${guildId}/${userId}`).update(energies[userId])
+  database.ref(`/energies/${guildId}/${targetId}`).update(energies[targetId])
 
   message.channel.send({
     embed: {

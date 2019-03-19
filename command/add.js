@@ -4,7 +4,7 @@ const maxTermNum = 100
 const maxResNum = 50
 const energyCost = 10
 
-module.exports = ({ args, database, energies, message, serverId, userId }) => { // add keywords to list
+module.exports = ({ args, database, energies, message, guildId, userId }) => { // add keywords to list
   // check user energy
   if (energies[userId].a < energyCost) {
     sendErrorMessage(message, 'ERROR_NO_ENERGY')
@@ -25,7 +25,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
     return
   }
 
-  database.ref(`/responses/${serverId}`).once('value').then(snapshot => {
+  database.ref(`/responses/${guildId}`).once('value').then(snapshot => {
     let responses = snapshot.val() || { _keep: 1 }
 
     if (!responses[term]) {
@@ -55,8 +55,8 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => { 
     responses[term][emptyPosition] = newResponse
     energies[userId].a -= energyCost
 
-    database.ref(`/responses/${serverId}`).update(responses)
-    database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
+    database.ref(`/responses/${guildId}`).update(responses)
+    database.ref(`/energies/${guildId}/${userId}`).update(energies[userId])
 
     message.channel.send({
       embed: {

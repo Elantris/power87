@@ -1,6 +1,6 @@
 const updateInterval = 10 * 60 * 1000 // 10 min
 
-module.exports = ({ database, energies, message, serverId, userId }) => {
+module.exports = ({ database, energies, message, guildId, userId }) => {
   if (!energies._rank) {
     energies._rank = {
       _last: 0
@@ -24,7 +24,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
     for (let i in tmpRank) {
       energies._rank[Math.floor(i) + 1] = tmpRank[i]
     }
-    database.ref(`/energies/${serverId}/_rank`).update(energies._rank)
+    database.ref(`/energies/${guildId}/_rank`).update(energies._rank)
   }
 
   let output = `:battery: 八七能量排行榜\n`

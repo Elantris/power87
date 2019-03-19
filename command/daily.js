@@ -1,7 +1,7 @@
 const moment = require('moment')
 const sendErrorMessage = require('../util//sendErrorMessage')
 
-module.exports = ({ database, energies, message, serverId, userId }) => {
+module.exports = ({ database, energies, message, guildId, userId }) => {
   let nowTime = moment().format('YYYYMMDD')
 
   if (!energies[userId].lD) {
@@ -16,7 +16,7 @@ module.exports = ({ database, energies, message, serverId, userId }) => {
   energies[userId].a += 10
   energies[userId].lD = nowTime
 
-  database.ref(`/energies/${serverId}/${userId}`).update(energies[userId])
+  database.ref(`/energies/${guildId}/${userId}`).update(energies[userId])
 
   message.channel.send({
     embed: {
