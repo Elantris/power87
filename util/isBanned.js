@@ -11,7 +11,7 @@ const guild = (allowlist, banlist, guildId) => {
 }
 
 const user = (banlist, snowflake) => {
-  if (banlist[snowflake] && banlist[snowflake] < Date.now()) {
+  if (banlist[snowflake] && banlist[snowflake] > Date.now()) {
     return true
   }
 
