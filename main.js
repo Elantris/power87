@@ -66,7 +66,7 @@ client.on('message', message => {
     if (logs[userId].length === 50) {
       logs[userId] = logs[userId].filter(log => log.t > message.createdTimestamp - 10 * 60 * 1000) // 10 min
       if (logs[userId].length === 50) {
-        database.ref(`/banlist/${userId}`).set(1)
+        database.ref(`/banlist/${userId}`).set(message.createdTimestamp + 6 * 60 * 60 * 1000) // 6 hr
         fs.writeFileSync(`./banlist/${userId}.txt`, logs[userId].map(log => `${log.t}: ${log.c}`).join('\n'), { encoding: 'utf8' })
         delete logs[userId]
         return

@@ -83,11 +83,12 @@ module.exports = ({ args, database, energies, message, guildId, userId }) => {
     }
 
     if (announcement.length) {
-      announcementDisplay = `說完「**${announcement.join(' ')}**」之後`
-      if (announcementDisplay.length > 50) {
+      let tmp = announcement.join(' ')
+      if (tmp.length > 50) {
         sendErrorMessage(message, 'ERROR_LENGTH_EXCEED')
         return
       }
+      announcementDisplay = `說完「**${tmp}**」之後`
     }
   }
 
