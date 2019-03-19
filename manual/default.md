@@ -14,10 +14,8 @@
 `87!daily`：每日簽到
 `87!give` __usertag__ __amount__：贈與能量
 `87!slot` [energy] [message]：拉霸幾
-`87!lottery` [number] [energy]：樂透彩券
 
 其他：
 `87!help` [command]：指令說明
 `87!clean` [amount]：清除機器人訊息、預設 20 則
-`87!vote` __subject__ [duration]：發起公投
 `87!repo`：查看 GitHub 專案

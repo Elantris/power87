@@ -20,9 +20,9 @@
 獎勵列表：
 
 :gem: : :gem: : :gem: 100x
-:seven: : :seven: : :seven: 50x
-:trophy: : :trophy: : :trophy: 30x
-:moneybag: : :moneybag: : :moneybag: 25x
+:seven: : :seven: : :seven: 77x
+:trophy: : :trophy: : :trophy: 50x
+:moneybag: : :moneybag: : :moneybag: 30x
 :gift: : :gift: : :gift: 20x
 :ribbon: : :ribbon: : :ribbon: 15x
 :balloon: : :balloon: : :balloon: 10x
@@ -31,9 +31,9 @@
 :dollar: : :dollar: : :dollar: 1x
 
 :gem: : :gem: 50x
-:seven: : :seven: 25x
-:trophy: : :trophy: 15x
-:moneybag: : :moneybag: 12x
+:seven: : :seven: 38x
+:trophy: : :trophy: 25x
+:moneybag: : :moneybag: 15x
 :gift: : :gift: 10x
 :ribbon: : :ribbon: 7x
 :balloon: : :balloon: 5x

@@ -72,15 +72,14 @@ client.on('message', message => {
 
     // repeat detection
     logs[userId] = logs[userId] || []
-    // logs[userId][userCmd] = logs[userId][userCmd] || []
     logs[userId].push({
       t: message.createdTimestamp,
       c: message.content
     })
 
-    if (logs[userId].length === 75) {
+    if (logs[userId].length === 60) {
       logs[userId] = logs[userId].filter(log => log.t > message.createdTimestamp - 10 * 60 * 1000) // 10 min
-      if (logs[userId].length === 75) {
+      if (logs[userId].length === 60) {
         database.ref(`/banlist/${userId}`).set(message.createdTimestamp + 6 * 60 * 60 * 1000) // 6 hr
         fs.writeFileSync(`./banlist/${userId}.txt`, logs[userId].map(log => `${log.t}: ${log.c}`).join('\n'), { encoding: 'utf8' })
         delete logs[userId]

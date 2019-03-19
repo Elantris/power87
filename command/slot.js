@@ -66,14 +66,15 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
 
   // parse parameters
   if (args.length > 1) {
-    announcement = args.slice(1)
     if (Number.isSafeInteger(parseInt(args[1]))) {
       energyCost = parseInt(args[1])
       if (energyCost < 1 || energyCost > 500) {
-        energyCost = 1
-      } else {
-        announcement = args.slice(2)
+        sendErrorMessage(message, 'ERROR_ENERGY_EXCEED')
+        return
       }
+      announcement = args.slice(2)
+    } else {
+      announcement = args.slice(1)
     }
   }
 
@@ -134,7 +135,7 @@ module.exports = ({ args, database, energies, message, serverId, userId }) => {
   message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:tickets: 這是一台充滿八七能量的拉霸機\n\n${resultDisplay}\n\n${message.member.displayName} ${announcementMessage}投注了 ${energyCost} 點八七能量，${resultDescription}`
+      description: `:tickets: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${announcementMessage}投注了 ${energyCost} 點八七能量，${resultDescription}`
     }
   })
 }

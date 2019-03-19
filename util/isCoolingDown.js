@@ -26,20 +26,19 @@ for (let i in commandCooldown) {
 
 let commandLast = {}
 
-const isCoolingDown = ({ userCmd, message, serverId, userId }) => {
+const isCoolingDown = ({ userCmd, message, userId }) => {
   // undefined detection
   commandLast[userId] = commandLast[userId] || {}
   commandLast[userId][userCmd] = commandLast[userId][userCmd] || 0
 
   // calculate cooldown time
-  let messageTime = message.createdTimestamp
   let cooldownTime = commandCooldown[userCmd] || 5000
-  if (messageTime - commandLast[userId][userCmd] < cooldownTime) {
+  if (message.createdTimestamp - commandLast[userId][userCmd] < cooldownTime) {
     return true
   }
 
   // update last command timestamp
-  commandLast[userId][userCmd] = messageTime
+  commandLast[userId][userCmd] = message.createdTimestamp
   return false
 }
 
