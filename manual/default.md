@@ -10,9 +10,9 @@
 
 能量：
 `87!energy`：查看八七能量點數
-`87!rank`：能量排行榜
 `87!daily`：每日簽到
 `87!give` __usertag__ __amount__：贈與能量
+`87!rank`：能量排行榜
 `87!slot` [energy] [message]：拉霸幾
 
 其他：

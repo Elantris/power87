@@ -1,60 +1,35 @@
-const isBanned = require('./isBanned')
-
-const inition = ({ energies, userId }) => {
-  energies[userId] = {
-    a: 50 // amount
-  }
-}
+const INITIAL_USER_ENERGY = 50
 
 const gainFromTextChannel = ({ database, guildId, userId }) => {
-  database.ref(`/energies/${guildId}`).once('value').then(snapshot => {
-    let energies = snapshot.val() || { _keep: 1 }
-
-    if (!energies[userId]) {
-      inition({ energies, userId })
-    }
-
-    energies[userId].a += 1
-    database.ref(`/energies/${guildId}`).update(energies)
+  database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
+    database.ref(`/energy/${guildId}/${userId}`).set((snapshot.val() || INITIAL_USER_ENERGY) + 1)
   })
 }
 
-const gainFromVoiceChannel = ({ client, database }) => setInterval(() => {
-  let allowlist = {}
-  let banlist = {}
-  database.ref('/allowlist').on('value', snapshot => {
-    allowlist = snapshot.val()
-  })
-  database.ref('/banlist').on('value', snapshot => {
-    banlist = snapshot.val()
-  })
-
-  client.guilds.filter(guild => !isBanned.guild(allowlist, banlist, guild.id)).tap(guild => {
+const gainFromVoiceChannel = ({ client, banlist, database }) => {
+  client.guilds.filter(guild => !banlist[guild.id]).tap(guild => {
     let guildId = guild.id
 
-    database.ref(`/energies/${guildId}`).once('value').then(snapshot => {
-      let energies = snapshot.val() || { _keep: 1 }
+    database.ref(`/energy/${guildId}`).once('value').then(snapshot => {
+      let guildEnergy = snapshot.val() || { _keep: 1 }
+      let updates = {}
 
       guild.channels.filter(channel => channel.type === 'voice').tap(channel => {
         const isAFK = channel.name.startsWith('🔋')
         const isQualified = member => (isAFK && member.deaf && member.mute) || (!isAFK && !member.deaf && !member.mute)
 
-        channel.members.filter(member => !isBanned.user(banlist, member.id)).filter(isQualified).tap(member => {
+        channel.members.filter(member => !banlist[member.id] && isQualified(member)).tap(member => {
           let userId = member.id
-          if (!energies[userId]) {
-            inition({ energies, userId })
-          }
-          energies[userId].a += 1
+          updates[userId] = (guildEnergy[userId] || INITIAL_USER_ENERGY) + 1
         })
       })
-
-      database.ref(`/energies/${guildId}`).update(energies)
+      database.ref(`/energy/${guildId}`).update(updates)
     })
   })
-}, 6 * 60 * 1000) // 6 min
+}
 
 module.exports = {
-  inition,
+  INITIAL_USER_ENERGY,
   gainFromTextChannel,
   gainFromVoiceChannel
 }

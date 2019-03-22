@@ -1,41 +1,46 @@
 const sendErrorMessage = require('../util/sendErrorMessage')
 
 module.exports = ({ args, database, message, guildId }) => {
-  database.ref(`/responses/${guildId}`).once('value').then(snapshot => {
-    let responses = snapshot.val() || { _keep: 1 }
+  let output = ':bookmark_tabs: '
 
-    // check command format
-    if (args.length > 1 && !responses[args[1]]) {
-      sendErrorMessage(message, 'ERROR_NOT_FOUND')
-      return
-    }
+  if (args.length === 1) {
+    database.ref(`/note/${guildId}`).once('value').then(snapshot => {
+      let notes = snapshot.val()
 
-    let output = ':bookmark_tabs: '
+      output += '所有關鍵字\n'
 
-    if (args.length === 1) {
-      // list all keywords from server
-      output += `所有關鍵字 [${Object.keys(responses).length - 1}/100]\n`
-      for (let i in responses) {
-        if (i.startsWith('_')) {
-          continue
+      for (let term in notes) {
+        output += `\n${term} (${Object.keys(notes[term]).length})`
+      }
+
+      message.channel.send({
+        embed: {
+          color: 0xffe066,
+          description: output
         }
-        output += `\n${i} (${Object.keys(responses[i]).length})`
-      }
-    } else {
-      // list all responses of the keyword
-      let target = responses[args[1]]
-      output += `**${args[1]}** 的回應列表 [${Object.keys(target).length}/50]\n`
-      for (let i in target) {
-        output += `\n${i}. ${target[i]}`
-      }
-    }
-    output += '\n'
-
-    message.channel.send({
-      embed: {
-        color: 0xffe066,
-        description: output
-      }
+      })
     })
-  })
+  } else {
+    let term = args[1]
+    database.ref(`/note/${guildId}/${term}`).once('value').then(snapshot => {
+      let responses = snapshot.val()
+      if (!responses) {
+        sendErrorMessage(message, 'ERROR_NOT_FOUND')
+        return
+      }
+
+      output += `**${term}** 的回應列表 [${Object.keys(responses).length}/50]\n`
+
+      for (let index in responses) {
+        output += `\n${index}. ${responses[index]}`
+      }
+
+      message.channel.send({
+        embed: {
+          color: 0xffe066,
+          description: output
+        }
+      })
+    })
+  }
 }

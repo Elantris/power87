@@ -6,31 +6,22 @@ module.exports = ({ args, database, message, guildId }) => {
   }
 
   let term = args[1]
+  let choice = args[2]
 
-  database.ref(`/responses/${guildId}`).once('value').then(snapshot => {
+  database.ref(`/note/${guildId}/${term}`).once('value').then(snapshot => {
     let responses = snapshot.val()
-
-    // check command format
-    if (!responses[term]) {
+    if (!responses) {
       return
     }
 
-    let candidates = Object.keys(responses[term])
-    let choice
-
-    if (args.length >= 3) {
-      // pick specific response
-      let position = parseInt(args[2])
-      if (!Number.isSafeInteger(position) || !responses[term][position]) {
-        sendErrorMessage(message, 'ERROR_NOT_FOUND')
-        return
-      }
-      choice = position
-    } else {
-      // random pick a response from list
-      choice = candidates[Math.floor(Math.random() * candidates.length)]
+    if (args.length === 2) {
+      let candidates = Object.keys(responses)
+      choice = candidates[~~(Math.random() * candidates.length)]
+    } else if (!responses[choice]) {
+      sendErrorMessage(message, 'ERROR_NOT_FOUND')
+      return
     }
 
-    message.channel.send(responses[term][choice])
+    message.channel.send(responses[choice])
   })
 }
