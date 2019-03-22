@@ -4,11 +4,9 @@ const commandCooldown = {
   list: 10,
 
   energy: 5,
-  rank: 30,
   daily: 30,
   give: 5,
-  fish: 15,
-  lottery: 10,
+  rank: 30,
   slot: 15,
 
   help: 5,
