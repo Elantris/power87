@@ -44,26 +44,26 @@ const items = [{
 }, {
   prize: 0,
   symbol: ':wrench:',
-  weight: 5
+  weight: 1
 }, {
   prize: 0,
   symbol: ':gear:',
-  weight: 5
+  weight: 1
 }, {
   prize: 0,
   symbol: ':bomb:',
-  weight: 5
+  weight: 1
 }, {
   prize: 0,
   symbol: ':paperclip:',
-  weight: 5
+  weight: 1
 }, {
   prize: 0,
   symbol: ':wastebasket:',
-  weight: 5
+  weight: 1
 }]
 
-const totalWeight = 245
+const totalWeight = 225
 
 module.exports = ({ args, database, message, guildId, userId }) => {
   let energyCost = 1

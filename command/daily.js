@@ -9,7 +9,7 @@ module.exports = ({ database, message, guildId, userId }) => {
   database.ref(`/lastUsed/daily/${guildId}/${userId}`).once('value').then(snapshot => {
     let daily = snapshot.val()
     if (!snapshot.exists()) {
-      daily = ',0'
+      daily = ',1'
     }
     let dailyData = daily.split(',')
 
@@ -21,7 +21,7 @@ module.exports = ({ database, message, guildId, userId }) => {
     if (dailyData[0] === yesterdayDisplay) {
       dailyData[1] = parseInt(dailyData[1]) + 1
     } else {
-      dailyData[1] = 0
+      dailyData[1] = 1
     }
 
     dailyData[0] = todayDisplay
@@ -35,7 +35,7 @@ module.exports = ({ database, message, guildId, userId }) => {
       userEnergy += 20
 
       let bonusMessage = ''
-      if (dailyData[1] > 0) {
+      if (dailyData[1] > 1) {
         bonusMessage = `連續簽到達 ${dailyData[1]} 天`
         if (dailyData[1] % 30 === 0) {
           userEnergy += 500
