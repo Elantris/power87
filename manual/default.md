@@ -18,4 +18,4 @@
 其他：
 `87!help` [command]：指令說明
 `87!clean` [amount]：清除機器人訊息、預設 20 則
-`87!repo`：查看 GitHub 專案
+`87!about`：Power87 專案介紹、公告、更新資訊、意見調查

@@ -11,8 +11,7 @@ const commandCooldown = {
 
   help: 5,
   clean: 10,
-  vote: 30,
-  repo: 30,
+  about: 30,
 
   res: 2,
   gainFromMessage: 120
