@@ -29,7 +29,7 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
 }
 
 const inventory = require('./inventory')
-const totalWeight = 2100
+const totalWeight = 1000
 
 const autoFishing = ({ client, database, fishing }) => {
   for (let guildId in fishing) {
