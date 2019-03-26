@@ -46,10 +46,6 @@ client.on('message', message => {
     return
   }
 
-  if (fishing[guildId] && fishing[guildId][userId] && !message.content.startsWith('87!fish')) {
-    return
-  }
-
   handleMessage({ client, database, message })
 })
 
