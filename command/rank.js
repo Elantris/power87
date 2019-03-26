@@ -42,6 +42,7 @@ module.exports = ({ database, message, guildId, userId }) => {
         tmpRank = tmpRank.sort((a, b) => b.amount - a.amount).slice(0, 5)
         rank = tmpRank.map(data => `${data.userId}:${data.amount}`)
         rank.unshift(message.createdTimestamp)
+
         database.ref(`/lastUsed/rank/${guildId}`).set(rank)
 
         response({ message, rank })

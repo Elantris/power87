@@ -130,7 +130,9 @@ module.exports = ({ args, database, message, guildId, userId }) => {
 
     let energyGain = energyCost * multiplier
     userEnergy += energyGain - energyCost
+
     database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+
     // response
     let resultDescription = ''
     if (multiplier === 0) {

@@ -29,8 +29,8 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         sendErrorMessage(message, 'ERROR_NO_ENERGY')
         return
       }
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
 
+      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
       database.ref(`/note/${guildId}/${term}/${position}`).remove()
 
       message.channel.send({

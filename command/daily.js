@@ -7,11 +7,11 @@ module.exports = ({ database, message, guildId, userId }) => {
   let yesterdayDisplay = moment().subtract(1, 'd').format('YYYYMMDD')
 
   database.ref(`/lastUsed/daily/${guildId}/${userId}`).once('value').then(snapshot => {
-    let daily = snapshot.val()
+    let dailyRaw = snapshot.val()
     if (!snapshot.exists()) {
-      daily = ',1'
+      dailyRaw = ',1'
     }
-    let dailyData = daily.split(',')
+    let dailyData = dailyRaw.split(',')
 
     if (dailyData[0] === todayDisplay) {
       sendErrorMessage(message, 'ERROR_ALREADY_DAILY')
@@ -23,8 +23,8 @@ module.exports = ({ database, message, guildId, userId }) => {
     } else {
       dailyData[1] = 1
     }
-
     dailyData[0] = todayDisplay
+
     database.ref(`/lastUsed/daily/${guildId}/${userId}`).set(dailyData.join(','))
 
     database.ref(`energy/${guildId}/${userId}`).once('value').then(snapshot => {

@@ -22,8 +22,8 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     let notes = snapshot.val() || {}
     let updates = {}
 
-    let emptyPosition = 1
-    for (; emptyPosition <= maxResNum; emptyPosition++) {
+    let emptyPosition
+    for (emptyPosition = 1; emptyPosition <= maxResNum; emptyPosition++) {
       if (!notes[emptyPosition]) {
         break
       }
@@ -43,10 +43,11 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         sendErrorMessage(message, 'ERROR_NO_ENERGY')
         return
       }
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
 
       let newResponse = args.slice(2).join(' ')
       updates[emptyPosition] = newResponse
+
+      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
       database.ref(`/note/${guildId}/${term}`).update(updates)
 
       message.channel.send({
