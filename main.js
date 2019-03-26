@@ -46,7 +46,7 @@ client.on('message', message => {
     return
   }
 
-  handleMessage({ client, database, message })
+  handleMessage({ client, database, fishing, message, guildId, userId })
 })
 
 client.on('ready', () => {

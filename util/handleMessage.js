@@ -14,13 +14,10 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 // * main message
 let cmdLogs = {}
 
-module.exports = ({ client, database, message }) => {
+module.exports = ({ client, database, message, fishing, guildId, userId }) => {
   if (message.author.bot) {
     return
   }
-
-  let guildId = message.guild.id
-  let userId = message.author.id
 
   if (!message.content.startsWith('87')) {
     if (isCoolingDown({ userCmd: 'gainFromMessage', message, userId })) {
@@ -62,6 +59,6 @@ module.exports = ({ client, database, message }) => {
     }
 
     // call command
-    commands[userCmd]({ args, client, database, message, guildId, userId })
+    commands[userCmd]({ args, client, database, fishing, message, guildId, userId })
   }
 }

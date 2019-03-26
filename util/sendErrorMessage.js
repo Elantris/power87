@@ -12,7 +12,8 @@ const errors = {
   // energy
   ERROR_ALREADY_DAILY: '已完成今日簽到',
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
-  ERROR_MAX_LEVEL: '道具已達最高等級'
+  ERROR_MAX_LEVEL: '道具已達最高等級',
+  ERROR_IS_FISHING: '正在釣魚'
 }
 
 module.exports = (message, code) => {

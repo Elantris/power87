@@ -2,9 +2,14 @@ const energy = require('../util/energy')
 const sendErrorMessage = require('../util/sendErrorMessage')
 const inventory = require('../util/inventory')
 
-module.exports = ({ args, database, message, guildId, userId }) => {
+module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   if (args.length !== 2) {
     sendErrorMessage(message, 'ERROR_FORMAT')
+    return
+  }
+
+  if (fishing[guildId] && fishing[guildId][userId]) {
+    sendErrorMessage(message, 'ERROR_IS_FISHING')
     return
   }
 

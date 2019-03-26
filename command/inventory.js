@@ -1,6 +1,6 @@
 const inventory = require('../util/inventory')
 
-module.exports = ({ args, database, message, guildId, userId }) => {
+module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
     let inventoryRaw = snapshot.val() || ''
     if (!snapshot.exists()) {
