@@ -19,9 +19,9 @@
 :whale: 500
 :shark: 200
 :dolphin: 100
-:crocodile: 50
-:squid: 20
-:turtle: 10
+:turtle: 50
+:octopus: 20
+:squid: 10
 :blowfish: 5
 :shrimp: 2
 :fish: 1

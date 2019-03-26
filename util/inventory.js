@@ -15,7 +15,7 @@ const tools = {
   }
 }
 
-const items = [{ icon: 'gem', weight: 1, value: 1000 }, { icon: 'whale', weight: 3, value: 500 }, { icon: 'shark', weight: 5, value: 200 }, { icon: 'dolphin', weight: 7, value: 100 }, { icon: 'crocodile', weight: 14, value: 50 }, { icon: 'squid', weight: 20, value: 20 }, { icon: 'turtle', weight: 50, value: 10 }, { icon: 'blowfish', weight: 100, value: 5 }, { icon: 'shrimp', weight: 150, value: 2 }, { icon: 'fish', weight: 250, value: 1 }, { icon: 'trash', weight: 400, value: 0 }]
+const items = [{ icon: 'gem', weight: 1, value: 1000 }, { icon: 'whale', weight: 3, value: 500 }, { icon: 'shark', weight: 5, value: 200 }, { icon: 'dolphin', weight: 7, value: 100 }, { icon: 'turtle', weight: 14, value: 50 }, { icon: 'octopus', weight: 20, value: 20 }, { icon: 'squid', weight: 50, value: 10 }, { icon: 'blowfish', weight: 100, value: 5 }, { icon: 'shrimp', weight: 150, value: 2 }, { icon: 'fish', weight: 250, value: 1 }, { icon: 'trash', weight: 400, value: 0 }]
 
 const parseInventory = inventoryRaw => {
   let inventoryData = inventoryRaw.split(',').filter(v => v)
