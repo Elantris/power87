@@ -4,7 +4,7 @@
 `87` __term__ __number__：從特定關鍵字裡挑出第 number 個回應
 
 筆記：
-`87!add` __term__ __response__：新增回應
+`87!add` __term__ __response__：新增關鍵字
 `87!delete` __term__ __position__：刪除特定回應
 `87!list` [term]：列出伺服器所有關鍵字或列出單一關鍵字的所有回應
 
@@ -14,6 +14,12 @@
 `87!give` __usertag__ __amount__：贈與能量
 `87!rank`：能量排行榜
 `87!slot` [energy] [message]：拉霸幾
+
+道具：
+`87!inventory`：查看背包
+`87!buy` __tool__：購買道具
+`87!sell` __item__：販賣物品
+`87!fishing`：開始/結束釣魚
 
 其他：
 `87!help` [command]：指令說明

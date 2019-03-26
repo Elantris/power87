@@ -12,12 +12,18 @@ const database = firebase.database()
 // init database
 database.ref('/banlist/').update({ _keep: 1 })
 database.ref('/energy/').update({ _keep: 1 })
+database.ref('/fishing/').update({ _keep: 1 })
+database.ref('/inventory/').update({ _keep: 1 })
 database.ref('/lastUsed/').update({ _keep: 1 })
 database.ref('/note/').update({ _keep: 1 })
 
 let banlist = {}
+let fishing = {}
 database.ref('/banlist').on('value', snapshot => {
   banlist = snapshot.val()
+})
+database.ref('/fishing').on('value', snapshot => {
+  fishing = snapshot.val()
 })
 
 // handle message
@@ -36,6 +42,14 @@ client.on('message', message => {
     database.ref(`/banlist/${userId}`).remove()
   }
 
+  if (message.member.voiceChannelID && message.member.voiceChannel.name.startsWith('🔋')) {
+    return
+  }
+
+  if (fishing[guildId] && fishing[guildId][userId] && !message.content.startsWith('87!fish')) {
+    return
+  }
+
   handleMessage({ client, database, message })
 })
 
@@ -43,7 +57,8 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
   setInterval(() => {
-    energy.gainFromVoiceChannel({ client, banlist, database })
+    energy.gainFromVoiceChannel({ client, banlist, database, fishing })
+    energy.autoFishing({ client, database, fishing })
   }, 6 * 60 * 1000) // 6 min
 })
 

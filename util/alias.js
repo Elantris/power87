@@ -17,5 +17,6 @@ module.exports = {
   l: 'list',
   all: 'list',
 
-  v: 'vote'
+  inv: 'inventory',
+  fish: 'fishing'
 }

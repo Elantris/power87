@@ -11,7 +11,7 @@ module.exports = ({ database, message, guildId, userId }) => {
     message.channel.send({
       embed: {
         color: 0xffe066,
-        description: `:battery: ${message.member.displayName} 擁有 ${userEnergy} 點八七能量`
+        description: `:battery: ${message.member.displayName} 擁有 ${parseInt(userEnergy)} 點八七能量`
       }
     })
   })

@@ -9,14 +9,10 @@ const errors = {
   ERROR_TERMS_EXCEED: '伺服器關鍵字數量過多',
   ERROR_RES_EXCEED: '回應數量過多',
 
-  // daily
+  // energy
   ERROR_ALREADY_DAILY: '已完成今日簽到',
-
-  // lottery
-  ERROR_NUMBER_FORMAT: '投注號碼、投注金額必須是整數',
-  ERROR_NUMBER_EXCEED: '投注號碼超過範圍',
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
-  ERROR_REPETITVE_NUMBER: '禁止更改投注號碼'
+  ERROR_MAX_LEVEL: '道具已達最高等級'
 }
 
 module.exports = (message, code) => {

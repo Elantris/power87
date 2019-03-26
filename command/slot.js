@@ -1,68 +1,7 @@
 const energy = require('../util/energy')
 const sendErrorMessage = require('../util/sendErrorMessage')
 
-const items = [{
-  prize: 100,
-  symbol: ':gem:',
-  weight: 5
-}, {
-  prize: 77,
-  symbol: ':seven:',
-  weight: 7
-}, {
-  prize: 50,
-  symbol: ':trophy:',
-  weight: 11
-}, {
-  prize: 30,
-  symbol: ':moneybag:',
-  weight: 13
-}, {
-  prize: 20,
-  symbol: ':gift:',
-  weight: 17
-}, {
-  prize: 15,
-  symbol: ':ribbon:',
-  weight: 19
-}, {
-  prize: 10,
-  symbol: ':balloon:',
-  weight: 23
-}, {
-  prize: 5,
-  symbol: ':four_leaf_clover:',
-  weight: 25
-}, {
-  prize: 3,
-  symbol: ':battery:',
-  weight: 50
-}, {
-  prize: 1,
-  symbol: ':dollar:',
-  weight: 50
-}, {
-  prize: 0,
-  symbol: ':wrench:',
-  weight: 1
-}, {
-  prize: 0,
-  symbol: ':gear:',
-  weight: 1
-}, {
-  prize: 0,
-  symbol: ':bomb:',
-  weight: 1
-}, {
-  prize: 0,
-  symbol: ':paperclip:',
-  weight: 1
-}, {
-  prize: 0,
-  symbol: ':wastebasket:',
-  weight: 1
-}]
-
+const items = [{ prize: 100, symbol: ':gem:', weight: 5 }, { prize: 77, symbol: ':seven:', weight: 7 }, { prize: 50, symbol: ':trophy:', weight: 11 }, { prize: 30, symbol: ':moneybag:', weight: 13 }, { prize: 20, symbol: ':gift:', weight: 17 }, { prize: 15, symbol: ':ribbon:', weight: 19 }, { prize: 10, symbol: ':balloon:', weight: 23 }, { prize: 5, symbol: ':four_leaf_clover:', weight: 25 }, { prize: 3, symbol: ':battery:', weight: 50 }, { prize: 1, symbol: ':dollar:', weight: 50 }, { prize: 0, symbol: ':wrench:', weight: 1 }, { prize: 0, symbol: ':gear:', weight: 1 }, { prize: 0, symbol: ':bomb:', weight: 1 }, { prize: 0, symbol: ':paperclip:', weight: 1 }, { prize: 0, symbol: ':wastebasket:', weight: 1 }]
 const totalWeight = 225
 
 module.exports = ({ args, database, message, guildId, userId }) => {
@@ -112,9 +51,8 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         if (luck < items[j].weight) {
           result.push(j)
           break
-        } else {
-          luck -= items[j].weight
         }
+        luck -= items[j].weight
       }
     }
 

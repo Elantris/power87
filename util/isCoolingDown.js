@@ -9,6 +9,11 @@ const commandCooldown = {
   rank: 30,
   slot: 15,
 
+  inventory: 5,
+  buy: 3,
+  sell: 3,
+  fishing: 10,
+
   help: 5,
   clean: 10,
   about: 30,
