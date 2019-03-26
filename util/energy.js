@@ -29,7 +29,7 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
 }
 
 const inventory = require('./inventory')
-const totalWeight = 1000
+const totalWeight = 1600
 
 const autoFishing = ({ client, database, fishing }) => {
   for (let guildId in fishing) {
@@ -53,7 +53,7 @@ const autoFishing = ({ client, database, fishing }) => {
           }
           luck -= inventory.items[i].weight
         }
-        if (inventory.items[fish].icon === 'trash') {
+        if (inventory.items[fish].value === 0) {
           continue
         }
 
