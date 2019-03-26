@@ -54,7 +54,6 @@ const autoFishing = ({ client, database, fishing }) => {
           luck -= inventory.items[i].weight
         }
         if (inventory.items[fish].icon === 'trash') {
-          console.log('trash')
           continue
         }
 
