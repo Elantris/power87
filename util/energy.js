@@ -32,18 +32,17 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
 const inventory = require('./inventory')
 const totalWeight = 1600
 
-const autoFishing = ({ client, banlist, database, fishing }) => {
+const autoFishing = ({ client, database, fishing }) => {
   for (let guildId in fishing) {
     database.ref(`/inventory/${guildId}`).once('value').then(snapshot => {
       let guildInventory = snapshot.val() || {}
       let updates = {}
 
       for (let userId in fishing[guildId]) {
-        if (banlist[userId]) {
+        if (!guildInventory[userId]) {
           continue
         }
 
-        guildInventory[userId] = guildInventory[userId] || ''
         let userInventory = inventory.parseInventory(guildInventory[userId])
         if (!userInventory.hasEmptySlot || !userInventory.tools.$FishingPole) {
           continue

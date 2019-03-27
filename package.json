@@ -4,7 +4,7 @@
   "description": "A discord bot filled with 87 power.",
   "main": "index.js",
   "scripts": {
-    "update": "git pull; pm2 stop power87; pm2 reset power87; pm2 start power87"
+    "update": "git pull; pm2 stop power87; pm2 reset power87; pm2 start power87; pm2 monit"
   },
   "repository": {
     "type": "git",
