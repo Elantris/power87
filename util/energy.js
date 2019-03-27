@@ -16,9 +16,10 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
 
       guild.channels.filter(channel => channel.type === 'voice').tap(channel => {
         const isAFK = channel.name.startsWith('🔋')
+        const isFishing = member => (fishing[guildId] && fishing[guildId][member.id])
         const isQualified = member => (isAFK && member.deaf && member.mute) || (!isAFK && !member.deaf && !member.mute)
 
-        channel.members.filter(member => !banlist[member.id] && !(fishing[guildId] && fishing[guildId][member.id]) && isQualified(member)).tap(member => {
+        channel.members.filter(member => !banlist[member.id] && !isFishing(member) && isQualified(member)).tap(member => {
           let userId = member.id
           updates[userId] = (guildEnergy[userId] || INITIAL_USER_ENERGY) + 1
         })
@@ -31,13 +32,17 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
 const inventory = require('./inventory')
 const totalWeight = 1600
 
-const autoFishing = ({ client, database, fishing }) => {
+const autoFishing = ({ client, banlist, database, fishing }) => {
   for (let guildId in fishing) {
     database.ref(`/inventory/${guildId}`).once('value').then(snapshot => {
       let guildInventory = snapshot.val() || {}
       let updates = {}
 
       for (let userId in fishing[guildId]) {
+        if (banlist[userId]) {
+          continue
+        }
+
         guildInventory[userId] = guildInventory[userId] || ''
         let userInventory = inventory.parseInventory(guildInventory[userId])
         if (!userInventory.hasEmptySlot || !userInventory.tools.$FishingPole) {

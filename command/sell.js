@@ -20,19 +20,22 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     }
     let userInventory = inventory.parseInventory(inventoryRaw)
 
-    let soldItemsNumber = 0
+    let soldItems = {}
     let gainEnergy = 0
 
     userInventory.items = userInventory.items.map(item => {
       if (args[1] === 'all' || inventory.items[item.id].icon === args[1]) {
-        soldItemsNumber += item.amount
+        if (!soldItems[item.id]) {
+          soldItems[item.id] = 0
+        }
+        soldItems[item.id]++
         gainEnergy += inventory.items[item.id].value
         return null
       }
       return item
     }).filter(v => v)
 
-    if (soldItemsNumber === 0) {
+    if (gainEnergy === 0) {
       sendErrorMessage(message, 'ERROR_NOT_FOUND')
       return
     }
@@ -48,16 +51,16 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       database.ref(`/inventory/${guildId}/${userId}`).set(inventory.makeInventory(userInventory))
 
       let soldItemsDisplay = ``
-      if (args[1] === 'all') {
-        soldItemsDisplay = `${soldItemsNumber} 件物品`
-      } else {
-        soldItemsDisplay = `:${args[1]}: x${soldItemsNumber}`
+      let soldItemsNumber = 0
+      for (let itemId in soldItems) {
+        soldItemsDisplay += `:${inventory.items[itemId].icon}:x${soldItems[itemId]} `
+        soldItemsNumber += soldItems[itemId]
       }
 
       message.channel.send({
         embed: {
           color: 0xffe066,
-          description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsDisplay}，獲得了 ${gainEnergy} 點八七點數`
+          description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七點數\n\n${soldItemsDisplay}`
         }
       })
     })

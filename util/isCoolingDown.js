@@ -1,7 +1,7 @@
 const commandCooldown = {
   add: 2,
   delete: 2,
-  list: 10,
+  list: 15,
 
   energy: 5,
   daily: 30,
@@ -12,11 +12,11 @@ const commandCooldown = {
   inventory: 15,
   buy: 3,
   sell: 10,
-  fishing: 60,
+  fishing: 30,
 
   help: 5,
-  clean: 10,
-  about: 30,
+  clean: 15,
+  about: 15,
 
   res: 2,
   gainFromMessage: 120

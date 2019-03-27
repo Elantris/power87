@@ -9,7 +9,7 @@
 
 範例：
 ```
-87!sell fish
+87!sell shrimp
 87!sell all
 ```
 說明：
