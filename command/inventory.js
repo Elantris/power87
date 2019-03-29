@@ -1,6 +1,8 @@
 const inventory = require('../util/inventory')
+const tools = require('../util/tools')
+const items = require('../util/items')
 
-module.exports = ({ args, database, fishing, message, guildId, userId }) => {
+module.exports = ({ args, database, message, guildId, userId }) => {
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
     let inventoryRaw = snapshot.val() || ''
     if (!snapshot.exists()) {
@@ -11,19 +13,20 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     let inventoryDisplay = `\n\n道具：`
 
     for (let tool in userInventory.tools) {
-      inventoryDisplay += ` ${inventory.tools[tool].icon} ${inventory.tools[tool].name}+${userInventory.tools[tool]}`
+      inventoryDisplay += ` ${tools[tool].icon} ${tools[tool].displayName}+${userInventory.tools[tool]}`
     }
 
-    let bagLevel = parseInt(userInventory.tools.$Bag || -1)
-    inventoryDisplay += `\n\n物品：[${userInventory.items.length}/${(bagLevel + 1) * 8}]`
+    inventoryDisplay += `\n\n物品：[${userInventory.items.length}/${userInventory.maxSlots}]`
 
-    userInventory.items.forEach((item, index) => {
+    userInventory.items.sort((itemA, itemB) => {
+      return (items[itemB.id].value - items[itemA.id].value) || (itemA.id - itemB.id)
+    }).forEach((item, index) => {
       if (index % 8 === 0) {
         inventoryDisplay += '\n'
       } else {
         inventoryDisplay += ' '
       }
-      inventoryDisplay += `:${inventory.items[item.id].icon}:`
+      inventoryDisplay += `:${items[item.id].icon}:`
     })
 
     message.channel.send({

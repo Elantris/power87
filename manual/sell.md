@@ -15,13 +15,23 @@
 說明：
 這間道具販賣屋的店主很八七。收購都用最低價：
 
-:gem: 1000
-:whale: 500
-:shark: 200
-:dolphin: 100
-:turtle: 50
-:octopus: 20
-:squid: 10
-:blowfish: 5
-:shrimp: 2
-:fish: 1
+**Jewel**
+:gem: gem 1000
+
+**Fishing**
+:penguin: penguin 500
+:whale: whale 500
+:whale2: whale2 300
+:shark: shark 200
+:dolphin: dolphin 100
+:octopus: octopus 100
+:crocodile: crocodile 50
+:crab: crab 30
+:duck: duck 20
+:turtle: turtle 15
+:squid: squid 10
+:blowfish: blowfish 5
+:tropical_fish: tropical_fish 3
+:fish: fish 2
+:frog: frog 1
+:shrimp: shrimp 1

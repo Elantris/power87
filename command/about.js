@@ -12,14 +12,14 @@ module.exports = ({ message }) => {
         icon_url: 'https://elantris.github.io/profile.jpg'
       },
       fields: [{
-        name: ':bookmark_tabs: Dev Note',
-        value: 'https://hackmd.io/s/VkLSj2pOJW\nAnnouncement, updates, development notes. This project is still in development.'
+        name: ':loudspeaker: 公告頁面',
+        value: 'https://hackmd.io/s/VkLSj2pOJW\n功能介紹與更新紀錄'
       }, {
-        name: ':loudspeaker: Report and Feedback',
-        value: 'https://forms.gle/9iYELzNoQ2JRDKeR7\nSay hi to developer of power87!'
+        name: ':envelope: 意見調查',
+        value: 'https://forms.gle/9iYELzNoQ2JRDKeR7\n你們的聲音開發者都聽到了！'
       }, {
-        name: ':credit_card: Donation Links',
-        value: '(NTD) Opay Donation\n<申請沒過QQ>\n\n(ETH) 0x Donate\nhttps://0xdonate.io/#/donate?addr=0x175021BACC450F44b895e2Cdcf384810351A4ECE'
+        name: ':credit_card: 捐款贊助',
+        value: '申請沒過啦Ｘ！'
       }]
     }
   })

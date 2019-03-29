@@ -1,6 +1,7 @@
 const energy = require('../util/energy')
 const sendErrorMessage = require('../util/sendErrorMessage')
 const inventory = require('../util/inventory')
+const items = require('../util/items')
 
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   if (args.length !== 2) {
@@ -22,14 +23,15 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
 
     let soldItems = {}
     let gainEnergy = 0
+    let target = args[1].toLowerCase()
 
     userInventory.items = userInventory.items.map(item => {
-      if (args[1] === 'all' || inventory.items[item.id].icon === args[1]) {
+      if (target === 'all' || target === items[item.id].icon || target === items[item.id].kind) {
         if (!soldItems[item.id]) {
           soldItems[item.id] = 0
         }
         soldItems[item.id]++
-        gainEnergy += inventory.items[item.id].value
+        gainEnergy += items[item.id].value
         return null
       }
       return item
@@ -50,17 +52,17 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
       database.ref(`/inventory/${guildId}/${userId}`).set(inventory.makeInventory(userInventory))
 
-      let soldItemsDisplay = ``
       let soldItemsNumber = 0
+      let soldItemsDisplay = ``
       for (let itemId in soldItems) {
-        soldItemsDisplay += `:${inventory.items[itemId].icon}:x${soldItems[itemId]} `
         soldItemsNumber += soldItems[itemId]
+        soldItemsDisplay += `:${items[itemId].icon}:x${soldItems[itemId]} `
       }
 
       message.channel.send({
         embed: {
           color: 0xffe066,
-          description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七點數\n\n${soldItemsDisplay}`
+          description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}`
         }
       })
     })

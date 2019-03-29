@@ -53,8 +53,13 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
   setInterval(() => {
-    energy.gainFromVoiceChannel({ client, banlist, database, fishing })
-    energy.autoFishing({ client, database, fishing })
+    database.ref('/energy').once('value').then(snapshot => {
+      let energyVal = snapshot.val()
+      database.ref('/inventory').once('value').then(snapshot => {
+        let inventoryVal = snapshot.val()
+        energy.gainFromVoiceChannel({ client, banlist, database, fishing, energyVal, inventoryVal })
+      })
+    })
   }, 6 * 60 * 1000) // 6 min
 })
 

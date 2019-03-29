@@ -12,7 +12,7 @@ const commandCooldown = {
   inventory: 15,
   buy: 3,
   sell: 10,
-  fishing: 30,
+  fishing: 15,
 
   help: 5,
   clean: 15,
