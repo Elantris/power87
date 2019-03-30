@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const firebase = require('firebase')
-
 const config = require('./config')
 const energy = require('./util/energy')
 const handleMessage = require('./util/handleMessage')

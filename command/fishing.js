@@ -23,7 +23,7 @@ module.exports = ({ database, message, guildId, userId }) => {
       database.ref(`/fishing/${guildId}/${userId}`).set(1)
       isFishing = 1
     } else {
-      database.ref(`/fishing/${guildId}/${userId}`).set(null)
+      database.ref(`/fishing/${guildId}/${userId}`).remove()
       isFishing = 0
     }
 

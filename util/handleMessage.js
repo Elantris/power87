@@ -3,6 +3,7 @@ const fs = require('fs')
 const alias = require('./alias')
 const energy = require('./energy')
 const isCoolingDown = require('./isCoolingDown')
+const logger = require('./logger')
 
 // * load commands
 let commands = {}
@@ -15,10 +16,6 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 let cmdLogs = {}
 
 module.exports = ({ client, database, message, fishing, guildId, userId }) => {
-  if (message.author.bot) {
-    return
-  }
-
   if (!message.content.startsWith('87')) {
     if (isCoolingDown({ userCmd: 'gainFromMessage', message, userId })) {
       return
@@ -34,6 +31,10 @@ module.exports = ({ client, database, message, fishing, guildId, userId }) => {
     } else if (message.content[2] === '!') {
       userCmd = args[0].substring(3).toLowerCase()
       userCmd = alias[userCmd] || userCmd
+    }
+
+    if (!commands[userCmd] || isCoolingDown({ userCmd, message, guildId, userId })) {
+      return
     }
 
     // command history
@@ -54,11 +55,8 @@ module.exports = ({ client, database, message, fishing, guildId, userId }) => {
       }
     }
 
-    if (!commands[userCmd] || isCoolingDown({ userCmd, message, guildId, userId })) {
-      return
-    }
-
     // call command
+    logger({ message, guildId, userId })
     commands[userCmd]({ args, client, database, fishing, message, guildId, userId })
   }
 }
