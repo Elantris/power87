@@ -4,9 +4,6 @@ module.exports = ({ message }) => {
       title: 'Power87',
       description: 'A discord bot filled with 87 power.',
       color: 0xffe066,
-      thumbnail: {
-        url: 'https://i.imgur.com/KxZpCxD.png'
-      },
       author: {
         name: 'Elantris',
         icon_url: 'https://elantris.github.io/profile.jpg'
