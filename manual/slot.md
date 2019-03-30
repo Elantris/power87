@@ -15,26 +15,15 @@
 87!slot 10 這次一定行！
 ```
 說明：
-消耗 1 ~ 500 點八七能量遊玩拉霸機，出現特定數量的相同圖樣則獲得 1 ~ 100 倍的獎勵點數。冷卻時間 15 秒，冷卻期間不會有任何回覆。
+消耗 1 ~ 500 點八七能量遊玩拉霸機，出現特定數量的相同圖樣則獲得 1 ~ 100 倍的獎勵點數，若出現兩個相同的圖案則獎勵為三個相同的一半。冷卻時間 15 秒，冷卻期間不會有任何回覆。
 
-獎勵列表：
-
-:gem: : :gem: : :gem: 100x
-:seven: : :seven: : :seven: 77x
-:trophy: : :trophy: : :trophy: 50x
-:moneybag: : :moneybag: : :moneybag: 30x
-:gift: : :gift: : :gift: 20x
-:ribbon: : :ribbon: : :ribbon: 15x
-:balloon: : :balloon: : :balloon: 10x
-:four_leaf_clover: : :four_leaf_clover: : :four_leaf_clover: 5x
-:battery: : :battery: : :battery: 3x
-:dollar: : :dollar: : :dollar: 1x
-
-:gem: : :gem: 50x
-:seven: : :seven: 38x
-:trophy: : :trophy: 25x
-:moneybag: : :moneybag: 15x
-:gift: : :gift: 10x
-:ribbon: : :ribbon: 7x
-:balloon: : :balloon: 5x
-:four_leaf_clover: : :four_leaf_clover: 2x
+:gem: 100x
+:seven: 77x
+:trophy: 50x
+:moneybag: 30x
+:gift: 20x
+:ribbon: 15x
+:balloon: 10x
+:four_leaf_clover: 5x
+:battery: 3x
+:dollar: 1x
