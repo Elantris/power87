@@ -1,12 +1,12 @@
 const energy = require('../util/energy')
-const sendErrorMessage = require('../util/sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 const energyCost = 20
 
 module.exports = ({ args, database, message, guildId, userId }) => {
   // check command format
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
-    sendErrorMessage(message, 'ERROR_FORMAT')
+    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
 
@@ -15,7 +15,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
 
   database.ref(`/note/${guildId}/${term}/${position}`).once('value').then(snapshot => {
     if (!snapshot.val()) {
-      sendErrorMessage(message, 'ERROR_NOT_FOUND')
+      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return
     }
 
@@ -26,19 +26,14 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
       }
       if (userEnergy < energyCost) {
-        sendErrorMessage(message, 'ERROR_NO_ENERGY')
+        sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
         return
       }
 
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
       database.ref(`/note/${guildId}/${term}/${position}`).remove()
 
-      message.channel.send({
-        embed: {
-          color: 0xffe066,
-          description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目`
-        }
-      })
+      sendResponseMessage({ message, description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目` })
     })
   })
 }

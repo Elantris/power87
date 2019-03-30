@@ -1,4 +1,4 @@
-const sendErrorMessage = require('../util/sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ args, database, message, guildId }) => {
   if (args.length === 1) {
@@ -18,7 +18,7 @@ module.exports = ({ args, database, message, guildId }) => {
       let candidates = Object.keys(responses)
       choice = candidates[~~(Math.random() * candidates.length)]
     } else if (!responses[choice]) {
-      sendErrorMessage(message, 'ERROR_NOT_FOUND')
+      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return
     }
 

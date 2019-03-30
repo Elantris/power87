@@ -1,7 +1,7 @@
 const commandCooldown = {
   add: 2,
   delete: 2,
-  list: 15,
+  list: 10,
 
   energy: 5,
   daily: 30,

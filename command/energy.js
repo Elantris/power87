@@ -1,4 +1,5 @@
 const energy = require('../util/energy')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ database, message, guildId, userId }) => {
   database.ref(`energy/${guildId}/${userId}`).once('value').then(snapshot => {
@@ -8,11 +9,6 @@ module.exports = ({ database, message, guildId, userId }) => {
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
     }
 
-    message.channel.send({
-      embed: {
-        color: 0xffe066,
-        description: `:battery: ${message.member.displayName} 擁有 ${parseInt(userEnergy)} 點八七能量`
-      }
-    })
+    sendResponseMessage({ message, description: `:battery: ${message.member.displayName} 擁有 ${parseInt(userEnergy)} 點八七能量` })
   })
 }

@@ -1,20 +1,16 @@
+const sendResponseMessage = require('../util/sendResponseMessage')
 const updateInterval = 10 * 60 * 1000 // 10 min
 
-function response ({ message, rank }) {
-  let output = `:trophy: 八七能量排行榜\n`
+function makeOutput ({ message, rank }) {
+  let rankDisplay = `:trophy: 八七能量排行榜\n`
   for (let i in rank) {
     if (i !== '0') {
       let tmp = rank[i].split(':')
-      output += `\n${i}. <@${tmp[0]}>: ${tmp[1]}`
+      rankDisplay += `\n${i}. <@${tmp[0]}>: ${tmp[1]}`
     }
   }
 
-  message.channel.send({
-    embed: {
-      color: 0xffe066,
-      description: output
-    }
-  })
+  sendResponseMessage({ message, description: rankDisplay })
 }
 
 module.exports = ({ database, message, guildId, userId }) => {
@@ -25,7 +21,7 @@ module.exports = ({ database, message, guildId, userId }) => {
     }
     if (message.createdTimestamp - rank[0] < updateInterval) {
       // cache output
-      response({ message, rank })
+      makeOutput({ message, rank })
     } else {
       // udpate rank data
       database.ref(`/energy/${guildId}`).once('value').then(snapshot => {
@@ -45,7 +41,7 @@ module.exports = ({ database, message, guildId, userId }) => {
 
         database.ref(`/lastUsed/rank/${guildId}`).set(rank)
 
-        response({ message, rank })
+        makeOutput({ message, rank })
       })
     }
   })

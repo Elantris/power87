@@ -1,4 +1,4 @@
-const sendErrorMessage = require('../util/sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ args, database, message, guildId }) => {
   let output = ':bookmark_tabs: '
@@ -13,19 +13,14 @@ module.exports = ({ args, database, message, guildId }) => {
         output += `\n${term} (${Object.keys(notes[term]).length})`
       }
 
-      message.channel.send({
-        embed: {
-          color: 0xffe066,
-          description: output
-        }
-      })
+      sendResponseMessage({ message, description: output })
     })
   } else {
     let term = args[1]
     database.ref(`/note/${guildId}/${term}`).once('value').then(snapshot => {
       let responses = snapshot.val()
       if (!responses) {
-        sendErrorMessage(message, 'ERROR_NOT_FOUND')
+        sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
         return
       }
 
@@ -35,12 +30,7 @@ module.exports = ({ args, database, message, guildId }) => {
         output += `\n${index}. ${responses[index]}`
       }
 
-      message.channel.send({
-        embed: {
-          color: 0xffe066,
-          description: output
-        }
-      })
+      sendResponseMessage({ message, description: output })
     })
   }
 }

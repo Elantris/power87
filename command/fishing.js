@@ -1,3 +1,5 @@
+const sendResponseMessage = require('../util/sendResponseMessage')
+
 const hints = [
   '釣魚前記得購買 :school_satchel: 背包與 :fishing_pole_and_fish: 釣竿，別在岸邊癡癡地凝視水面！`87!help buy`',
   '有非常低的機率可以釣到 :gem: 是很值錢的東西！',
@@ -41,11 +43,6 @@ module.exports = ({ database, message, guildId, userId }) => {
       '開始釣魚'
     ]
 
-    message.channel.send({
-      embed: {
-        color: 0xffe066,
-        description: `:fishing_pole_and_fish: ${message.member.displayName} ${fishingDisplay[isFishing]}\n\n${hint}`
-      }
-    })
+    sendResponseMessage({ message, description: `:fishing_pole_and_fish: ${message.member.displayName} ${fishingDisplay[isFishing]}\n\n${hint}` })
   })
 }

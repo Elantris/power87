@@ -1,5 +1,5 @@
 const energy = require('../util/energy')
-const sendErrorMessage = require('../util/sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 const maxResNum = 50
 const energyCost = 10
@@ -7,14 +7,14 @@ const energyCost = 10
 module.exports = ({ args, database, message, guildId, userId }) => {
   // check command format
   if (args.length < 3 || args[1].startsWith('_') || Number.isSafeInteger(parseInt(args[1]))) {
-    sendErrorMessage(message, 'ERROR_FORMAT')
+    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
 
   // check term legnth
   let term = args[1]
   if (term.length > 20) {
-    sendErrorMessage(message, 'ERROR_LENGTH_EXCEED')
+    sendResponseMessage({ message, errorCode: 'ERROR_LENGTH_EXCEED' })
     return
   }
 
@@ -29,7 +29,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       }
     }
     if (emptyPosition > maxResNum) {
-      sendErrorMessage(message, 'ERROR_RES_EXCEED')
+      sendResponseMessage({ message, errorCode: 'ERROR_RES_EXCEED' })
       return
     }
 
@@ -40,7 +40,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
       }
       if (userEnergy < energyCost) {
-        sendErrorMessage(message, 'ERROR_NO_ENERGY')
+        sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
         return
       }
 
@@ -50,12 +50,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
       database.ref(`/note/${guildId}/${term}`).update(updates)
 
-      message.channel.send({
-        embed: {
-          color: 0xffe066,
-          description: `:white_check_mark: 你說 **87 ${term} ${emptyPosition}** 我說 **${newResponse}**`
-        }
-      })
+      sendResponseMessage({ message, description: `:white_check_mark: 你說 **87 ${term} ${emptyPosition}** 我說 **${newResponse}**` })
     })
   })
 }

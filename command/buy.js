@@ -1,16 +1,16 @@
 const energy = require('../util/energy')
-const sendErrorMessage = require('../util/sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 const inventory = require('../util/inventory')
 const tools = require('../util/tools')
 
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   if (args.length !== 2) {
-    sendErrorMessage(message, 'ERROR_FORMAT')
+    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
 
   if (fishing[guildId] && fishing[guildId][userId]) {
-    sendErrorMessage(message, 'ERROR_IS_FISHING')
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
 
@@ -26,7 +26,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   }
 
   if (!toolId) {
-    sendErrorMessage(message, 'ERROR_NOT_FOUND')
+    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
     return
   }
 
@@ -40,7 +40,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     if (userInventory.tools[toolId]) {
       targetLevel = parseInt(userInventory.tools[toolId]) + 1
       if (targetLevel > tools[toolId].maxLevel) {
-        sendErrorMessage(message, 'ERROR_MAX_LEVEL')
+        sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
         return
       }
     }
@@ -54,7 +54,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
 
       let energyCost = tools[toolId].prices[targetLevel]
       if (userEnergy < energyCost) {
-        sendErrorMessage(message, 'ERROR_NO_ENERGY')
+        sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
         return
       }
 
@@ -66,12 +66,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       updates = updates.split(',').sort().join(',')
       database.ref(`/inventory/${guildId}/${userId}`).set(updates)
 
-      message.channel.send({
-        embed: {
-          color: 0xffe066,
-          description: `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，成功購買 ${tools[toolId].icon} ${tools[toolId].displayName} +${targetLevel}`
-        }
-      })
+      sendResponseMessage({ message, description: `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，成功購買 ${tools[toolId].icon} ${tools[toolId].displayName} +${targetLevel}` })
     })
   })
 }

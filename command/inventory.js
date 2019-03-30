@@ -1,3 +1,4 @@
+const sendResponseMessage = require('../util/sendResponseMessage')
 const inventory = require('../util/inventory')
 const tools = require('../util/tools')
 const items = require('../util/items')
@@ -29,11 +30,6 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       inventoryDisplay += `:${items[item.id].icon}:`
     })
 
-    message.channel.send({
-      embed: {
-        color: 0xffe066,
-        description: `:diamond_shape_with_a_dot_inside: ${message.member.displayName} 的資產${inventoryDisplay}`
-      }
-    })
+    sendResponseMessage({ message, description: `:diamond_shape_with_a_dot_inside: ${message.member.displayName} 的資產${inventoryDisplay}` })
   })
 }

@@ -1,6 +1,6 @@
 const fs = require('fs')
 const alias = require('../util/alias')
-const sendErrorMessage = require('../util/sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 const encoding = 'utf8'
 
 let manuals = {}
@@ -11,12 +11,7 @@ fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach
 
 module.exports = ({ args, message }) => {
   if (args.length === 1) {
-    message.channel.send({
-      embed: {
-        color: 0xffe066,
-        description: manuals.default
-      }
-    })
+    sendResponseMessage({ message, description: manuals.default })
     return
   }
 
@@ -24,14 +19,9 @@ module.exports = ({ args, message }) => {
   cmd = alias[cmd] || cmd
 
   if (!manuals[cmd]) {
-    sendErrorMessage(message, 'ERROR_NOT_FOUND')
+    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
     return
   }
 
-  message.channel.send({
-    embed: {
-      color: 0xffe066,
-      description: manuals[cmd]
-    }
-  })
+  sendResponseMessage({ message, description: manuals[cmd] })
 }

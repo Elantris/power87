@@ -3,7 +3,6 @@ const fs = require('fs')
 const alias = require('./alias')
 const energy = require('./energy')
 const isCoolingDown = require('./isCoolingDown')
-const logger = require('./logger')
 
 // * load commands
 let commands = {}
@@ -13,8 +12,6 @@ fs.readdirSync('./command/').filter(filename => filename.endsWith('.js')).forEac
 })
 
 // * main message
-let cmdLogs = {}
-
 module.exports = ({ client, database, message, fishing, guildId, userId }) => {
   if (!message.content.startsWith('87')) {
     if (isCoolingDown({ userCmd: 'gainFromMessage', message, userId })) {
@@ -37,26 +34,7 @@ module.exports = ({ client, database, message, fishing, guildId, userId }) => {
       return
     }
 
-    // command history
-    cmdLogs[userId] = cmdLogs[userId] || []
-    cmdLogs[userId].push({
-      t: message.createdTimestamp,
-      c: message.content
-    })
-
-    // repeat detection
-    if (cmdLogs[userId].length === 60) {
-      cmdLogs[userId] = cmdLogs[userId].filter(log => log.t > message.createdTimestamp - 10 * 60 * 1000) // 10 min
-      if (cmdLogs[userId].length === 60) {
-        database.ref(`/banlist/${userId}`).set(message.createdTimestamp + 60 * 60 * 1000) // 1 hr
-        fs.writeFileSync(`./banlist/${userId}.txt`, cmdLogs[userId].map(log => `${log.t}: ${log.c}`).join('\n'), { encoding: 'utf8' })
-        delete cmdLogs[userId]
-        return
-      }
-    }
-
     // call command
-    logger({ message, guildId, userId })
     commands[userCmd]({ args, client, database, fishing, message, guildId, userId })
   }
 }

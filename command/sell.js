@@ -1,16 +1,16 @@
 const energy = require('../util/energy')
-const sendErrorMessage = require('../util/sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 const inventory = require('../util/inventory')
 const items = require('../util/items')
 
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   if (args.length !== 2) {
-    sendErrorMessage(message, 'ERROR_FORMAT')
+    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
 
   if (fishing[guildId] && fishing[guildId][userId]) {
-    sendErrorMessage(message, 'ERROR_IS_FISHING')
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
 
@@ -38,7 +38,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     }).filter(v => v)
 
     if (gainEnergy === 0) {
-      sendErrorMessage(message, 'ERROR_NOT_FOUND')
+      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return
     }
 
@@ -59,12 +59,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         soldItemsDisplay += `:${items[itemId].icon}:x${soldItems[itemId]} `
       }
 
-      message.channel.send({
-        embed: {
-          color: 0xffe066,
-          description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}`
-        }
-      })
+      sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })
     })
   })
 }

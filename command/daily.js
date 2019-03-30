@@ -1,6 +1,6 @@
 const moment = require('moment')
 const energy = require('../util/energy')
-const sendErrorMessage = require('../util//sendErrorMessage')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ database, message, guildId, userId }) => {
   let todayDisplay = moment().format('YYYYMMDD')
@@ -14,7 +14,7 @@ module.exports = ({ database, message, guildId, userId }) => {
     let dailyData = dailyRaw.split(',')
 
     if (dailyData[0] === todayDisplay) {
-      sendErrorMessage(message, 'ERROR_ALREADY_DAILY')
+      sendResponseMessage({ message, errorCode: 'ERROR_ALREADY_DAILY' })
       return
     }
 
@@ -48,12 +48,7 @@ module.exports = ({ database, message, guildId, userId }) => {
 
       database.ref(`energy/${guildId}/${userId}`).set(userEnergy)
 
-      message.channel.send({
-        embed: {
-          color: 0xffe066,
-          description: `:battery: ${message.member.displayName} 完成每日簽到獲得 20 點八七能量\n\n${bonusMessage}`
-        }
-      })
+      sendResponseMessage({ message, description: `:battery: ${message.member.displayName} 完成每日簽到獲得 20 點八七能量\n\n${bonusMessage}` })
     })
   })
 }
