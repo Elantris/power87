@@ -51,7 +51,7 @@ module.exports = ({ message, description = '', errorCode }) => {
     cmdLogs[userId] = []
   }
   cmdLogs[userId].push(message.createdTimestamp)
-  while (cmdLogs[userId] < past) {
+  while (cmdLogs[userId][0] < past) {
     cmdLogs[userId].shift()
   }
   if (cmdLogs[userId].length > 100) {
