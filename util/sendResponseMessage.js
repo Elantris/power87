@@ -54,30 +54,26 @@ module.exports = ({ message, description = '', errorCode }) => {
     cmdLogs[userId].shift()
   }
   if (cmdLogs[userId].length > 100) {
-    warning = ':warning:'
+    warning = '\n:warning:'
   }
 
   let timeDisplay = moment(message.createdAt).format('HH:mm:ss')
+  embed.title = `\`[${timeDisplay}]\` <@${userId}> ${message.content}`
+  embed.fields = [{
+    name: 'Guild',
+    value: `${message.guild.id}\n${message.guild.name}`,
+    inline: true
+  }, {
+    name: 'Channel',
+    value: `${message.channel.id}\n${message.channel.name}`,
+    inline: true
+  }, {
+    name: 'Usage',
+    value: `${cmdLogs[userId].length}${warning}`,
+    inline: true
+  }]
+
   hook.send({
-    embeds: [{
-      color: 0xadb5bd,
-      description: `\`[${timeDisplay}]\` <@${message.author.id}>: \`${message.content}\``,
-      fields: [{
-        name: 'Guild',
-        value: `${message.guild.id}\n${message.guild.name}`,
-        inline: true
-      }, {
-        name: 'Channel',
-        value: `${message.channel.id}\n${message.channel.name}`,
-        inline: true
-      }, {
-        name: 'User',
-        value: `${message.author.id}\n${message.member.displayName}`,
-        inline: true
-      }, {
-        name: 'Usage',
-        value: `${cmdLogs[userId].length} ${warning}`
-      }]
-    }, embed]
+    embeds: [embed]
   })
 }
