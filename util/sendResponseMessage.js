@@ -19,7 +19,8 @@ const errors = {
   ERROR_ALREADY_DAILY: '已完成今日簽到',
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
   ERROR_MAX_LEVEL: '無法購買更高等級的道具',
-  ERROR_IS_FISHING: '正在釣魚'
+  ERROR_IS_FISHING: '正在釣魚',
+  ERROR_NO_ITEM: '沒有物品'
 }
 
 // command history
@@ -58,7 +59,7 @@ module.exports = ({ message, description = '', errorCode }) => {
   }
 
   let timeDisplay = moment(message.createdAt).format('HH:mm:ss')
-  embed.title = `\`[${timeDisplay}]\` <@${userId}> ${message.content}`
+  embed.title = `\`[${timeDisplay}]\` ${message.content}`
   embed.fields = [{
     name: 'Guild',
     value: `${message.guild.id}\n${message.guild.name}`,
@@ -68,8 +69,8 @@ module.exports = ({ message, description = '', errorCode }) => {
     value: `${message.channel.id}\n${message.channel.name}`,
     inline: true
   }, {
-    name: 'Usage',
-    value: `${cmdLogs[userId].length}${warning}`,
+    name: 'User',
+    value: `${userId}\n${message.member.displayName} (${cmdLogs[userId].length})${warning}`,
     inline: true
   }]
 

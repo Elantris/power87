@@ -38,7 +38,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     }).filter(v => v)
 
     if (gainEnergy === 0) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
+      sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
       return
     }
 
