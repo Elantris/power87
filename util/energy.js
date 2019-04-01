@@ -8,11 +8,11 @@ const gainFromTextChannel = ({ database, guildId, userId }) => {
 }
 
 const fishingLootsChance = [
-  [['0', 0.0001], ['1', 0.0005], ['2', 0.0005], ['3', 0.0010], ['4', 0.0015], ['5', 0.0020], ['6', 0.0020], ['11', 0.010], ['12', 0.015], ['13', 0.020], ['14', 0.025], ['15', 0.150], ['16', 0.50]],
-  [['0', 0.0001], ['1', 0.0006], ['2', 0.0006], ['3', 0.0012], ['4', 0.0018], ['5', 0.0024], ['6', 0.0024], ['10', 0.010], ['11', 0.015], ['12', 0.020], ['13', 0.025], ['14', 0.150], ['15', 0.44], ['16', 0.01]],
-  [['0', 0.0001], ['1', 0.0007], ['2', 0.0007], ['3', 0.0014], ['4', 0.0021], ['5', 0.0028], ['6', 0.0028], ['9', 0.010], ['10', 0.015], ['11', 0.020], ['12', 0.025], ['13', 0.150], ['14', 0.38], ['15', 0.01], ['16', 0.01]],
-  [['0', 0.0001], ['1', 0.0008], ['2', 0.0008], ['3', 0.0016], ['4', 0.0024], ['5', 0.0032], ['6', 0.0032], ['8', 0.010], ['9', 0.015], ['10', 0.020], ['11', 0.025], ['12', 0.150], ['13', 0.32], ['14', 0.01], ['15', 0.01], ['16', 0.01]],
-  [['0', 0.0001], ['1', 0.0009], ['2', 0.0009], ['3', 0.0018], ['4', 0.0027], ['5', 0.0036], ['6', 0.0036], ['7', 0.010], ['8', 0.015], ['9', 0.020], ['10', 0.025], ['11', 0.150], ['12', 0.26], ['13', 0.01], ['14', 0.01], ['15', 0.01], ['16', 0.01]]
+  [['0', 0.0001], ['1', 0.0003], ['2', 0.0003], ['3', 0.0005], ['4', 0.0007], ['5', 0.0010], ['6', 0.0010], ['11', 0.010], ['12', 0.010], ['13', 0.015], ['14', 0.020], ['15', 0.10], ['16', 0.50]],
+  [['0', 0.0001], ['1', 0.0004], ['2', 0.0004], ['3', 0.0006], ['4', 0.0008], ['5', 0.0011], ['6', 0.0011], ['10', 0.010], ['11', 0.010], ['12', 0.015], ['13', 0.020], ['14', 0.10], ['15', 0.44], ['16', 0.01]],
+  [['0', 0.0001], ['1', 0.0005], ['2', 0.0005], ['3', 0.0007], ['4', 0.0009], ['5', 0.0012], ['6', 0.0012], ['9', 0.010], ['10', 0.010], ['11', 0.015], ['12', 0.020], ['13', 0.10], ['14', 0.38], ['15', 0.01], ['16', 0.01]],
+  [['0', 0.0001], ['1', 0.0006], ['2', 0.0006], ['3', 0.0008], ['4', 0.0010], ['5', 0.0013], ['6', 0.0013], ['8', 0.010], ['9', 0.010], ['10', 0.015], ['11', 0.020], ['12', 0.10], ['13', 0.32], ['14', 0.01], ['15', 0.01], ['16', 0.01]],
+  [['0', 0.0001], ['1', 0.0007], ['2', 0.0007], ['3', 0.0009], ['4', 0.0011], ['5', 0.0014], ['6', 0.0014], ['7', 0.010], ['8', 0.010], ['9', 0.015], ['10', 0.020], ['11', 0.10], ['12', 0.26], ['13', 0.01], ['14', 0.01], ['15', 0.01], ['16', 0.01]]
 ]
 
 const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, inventoryVal }) => {
@@ -26,7 +26,7 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, i
       const isAFK = channel.name.startsWith('🔋')
       const isQualified = member => (isAFK && member.deaf && member.mute) || (!isAFK && !member.deaf && !member.mute)
 
-      channel.members.filter(member => !banlist[member.id] && isQualified(member)).tap(member => {
+      channel.members.filter(member => !banlist[member.id] && !member.user.bot).tap(member => {
         let userId = member.id
 
         if (fishing[guildId] && fishing[guildId][userId]) { // is fishing
@@ -35,9 +35,13 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, i
             return
           }
 
+          if (!isQualified(member) && Math.random() < 0.9) {
+            return
+          }
+
           let fishingPoleLevel = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole level
-          let fishingPool = 0 // sailboat level
-          if (userInventory.tools.$2) {
+          let fishingPool = 0
+          if (userInventory.tools.$2) { // sailboat level
             fishingPool = parseInt(userInventory.tools.$2) + 1
           }
 
@@ -58,7 +62,7 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, i
           }
 
           inventoryUpdates[userId] = inventoryVal[guildId][userId] + `,${loot}`
-        } else {
+        } else if (isQualified(member)) {
           energyUpdates[userId] = (energyVal[guildId][userId] || INITIAL_USER_ENERGY) + 1
         }
       })

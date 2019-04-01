@@ -14,7 +14,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     let inventoryDisplay = `\n\n道具：`
 
     for (let tool in userInventory.tools) {
-      inventoryDisplay += ` ${tools[tool].icon} ${tools[tool].displayName}+${userInventory.tools[tool]}`
+      inventoryDisplay += ` ${tools[tool].icon}+${userInventory.tools[tool]}`
     }
 
     inventoryDisplay += `\n\n物品：[${userInventory.items.length}/${userInventory.maxSlots}]`
