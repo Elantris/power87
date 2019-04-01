@@ -54,7 +54,7 @@ module.exports = ({ message, description = '', errorCode }) => {
   while (cmdLogs[userId][0] < past) {
     cmdLogs[userId].shift()
   }
-  if (cmdLogs[userId].length > 100) {
+  if (cmdLogs[userId].length > 60) {
     warning = '\n:warning:'
   }
 

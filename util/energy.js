@@ -35,8 +35,10 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, i
             return
           }
 
-          if (!isQualified(member) && Math.random() < 0.9) {
-            return
+          if (!isQualified(member)) {
+            if (Math.random() < 0.8) {
+              return
+            }
           }
 
           let fishingPoleLevel = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole level
