@@ -29,7 +29,7 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, i
       channel.members.filter(member => !banlist[member.id] && !member.user.bot).tap(member => {
         let userId = member.id
 
-        if (fishing[guildId] && fishing[guildId][userId]) { // is fishing
+        if (fishing[guildId] && fishing[guildId][userId] && inventoryVal[guildId][member.id]) { // is fishing
           let userInventory = inventory.parseInventory(inventoryVal[guildId][member.id])
           if (!userInventory.hasEmptySlot || !userInventory.tools.$1) {
             return
@@ -37,7 +37,6 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, i
 
           if (!isQualified(member)) {
             if (Math.random() < 0.5) {
-              console.log('miss')
               return
             }
           }
@@ -59,8 +58,6 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing, energyVal, i
             luck -= item[1]
             return false
           })
-
-          console.log(luck)
 
           if (loot === -1) { // get nothing
             return
