@@ -20,7 +20,9 @@ const errors = {
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
   ERROR_MAX_LEVEL: '無法購買更高等級的道具',
   ERROR_IS_FISHING: '正在釣魚',
-  ERROR_NO_ITEM: '沒有物品'
+  ERROR_NO_TOOL: '未持有特定道具',
+  ERROR_NO_ITEM: '沒有物品',
+  ERROR_FULL_BAG: '背包滿了'
 }
 
 // command history
@@ -55,7 +57,7 @@ module.exports = ({ message, description = '', errorCode }) => {
     cmdLogs[userId].shift()
   }
   if (cmdLogs[userId].length > 60) {
-    warning = '\n:warning:'
+    warning = ':warning:'
   }
 
   let timeDisplay = moment(message.createdAt).format('HH:mm:ss')
@@ -70,7 +72,7 @@ module.exports = ({ message, description = '', errorCode }) => {
     inline: true
   }, {
     name: 'User',
-    value: `${userId}\n${message.member.displayName} (${cmdLogs[userId].length})${warning}`,
+    value: `${userId} ${warning}\n${message.member.displayName} (${cmdLogs[userId].length})`,
     inline: true
   }]
 

@@ -1,7 +1,8 @@
 const sendResponseMessage = require('../util/sendResponseMessage')
+const inventory = require('../util/inventory')
 
 const hints = [
-  '釣魚前記得購買 :school_satchel: 背包與 :fishing_pole_and_fish: 釣竿，別在岸邊癡癡地凝視水面！`87!help buy`',
+  '釣魚前記得購買 :school_satchel: 背包與 :fishing_pole_and_fish: 釣竿 `87!help buy`',
   '有非常低的機率可以釣到 :gem: 是很值錢的東西！',
   '有空提醒旁邊的人背包滿了，趕快回來賣魚吧。',
   '釣到的垃圾會直接丟到旁邊的垃圾桶，地球感謝你讓海洋更乾淨了一點。',
@@ -27,27 +28,39 @@ const hints = [
   '喵PASS ~(*′△`)ﾉ',
   '你已經被幸運甜甜圈 :doughnut: 造訪，它對你的人生並不會帶來什麼改變。',
   'hello, world',
-  '不知不覺這個專案也突破一千行程式碼了，每次更新後還能動真是奇蹟'
+  '不知不覺這個專案也突破一千行程式碼了，每次更新後還能動真是奇蹟',
+  '接聽語音頻道可以獲得能量點數，但前提是不能關麥克風或是拒聽',
+  '以 :battery: 作為開頭的語音頻道會自動變成**掛網用語音頻道**，接聽後必須同時關閉麥克風以及拒聽才會獲得能量與釣魚加成，另外，在掛網用頻道內無法使用任何 Power87 指令。'
 ]
 
 module.exports = ({ database, message, guildId, userId }) => {
-  database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
-    let isFishing = 0
-    let hint = ''
+  database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
+    let inventoryRaw = snapshot.val() || ''
+    let usreInventory = inventory.parseInventory(inventoryRaw)
 
-    if (!snapshot.exists()) {
-      database.ref(`/fishing/${guildId}/${userId}`).set(1)
-      isFishing = 1
-      hint = hints[Math.floor(Math.random() * hints.length)]
-    } else {
-      database.ref(`/fishing/${guildId}/${userId}`).remove()
+    if (!usreInventory.tools.$0 || !usreInventory.tools.$1) {
+      sendResponseMessage({ message, errorCode: 'ERROR_NO_TOOL' })
+      return
     }
 
-    let fishingDisplay = [
-      '結束釣魚',
-      '開始釣魚'
-    ]
+    database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
+      let isFishing = 0
+      let hint = ''
 
-    sendResponseMessage({ message, description: `:fishing_pole_and_fish: ${message.member.displayName} ${fishingDisplay[isFishing]}\n\n${hint}` })
+      if (!snapshot.exists()) {
+        database.ref(`/fishing/${guildId}/${userId}`).set(1)
+        isFishing = 1
+        hint = hints[Math.floor(Math.random() * hints.length)]
+      } else {
+        database.ref(`/fishing/${guildId}/${userId}`).remove()
+      }
+
+      let fishingDisplay = [
+        '結束釣魚',
+        '開始釣魚'
+      ]
+
+      sendResponseMessage({ message, description: `:fishing_pole_and_fish: ${message.member.displayName} ${fishingDisplay[isFishing]}\n\n${hint}` })
+    })
   })
 }
