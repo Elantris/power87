@@ -38,11 +38,8 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         targetEnergy = energy.INITIAL_USER_ENERGY
       }
 
-      userEnergy -= energyCost
-      targetEnergy += energyGain
-
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-      database.ref(`/energy/${guildId}/${targetId}`).set(targetEnergy)
+      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
+      database.ref(`/energy/${guildId}/${targetId}`).set(targetEnergy + energyGain)
 
       sendResponseMessage({ message, description: `:money_mouth: ${sayMessage}${message.member.displayName} 消耗了 ${energyCost} 點八七能量，<@${targetId}> 獲得了 ${energyGain} 點八七能量` })
     })

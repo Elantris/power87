@@ -3,18 +3,18 @@ const commandCooldown = {
   delete: 2,
   list: 10,
 
-  energy: 5,
+  energy: 3,
   daily: 30,
-  give: 5,
+  give: 3,
   rank: 30,
   slot: 15,
 
-  inventory: 15,
-  buy: 5,
-  sell: 5,
+  inventory: 5,
+  buy: 3,
+  sell: 3,
   fishing: 15,
 
-  help: 5,
+  help: 3,
   clean: 15,
   about: 15,
 

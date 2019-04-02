@@ -102,7 +102,7 @@ module.exports = {
     value: 1
   },
   17: {
-    kind: 'garbage',
+    kind: 'event',
     name: '假的鑽石',
     icon: 'gem',
     value: 10

@@ -31,8 +31,9 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   }
 
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
-    let inventoryRaw = snapshot.val() || ''
+    let inventoryRaw = snapshot.val()
     if (!snapshot.exists()) {
+      inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
     let userInventory = inventory.parseInventory(inventoryRaw)

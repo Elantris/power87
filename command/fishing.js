@@ -35,8 +35,9 @@ const hints = [
 
 module.exports = ({ database, message, guildId, userId }) => {
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
-    let inventoryRaw = snapshot.val() || ''
+    let inventoryRaw = snapshot.val()
     if (!snapshot.exists()) {
+      inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
     let usreInventory = inventory.parseInventory(inventoryRaw)

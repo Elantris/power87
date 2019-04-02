@@ -10,8 +10,8 @@ module.exports = {
     name: 'fishingpole',
     displayName: '釣竿',
     icon: ':fishing_pole_and_fish:',
-    maxLevel: 5,
-    prices: [100, 300, 900, 2700, 8100, 24300]
+    maxLevel: 7,
+    prices: [100, 300, 900, 2700, 8100, 24300, 72900, 218700]
   },
   $2: {
     name: 'sailboat',
