@@ -11,9 +11,7 @@ const gainFromTextChannel = ({ database, guildId, userId }) => {
   })
 }
 
-const isOnline = member => !member.voiceChannel.name.startsWith('🔋') && !member.deaf && !member.mute
-const isAFK = member => member.voiceChannel.name.startsWith('🔋') && member.deaf && member.mute
-const isQualified = member => member.voiceChannelID && (isOnline(member) || isAFK(member))
+const isQualified = member => member.voiceChannelID && !member.deaf
 
 const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
   client.guilds.filter(guild => !banlist[guild.id]).tap(guild => {
@@ -75,7 +73,7 @@ const autoFishing = ({ client, banlist, database, fishing }) => {
         }
 
         if (!isQualified(member)) {
-          if (Math.random() < 0.5) {
+          if (Math.random() < 0.8) {
             return
           }
         }

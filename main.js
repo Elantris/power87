@@ -41,10 +41,6 @@ client.on('message', message => {
     database.ref(`/banlist/${userId}`).remove()
   }
 
-  if (message.member.voiceChannelID && message.member.voiceChannel.name.startsWith('🔋')) {
-    return
-  }
-
   handleMessage({ client, database, fishing, message, guildId, userId })
 })
 
