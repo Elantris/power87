@@ -105,6 +105,6 @@ module.exports = {
     kind: 'event',
     name: '假的鑽石',
     icon: 'gem',
-    value: 10
+    value: 1
   }
 }

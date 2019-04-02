@@ -10,8 +10,10 @@ const gainFromTextChannel = ({ database, guildId, userId }) => {
     database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + 1)
   })
 }
-const isAFK = voiceChannel => voiceChannel && voiceChannel.name.startsWith('🔋')
-const isQualified = member => (isAFK(member.voiceChannel) && member.deaf && member.mute) || (!isAFK(member.voiceChannel) && !member.deaf && !member.mute)
+
+const isOnline = member => !member.voiceChannel.name.startsWith('🔋') && !member.deaf && !member.mute
+const isAFK = member => member.voiceChannel.name.startsWith('🔋') && member.deaf && member.mute
+const isQualified = member => member.voiceChannelID && (isOnline(member) || isAFK(member))
 
 const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
   client.guilds.filter(guild => !banlist[guild.id]).tap(guild => {
