@@ -103,7 +103,7 @@ module.exports = {
   },
   17: {
     kind: 'event',
-    name: '假的鑽石',
+    name: '[活動] 愚人節的假鑽石',
     icon: 'gem',
     value: 1
   }

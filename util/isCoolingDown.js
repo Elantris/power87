@@ -17,6 +17,7 @@ const commandCooldown = {
   help: 3,
   clean: 15,
   about: 15,
+  hint: 5,
 
   res: 2,
   gainFromMessage: 120

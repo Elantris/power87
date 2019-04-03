@@ -16,7 +16,6 @@ const errors = {
 
   // energy
   ERROR_NO_ENERGY: '八七能量不足',
-  ERROR_ALREADY_DAILY: '已完成今日簽到',
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
   ERROR_MAX_LEVEL: '無法購買更高等級的道具',
   ERROR_IS_FISHING: '正在釣魚',
