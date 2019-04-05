@@ -44,13 +44,13 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         description += `\n\n${tools[id].icon} **${tools[id].displayName}**`
         let level = 0
         if (userInventory.tools[id]) {
-          level = parseInt(userInventory.tools[id])
+          level = parseInt(userInventory.tools[id]) + 1
         }
 
-        if (level < tools[id].maxLevel) {
-          description += `+${level + 1}，:battery: **${tools[id].prices[level + 1]}**，\`87!buy ${tools[id].name}\`\n${tools[id].description}`
-        } else {
+        if (level > tools[id].maxLevel) {
           description += ` 已達最高等級`
+        } else {
+          description += `+${level}，:battery: **${tools[id].prices[level]}**，\`87!buy ${tools[id].name}\`\n${tools[id].description}`
         }
       }
 
