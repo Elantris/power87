@@ -78,7 +78,6 @@ const autoFishing = ({ client, banlist, database, fishing }) => {
           }
         }
 
-        let fishingPoleLevel = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole level
         let fishingPool = 0
         if (userInventory.tools.$2) { // sailboat level
           fishingPool = parseInt(userInventory.tools.$2) + 1
@@ -87,8 +86,14 @@ const autoFishing = ({ client, banlist, database, fishing }) => {
         let luck = Math.random()
         let loot = -1
 
-        fishingLootsChance[fishingPool].some(item => {
-          if (luck < item[1] * fishingPoleLevel) {
+        fishingLootsChance[fishingPool].some((item, index) => {
+          let multiplier = 1
+          multiplier += parseInt(userInventory.tools.$1) * 0.01 // fishing pole
+          if (userInventory.tools.$3 && index < 7) {
+            multiplier += 0.01 + parseInt(userInventory.tools.$3) * 0.01 // buoy
+          }
+
+          if (luck < item[1] * multiplier) {
             loot = item[0]
             return true
           }

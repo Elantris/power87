@@ -27,12 +27,12 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     let target = args[1].toLowerCase()
 
     userInventory.items = userInventory.items.map(item => {
-      if (target === 'all' || target === items[item.id].icon || target === items[item.id].kind) {
+      if (target === 'all' || target === items[item.id].kind || target === items[item.id].name || target === items[item.id].icon) {
         if (!soldItems[item.id]) {
           soldItems[item.id] = 0
         }
-        soldItems[item.id]++
-        gainEnergy += items[item.id].value
+        soldItems[item.id] += item.amount
+        gainEnergy += items[item.id].value * item.amount
         return null
       }
       return item

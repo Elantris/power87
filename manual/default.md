@@ -17,7 +17,7 @@
 
 道具：
 `87!inventory`：查看背包
-`87!buy` __tool__：購買道具
+`87!buy` [tool]：購買道具
 `87!sell` __item__：販賣物品
 `87!fishing`：開始/結束釣魚
 

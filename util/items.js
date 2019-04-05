@@ -39,43 +39,43 @@ module.exports = {
     kind: 'fishing',
     name: '章魚',
     icon: 'octopus',
-    value: 100
+    value: 80
   },
   7: {
     kind: 'fishing',
     name: '鱷魚',
     icon: 'crocodile',
-    value: 50
+    value: 40
   },
   8: {
     kind: 'fishing',
     name: '螃蟹',
     icon: 'crab',
-    value: 30
+    value: 20
   },
   9: {
     kind: 'fishing',
     name: '鴨子',
     icon: 'duck',
-    value: 20
+    value: 15
   },
   10: {
     kind: 'fishing',
     name: '海龜',
     icon: 'turtle',
-    value: 15
+    value: 10
   },
   11: {
     kind: 'fishing',
     name: '烏賊',
     icon: 'squid',
-    value: 10
+    value: 7
   },
   12: {
     kind: 'fishing',
     name: '河豚',
     icon: 'blowfish',
-    value: 5
+    value: 4
   },
   13: {
     kind: 'fishing',

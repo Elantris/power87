@@ -4,30 +4,29 @@ const inventory = require('../util/inventory')
 const tools = require('../util/tools')
 
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
-  if (args.length !== 2) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
-  }
-
   if (fishing[guildId] && fishing[guildId][userId]) {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
 
   let toolId = ''
+  let target = ''
   let targetLevel = 0
-  let target = args[1].toLowerCase()
 
-  for (let id in tools) {
-    if (target === tools[id].name) {
-      toolId = id
-      break
+  if (args[1]) {
+    target = args[1].toLowerCase()
+
+    for (let id in tools) {
+      if (target === tools[id].name) {
+        toolId = id
+        break
+      }
     }
-  }
 
-  if (!toolId) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-    return
+    if (!toolId) {
+      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
+      return
+    }
   }
 
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
@@ -37,6 +36,27 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
     let userInventory = inventory.parseInventory(inventoryRaw)
+
+    if (args.length === 1) {
+      let description = `:shopping_cart: ${message.member.displayName} 可購買的商品：`
+
+      for (let id in tools) {
+        description += `\n\n${tools[id].icon} **${tools[id].displayName}**`
+        let level = 0
+        if (userInventory.tools[id]) {
+          level = parseInt(userInventory.tools[id])
+        }
+
+        if (level < tools[id].maxLevel) {
+          description += `+${level + 1}，:battery: **${tools[id].prices[level + 1]}**，\`87!buy ${tools[id].name}\`\n${tools[id].description}`
+        } else {
+          description += ` 已達最高等級`
+        }
+      }
+
+      sendResponseMessage({ message, description })
+      return
+    }
 
     if (userInventory.tools[toolId]) {
       targetLevel = parseInt(userInventory.tools[toolId]) + 1
@@ -67,7 +87,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       updates = updates.split(',').sort().join(',')
       database.ref(`/inventory/${guildId}/${userId}`).set(updates)
 
-      sendResponseMessage({ message, description: `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，成功購買 ${tools[toolId].icon} ${tools[toolId].displayName} +${targetLevel}` })
+      sendResponseMessage({ message, description: `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，成功購買 ${tools[toolId].icon} **${tools[toolId].displayName}** +${targetLevel}` })
     })
   })
 }
