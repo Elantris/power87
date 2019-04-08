@@ -49,7 +49,39 @@ const fishingLootsChance = [
   [['0', 0.0001], ['1', 0.0007], ['2', 0.0007], ['3', 0.0009], ['4', 0.0011], ['5', 0.0014], ['6', 0.0014], ['7', 0.010], ['8', 0.010], ['9', 0.015], ['10', 0.020], ['11', 0.14], ['12', 0.44], ['13', 0.01], ['14', 0.01], ['15', 0.01], ['16', 0.01]]
 ]
 
+const userFishing = ({ guildInventory, guildInventoryUpdates, userInventory, userId }) => {
+  let fishingPool = 0
+  if (userInventory.tools.$2) { // sailboat level
+    fishingPool = parseInt(userInventory.tools.$2) + 1
+  }
+
+  let luck = Math.random()
+  let loot = -1
+
+  fishingLootsChance[fishingPool].some((item, index) => {
+    let multiplier = 1
+    multiplier += parseInt(userInventory.tools.$1) * 0.01 // fishing pole
+    if (userInventory.tools.$3 && index < 7) {
+      multiplier += 0.01 + parseInt(userInventory.tools.$3) * 0.01 // buoy
+    }
+
+    if (luck < item[1] * multiplier) {
+      loot = item[0]
+      return true
+    }
+    luck -= item[1]
+    return false
+  })
+
+  if (loot === -1) { // get nothing
+    return
+  }
+
+  guildInventoryUpdates[userId] = guildInventory[userId] + `,${loot}`
+}
+
 const autoFishing = ({ client, banlist, database, fishing }) => {
+  let timenow = Date.now()
   client.guilds.filter(guild => !banlist[guild.id] && fishing[guild.id]).tap(guild => {
     let guildId = guild.id
 
@@ -67,45 +99,21 @@ const autoFishing = ({ client, banlist, database, fishing }) => {
           return
         }
 
-        let userInventory = inventory.parseInventory(guildInventory[userId])
-        if (!userInventory.hasEmptySlot || !userInventory.tools.$1) {
-          return
-        }
-
         if (!isQualified(member)) {
           if (Math.random() < 0.8) {
             return
           }
         }
 
-        let fishingPool = 0
-        if (userInventory.tools.$2) { // sailboat level
-          fishingPool = parseInt(userInventory.tools.$2) + 1
-        }
-
-        let luck = Math.random()
-        let loot = -1
-
-        fishingLootsChance[fishingPool].some((item, index) => {
-          let multiplier = 1
-          multiplier += parseInt(userInventory.tools.$1) * 0.01 // fishing pole
-          if (userInventory.tools.$3 && index < 7) {
-            multiplier += 0.01 + parseInt(userInventory.tools.$3) * 0.01 // buoy
-          }
-
-          if (luck < item[1] * multiplier) {
-            loot = item[0]
-            return true
-          }
-          luck -= item[1]
-          return false
-        })
-
-        if (loot === -1) { // get nothing
+        let userInventory = inventory.parseInventory(guildInventory[userId])
+        if (!userInventory.hasEmptySlot || !userInventory.tools.$1) {
           return
         }
 
-        guildInventoryUpdates[userId] = guildInventory[userId] + `,${loot}`
+        userFishing({ guildInventory, guildInventoryUpdates, userInventory, userId })
+        if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.5) { // bait buff
+          userFishing({ guildInventory, guildInventoryUpdates, userInventory, userId })
+        }
       })
 
       database.ref(`/inventory/${guildId}`).update(guildInventoryUpdates)

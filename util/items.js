@@ -1,110 +1,136 @@
 module.exports = {
   0: {
     kind: 'jewel',
-    name: '鑽石',
-    icon: 'gem',
+    name: 'gem',
+    icon: ':gem:',
+    displayName: '鑽石',
     value: 1000
   },
   1: {
-    kind: 'fishing',
-    name: '企鵝',
-    icon: 'penguin',
+    kind: 'fish',
+    name: 'penguin',
+    icon: ':penguin:',
+    displayName: '企鵝',
     value: 500
   },
   2: {
-    kind: 'fishing',
-    name: '比較的大鯨魚',
-    icon: 'whale',
+    kind: 'fish',
+    name: 'whale',
+    icon: ':whale:',
+    displayName: '比較的大鯨魚',
     value: 500
   },
   3: {
-    kind: 'fishing',
-    name: '鯨魚',
-    icon: 'whale2',
+    kind: 'fish',
+    name: 'whale2',
+    icon: ':whale2:',
+    displayName: '鯨魚',
     value: 300
   },
   4: {
-    kind: 'fishing',
-    name: '鯊魚',
-    icon: 'shark',
+    kind: 'fish',
+    name: 'shark',
+    icon: ':shark:',
+    displayName: '鯊魚',
     value: 200
   },
   5: {
-    kind: 'fishing',
-    name: '海豚',
-    icon: 'dolphin',
+    kind: 'fish',
+    name: 'dolphin',
+    icon: ':dolphin:',
+    displayName: '海豚',
     value: 100
   },
   6: {
-    kind: 'fishing',
-    name: '章魚',
-    icon: 'octopus',
+    kind: 'fish',
+    name: 'octopus',
+    icon: ':octopus:',
+    displayName: '章魚',
     value: 80
   },
   7: {
-    kind: 'fishing',
-    name: '鱷魚',
-    icon: 'crocodile',
+    kind: 'fish',
+    name: 'crocodile',
+    icon: ':crocodile:',
+    displayName: '鱷魚',
     value: 40
   },
   8: {
-    kind: 'fishing',
-    name: '螃蟹',
-    icon: 'crab',
+    kind: 'fish',
+    name: 'crab',
+    icon: ':crab:',
+    displayName: '螃蟹',
     value: 20
   },
   9: {
-    kind: 'fishing',
-    name: '鴨子',
-    icon: 'duck',
+    kind: 'fish',
+    name: 'duck',
+    icon: ':duck:',
+    displayName: '鴨子',
     value: 15
   },
   10: {
-    kind: 'fishing',
-    name: '海龜',
-    icon: 'turtle',
+    kind: 'fish',
+    name: 'turtle',
+    icon: ':turtle:',
+    displayName: '海龜',
     value: 10
   },
   11: {
-    kind: 'fishing',
-    name: '烏賊',
-    icon: 'squid',
+    kind: 'fish',
+    name: 'squid',
+    icon: ':squid:',
+    displayName: '烏賊',
     value: 7
   },
   12: {
-    kind: 'fishing',
-    name: '河豚',
-    icon: 'blowfish',
+    kind: 'fish',
+    name: 'blowfish',
+    icon: ':blowfish:',
+    displayName: '河豚',
     value: 4
   },
   13: {
-    kind: 'fishing',
-    name: '熱帶魚',
-    icon: 'tropical_fish',
+    kind: 'fish',
+    name: 'tropical_fish',
+    icon: ':tropical_fish:',
+    displayName: '熱帶魚',
     value: 3
   },
   14: {
-    kind: 'fishing',
-    name: '魚',
-    icon: 'fish',
+    kind: 'fish',
+    name: 'fish',
+    icon: ':fish:',
+    displayName: '魚',
     value: 2
   },
   15: {
-    kind: 'fishing',
-    name: '青蛙',
-    icon: 'frog',
+    kind: 'fish',
+    name: 'frog',
+    icon: ':frog:',
+    displayName: '青蛙',
     value: 1
   },
   16: {
-    kind: 'fishing',
-    name: '蝦',
-    icon: 'shrimp',
+    kind: 'fish',
+    name: 'shrimp',
+    icon: ':shrimp:',
+    displayName: '蝦',
     value: 1
   },
   17: {
     kind: 'event',
-    name: '[活動] 愚人節的假鑽石',
-    icon: 'gem',
+    name: 'gem',
+    icon: ':gem:',
+    displayName: '[活動] 愚人節的假鑽石',
     value: 1
+  },
+  18: {
+    kind: 'buff',
+    name: 'bait',
+    icon: ':bug:',
+    displayName: '魚餌',
+    value: 8,
+    price: 80
   }
 }

@@ -1,3 +1,18 @@
+const tools = require('./tools')
+const items = require('./items')
+const buffs = require('./buffs')
+const mapping = {
+  Bag: tools.$0,
+  FishingPole: tools.$1,
+  SailBoat: tools.$2,
+  Trident: tools.$3,
+  gem: items[0],
+  penguin: items[1],
+  bait: buffs.$0
+}
+
+const display = (item) => `${mapping[item].icon} ${mapping[item].displayName}`
+
 const hints = [
   // project, system
   '公告頁面的連結，這裡可以看到更新資訊！ <https://hackmd.io/s/VkLSj2pOJW>',
@@ -6,10 +21,11 @@ const hints = [
   '有空就多看看更新公告或者是使用 `87!hint` 吧',
 
   // game
-  '`87!help buy` 釣魚前記得購買 :school_satchel: 背包與 :fishing_pole_and_fish: 釣竿',
-  ':fishing_pole_and_fish: 釣竿等級越高越容易釣到魚喔',
-  '提升 :sailboat: 帆船等級可以解鎖更多種類的魚獲，說不定還可以看到 :penguin:',
-  '有非常低的機率可以釣到 :gem: 是很值錢的東西！',
+  `\`87!buy\` 釣魚前記得購買 ${display('Bag')} 與 ${display('FishingPole')}`,
+  `${display('FishingPole')} 等級越高越容易釣到魚喔`,
+  `提升 ${display('SailBoat')} 等級可以解鎖更多種類的魚獲，說不定還可以看到 ${display('penguin')}`,
+  `道具屋上架了 ${display('Trident')}，提升等級可以增加稀有魚種獲得的機率，快使用 \`87!buy\` 查看吧'`,
+  `有非常低的機率可以釣到 ${display('gem')} 是很值錢的東西！`,
   '有空提醒旁邊的人背包滿了，趕快回來賣魚吧。',
   '接聽語音頻道可以獲得能量點數，進入釣魚模式有較高的機率釣到魚，但拒聽（關閉耳機圖示）視同未接聽語音頻道！',
   '`87!daily` 每日簽到可以獲得固定點數，累計連續簽到的話還可以獲得額外的獎勵點數',

@@ -21,6 +21,12 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     inventoryDisplay += `\n\n物品：[${userInventory.items.length}/${userInventory.maxSlots}]`
 
     userInventory.items.sort((itemA, itemB) => {
+      if (items[itemA.id].kind < items[itemB.id].kind) {
+        return -1
+      }
+      if (items[itemA.id].kind > items[itemB.id].kind) {
+        return 1
+      }
       return (items[itemB.id].value - items[itemA.id].value) || (itemA.id - itemB.id)
     }).forEach((item, index) => {
       if (index % 8 === 0) {
@@ -28,7 +34,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       } else {
         inventoryDisplay += ' '
       }
-      inventoryDisplay += `:${items[item.id].icon}:`
+      inventoryDisplay += `${items[item.id].icon}`
     })
 
     sendResponseMessage({ message, description: `:diamond_shape_with_a_dot_inside: ${message.member.displayName} 的資產${inventoryDisplay}` })
