@@ -20,9 +20,10 @@
 `87!buy` [tool]：購買道具
 `87!sell` __item__：販賣物品
 `87!fishing`：開始/結束釣魚
+`87!use` [buff]：使用增益道具
 
 其他：
-`87!help` [command]：指令說明
+`87!help` [target]：詳細說明
 `87!hint` [number]：攻略提示
 `87!clean` [amount]：清除機器人訊息、預設 20 則
 `87!about`：Power87 專案介紹、公告、更新資訊、意見調查

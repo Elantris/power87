@@ -5,8 +5,6 @@ const inventory = require('../util/inventory')
 const tools = require('../util/tools')
 const items = require('../util/items')
 
-const products = [18]
-
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   if (fishing[guildId] && fishing[guildId][userId]) {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
@@ -21,7 +19,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     price: 0
   }
 
-  // user target
+  // user choice
   if (args[1]) {
     target.name = emoji.unemojify(args[1]).toLowerCase()
 
@@ -33,15 +31,18 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       }
     }
 
-    products.some(id => {
+    for (let id in items) {
+      if (!items[id].price) {
+        continue
+      }
+
       if (target.name === items[id].name || target.name === items[id].icon || target.name === items[id].displayName) {
         target.id = id
         target.type = 'item'
         target.price = items[id].price
-        return true
+        break
       }
-      return false
-    })
+    }
 
     if (!target.id) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
@@ -74,9 +75,11 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
 
       description += `\n\n__增益效果__：`
 
-      products.forEach(id => {
-        description += `\n${items[id].icon} **${items[id].displayName}**，:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
-      })
+      for (let id in items) {
+        if (items[id].price) {
+          description += `\n${items[id].icon} **${items[id].displayName}**，:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
+        }
+      }
 
       sendResponseMessage({ message, description })
       return

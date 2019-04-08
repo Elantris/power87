@@ -1,7 +1,9 @@
+const moment = require('moment')
 const sendResponseMessage = require('../util/sendResponseMessage')
 const inventory = require('../util/inventory')
 const tools = require('../util/tools')
 const items = require('../util/items')
+const buffs = require('../util/buffs')
 
 module.exports = ({ args, database, message, guildId, userId }) => {
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
@@ -13,13 +15,19 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     let userInventory = inventory.parseInventory(inventoryRaw)
 
     let inventoryDisplay = `\n\n道具：`
+    for (let id in userInventory.tools) {
+      inventoryDisplay += `${tools[id].icon}+${userInventory.tools[id]} `
+    }
 
-    for (let tool in userInventory.tools) {
-      inventoryDisplay += ` ${tools[tool].icon}+${userInventory.tools[tool]}`
+    inventoryDisplay += `\n\n增益效果：`
+    for (let id in userInventory.buffs) {
+      if (userInventory.buffs[id] > message.createdTimestamp) {
+        let buffEndsIn = moment(userInventory.buffs[id] - message.createdTimestamp).format('HH:mm')
+        inventoryDisplay += `${buffs[id].icon} ${buffEndsIn}`
+      }
     }
 
     inventoryDisplay += `\n\n物品：[${userInventory.items.length}/${userInventory.maxSlots}]`
-
     userInventory.items.sort((itemA, itemB) => {
       if (items[itemA.id].kind < items[itemB.id].kind) {
         return -1
