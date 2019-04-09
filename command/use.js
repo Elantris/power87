@@ -5,10 +5,16 @@ const items = require('../util/items')
 const buffs = require('../util/buffs')
 
 module.exports = ({ args, client, database, fishing, message, guildId, userId }) => {
+  if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
+    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
+    return
+  }
+
   let target = {
+    name: '',
     itemId: '',
     buffId: '',
-    name: '',
+    amount: 1,
     firstIndex: 0
   }
 
@@ -24,6 +30,9 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       if (target.name === buffs[id].name || target.name === buffs[id].icon || target.name === buffs[id].displayName) {
         target.buffId = id
         target.itemId = buffs[id].itemId
+        if (args[2]) {
+          target.amount = parseInt(args[2])
+        }
         break
       }
     }
@@ -43,6 +52,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       return
     }
     let userInventory = inventory.parseInventory(inventoryRaw)
+
     let itemsCount = {}
     userInventory.items.filter(item => items[item.id].kind === 'buff').forEach(item => {
       if (!itemsCount[item.id]) {
@@ -63,10 +73,14 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       return
     }
 
-    // user choice
+    // user target
     if (!itemsCount[target.itemId]) {
       sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
       return
+    }
+
+    if (target.amount > itemsCount[target.itemId]) {
+      target.amount = itemsCount[target.itemId]
     }
 
     userInventory.items.some((item, index) => {
@@ -76,19 +90,19 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       }
       return false
     })
-    userInventory.items.splice(target.firstIndex, 1)
+    userInventory.items.splice(target.firstIndex, target.amount)
 
     if (!userInventory.buffs[target.buffId] || userInventory.buffs[target.buffId] < message.createdTimestamp) {
       userInventory.buffs[target.buffId] = message.createdTimestamp
     }
-    userInventory.buffs[target.buffId] = parseInt(userInventory.buffs[target.buffId]) + buffs[target.buffId].duration
+    userInventory.buffs[target.buffId] = parseInt(userInventory.buffs[target.buffId]) + buffs[target.buffId].duration * target.amount
 
     let updates = inventory.makeInventory(userInventory)
     updates = updates.split(',').sort().join(',')
     database.ref(`/inventory/${guildId}/${userId}`).set(updates)
 
     // response
-    let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${buffs[target.buffId].icon}**${buffs[target.buffId].displayName}**`
+    let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${buffs[target.buffId].icon}**${buffs[target.buffId].displayName}**x${target.amount}`
     sendResponseMessage({ message, description })
   })
 }

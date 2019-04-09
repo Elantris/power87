@@ -6,15 +6,21 @@ const tools = require('../util/tools')
 const items = require('../util/items')
 
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
-  let target = {
-    id: '',
-    type: '',
-    name: '',
-    level: 0,
-    price: 0
+  if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
+    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
+    return
   }
 
-  // user choice
+  let target = {
+    name: '',
+    id: '',
+    type: '',
+    level: 0,
+    price: 0,
+    amount: 1
+  }
+
+  // user target
   if (args[1]) {
     if (fishing[guildId] && fishing[guildId][userId]) {
       sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
@@ -32,6 +38,9 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     }
 
     for (let id in items) {
+      if (target.type) {
+        break
+      }
       if (!items[id].price) {
         continue
       }
@@ -40,6 +49,9 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         target.id = id
         target.type = 'item'
         target.price = items[id].price
+        if (args[2]) {
+          target.amount = parseInt(args[2])
+        }
         break
       }
     }
@@ -86,7 +98,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       return
     }
 
-    // check tool level
+    // user target
     if (target.type === 'tool' && userInventory.tools[target.id]) {
       target.level = parseInt(userInventory.tools[target.id]) + 1
       if (target.level > tools[target.id].maxLevel) {
@@ -94,6 +106,9 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         return
       }
       target.price = tools[target.id].prices[target.level]
+    } else if (target.type === 'item' && !userInventory.hasEmptySlot) {
+      sendResponseMessage({ message, errorCode: 'ERROR_FULL_BAG' })
+      return
     }
 
     // energy system
@@ -104,38 +119,31 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
       }
 
-      let energyCost = target.price
+      let energyCost = target.price * target.amount
       if (userEnergy < energyCost) {
         sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
         return
       }
 
-      if (target.type === 'item' && !userInventory.hasEmptySlot) {
-        sendResponseMessage({ message, errorCode: 'ERROR_FULL_BAG' })
-        return
-      }
-
       userEnergy -= energyCost
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+
+      let updates = ''
       if (target.type === 'tool') {
         userInventory.tools[target.id] = target.level
+        updates = inventory.makeInventory(userInventory)
       } else if (target.type === 'item') {
-        userInventory.items.push({
-          id: target.id,
-          amount: 1
-        })
+        updates = inventoryRaw + `,${target.id}`.repeat(target.amount)
       }
-
-      let updates = inventory.makeInventory(userInventory)
       updates = updates.split(',').sort().join(',')
       database.ref(`/inventory/${guildId}/${userId}`).set(updates)
 
       // response
-      let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，成功購買 `
+      let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `
       if (target.type === 'tool') {
         description += `${tools[target.id].icon}**${tools[target.id].displayName}**+${target.level}`
       } else if (target.type === 'item') {
-        description += `${items[target.id].icon}**${items[target.id].displayName}**`
+        description += `${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}`
       }
 
       sendResponseMessage({ message, description })

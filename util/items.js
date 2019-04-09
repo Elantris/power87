@@ -8,7 +8,7 @@ module.exports = {
     value: 1000
   },
   1: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'penguin',
     icon: ':penguin:',
     displayName: '企鵝',
@@ -16,7 +16,7 @@ module.exports = {
     value: 500
   },
   2: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'whale',
     icon: ':whale:',
     displayName: '比較的大鯨魚',
@@ -24,7 +24,7 @@ module.exports = {
     value: 500
   },
   3: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'whale2',
     icon: ':whale2:',
     displayName: '鯨魚',
@@ -32,7 +32,7 @@ module.exports = {
     value: 300
   },
   4: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'shark',
     icon: ':shark:',
     displayName: '鯊魚',
@@ -40,7 +40,7 @@ module.exports = {
     value: 200
   },
   5: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'dolphin',
     icon: ':dolphin:',
     displayName: '海豚',
@@ -48,7 +48,7 @@ module.exports = {
     value: 100
   },
   6: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'octopus',
     icon: ':octopus:',
     displayName: '章魚',
@@ -56,7 +56,7 @@ module.exports = {
     value: 80
   },
   7: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'crocodile',
     icon: ':crocodile:',
     displayName: '鱷魚',
@@ -64,7 +64,7 @@ module.exports = {
     value: 40
   },
   8: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'crab',
     icon: ':crab:',
     displayName: '螃蟹',
@@ -72,7 +72,7 @@ module.exports = {
     value: 20
   },
   9: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'duck',
     icon: ':duck:',
     displayName: '鴨子',
@@ -80,7 +80,7 @@ module.exports = {
     value: 15
   },
   10: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'turtle',
     icon: ':turtle:',
     displayName: '海龜',
@@ -88,7 +88,7 @@ module.exports = {
     value: 10
   },
   11: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'squid',
     icon: ':squid:',
     displayName: '烏賊',
@@ -96,7 +96,7 @@ module.exports = {
     value: 7
   },
   12: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'blowfish',
     icon: ':blowfish:',
     displayName: '河豚',
@@ -104,7 +104,7 @@ module.exports = {
     value: 4
   },
   13: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'tropical_fish',
     icon: ':tropical_fish:',
     displayName: '熱帶魚',
@@ -112,7 +112,7 @@ module.exports = {
     value: 3
   },
   14: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'fish',
     icon: ':fish:',
     displayName: '魚',
@@ -120,7 +120,7 @@ module.exports = {
     value: 2
   },
   15: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'frog',
     icon: ':frog:',
     displayName: '青蛙',
@@ -128,7 +128,7 @@ module.exports = {
     value: 1
   },
   16: {
-    kind: 'fish',
+    kind: 'fishing',
     name: 'shrimp',
     icon: ':shrimp:',
     displayName: '蝦',
