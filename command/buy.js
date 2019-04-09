@@ -106,9 +106,15 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         return
       }
       target.price = tools[target.id].prices[target.level]
-    } else if (target.type === 'item' && !userInventory.hasEmptySlot) {
-      sendResponseMessage({ message, errorCode: 'ERROR_FULL_BAG' })
-      return
+    } else if (target.type === 'item') {
+      if (!userInventory.hasEmptySlot) {
+        sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
+        return
+      }
+      if (userInventory.items.length + target.amount > userInventory.maxSlots) {
+        sendResponseMessage({ message, errorCode: 'ERROR_BAG_EXCEED' })
+        return
+      }
     }
 
     // energy system
