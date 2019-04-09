@@ -149,8 +149,8 @@ module.exports = {
     icon: ':bug:',
     displayName: '魚餌',
     description: '使用後一小時內釣魚時有機會一次釣起多條魚，重複使用會延長時效。',
-    value: 8,
-    price: 80
+    value: 3,
+    price: 30
   },
   19: {
     kind: 'buff',

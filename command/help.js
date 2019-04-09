@@ -47,7 +47,7 @@ module.exports = ({ args, message }) => {
       if (items[id].price) {
         description += `\n購買價格：:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
       }
-      description += `\n販賣價格：:battery: **${items[id].value || 0}**，\`87!sell ${items[id].kind}\``
+      description += `\n販賣價格：:battery: **${items[id].value || 0}**，\`87!sell ${items[id].name}\``
     }
   }
 
