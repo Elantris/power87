@@ -16,4 +16,5 @@
 這間道具販賣屋的店主很八七。收購都用最低價
 
 **jewel**: :gem:
-**fishing**: :penguin: :whale: :whale2: :shark: :dolphin: :octopus: :crocodile: :crab: :duck: :turtle: :squid: :blowfish: :tropical_fish: :fish: :frog: :shrimp:
+**fish**: :penguin: :whale: :whale2: :shark: :dolphin: :octopus: :crocodile: :crab: :duck: :turtle: :squid: :blowfish: :tropical_fish: :fish: :frog: :shrimp:
+**buff**: :bug: :candy:

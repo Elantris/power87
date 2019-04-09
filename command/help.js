@@ -31,23 +31,23 @@ module.exports = ({ args, message }) => {
   description = ':diamond_shape_with_a_dot_inside: 道具/物品詳細說明'
   let targetNotFound = true
 
-  for (let toolId in tools) {
-    if (target === tools[toolId].name || target === tools[toolId].icon || target === tools[toolId].displayName) {
+  for (let id in tools) {
+    if (target === tools[id].name || target === tools[id].icon || target === tools[id].displayName) {
       targetNotFound = false
-      description += `\n\n${tools[toolId].icon} **${tools[toolId].displayName}**，${tools[toolId].description}`
-      description += `\n初始購買價格：:battery: **${tools[toolId].prices[0]}**，\`87!buy ${tools[toolId].name}\``
+      description += `\n\n${tools[id].icon} **${tools[id].displayName}**，${tools[id].description}`
+      description += `\n初始購買價格：:battery: **${tools[id].prices[0]}**，\`87!buy ${tools[id].name}\``
       break
     }
   }
 
-  for (let itemId in items) {
-    if (target === items[itemId].name || target === items[itemId].icon || target === items[itemId].displayName) {
+  for (let id in items) {
+    if (target === items[id].name || target === items[id].icon || target === items[id].displayName) {
       targetNotFound = false
-      description += `\n\n${items[itemId].icon} **${items[itemId].displayName}**，${items[itemId].description}`
-      if (items[itemId].price) {
-        description += `\n購買價格：:battery: **${items[itemId].price}**，\`87!buy ${items[itemId].name}\``
+      description += `\n\n${items[id].icon} **${items[id].displayName}**，分類：\`${items[id].kind}\`，${items[id].description}`
+      if (items[id].price) {
+        description += `\n購買價格：:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
       }
-      description += `\n販賣價格：:battery: **${items[itemId].value || 0}**`
+      description += `\n販賣價格：:battery: **${items[id].value || 0}**，\`87!sell ${items[id].kind}\``
     }
   }
 

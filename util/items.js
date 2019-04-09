@@ -137,7 +137,7 @@ module.exports = {
   },
   17: {
     kind: 'event',
-    name: 'gem',
+    name: 'fakegem',
     icon: ':gem:',
     displayName: '[活動] 愚人節的假鑽石',
     description: '2019/4/1 當天我忙完的時候已經 23:45 了，花了 6 分鐘緊急在物品列表裡加了一個應景的假鑽石，接著在每個背包裡面偷偷放進一顆，似乎騙到了不少人 ヽ( ° ▽°)ノ',

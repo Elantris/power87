@@ -12,13 +12,13 @@ const commandCooldown = {
   inventory: 5,
   buy: 3,
   sell: 3,
-  fishing: 15,
+  fishing: 10,
   use: 3,
 
-  help: 3,
+  help: 2,
   clean: 15,
-  about: 15,
-  hint: 5,
+  about: 30,
+  hint: 2,
 
   res: 2,
   gainFromMessage: 120

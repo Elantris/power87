@@ -1,4 +1,3 @@
-const moment = require('moment')
 const sendResponseMessage = require('../util/sendResponseMessage')
 const inventory = require('../util/inventory')
 const tools = require('../util/tools')
@@ -22,8 +21,10 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     inventoryDisplay += `\n\n增益效果：`
     for (let id in userInventory.buffs) {
       if (userInventory.buffs[id] > message.createdTimestamp) {
-        let buffEndsIn = moment(userInventory.buffs[id] - message.createdTimestamp).format('HH:mm')
-        inventoryDisplay += `${buffs[id].icon} ${buffEndsIn}`
+        let buffLast = (userInventory.buffs[id] - message.createdTimestamp) / 60000
+        let buffHour = Math.floor(buffLast / 60).toString().padStart(2, '0')
+        let buffMinute = Math.floor(buffLast % 60).toString().padStart(2, '0')
+        inventoryDisplay += `${buffs[id].icon} ${buffHour}:${buffMinute}`
       }
     }
 

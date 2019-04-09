@@ -26,6 +26,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     let soldItems = {}
     let gainEnergy = 0
     let target = emoji.unemojify(args[1]).toLowerCase()
+    let originItemsLength = userInventory.items.length
 
     userInventory.items = userInventory.items.filter(item => {
       if (target === 'all' || target === items[item.id].kind || target === items[item.id].name || target === items[item.id].icon || target === items[item.id].displayName) {
@@ -39,7 +40,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       return true
     })
 
-    if (gainEnergy === 0) {
+    if (originItemsLength === userInventory.items.length) {
       sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
       return
     }

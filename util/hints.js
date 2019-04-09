@@ -8,10 +8,11 @@ const mapping = {
   Trident: tools.$3,
   gem: items[0],
   penguin: items[1],
-  bait: buffs.$0
+  bait: buffs['%0'],
+  candy: buffs['%1']
 }
 
-const display = (item) => `${mapping[item].icon} ${mapping[item].displayName}`
+const display = (item) => `${mapping[item].icon} **${mapping[item].displayName}**`
 
 const hints = [
   // project, system
@@ -24,12 +25,17 @@ const hints = [
   `\`87!buy\` 釣魚前記得購買 ${display('Bag')} 與 ${display('FishingPole')}`,
   `${display('FishingPole')} 等級越高越容易釣到魚喔`,
   `提升 ${display('SailBoat')} 等級可以解鎖更多種類的魚獲，說不定還可以看到 ${display('penguin')}`,
-  `道具屋上架了 ${display('Trident')}，提升等級可以增加稀有魚種獲得的機率，快使用 \`87!buy\` 查看吧'`,
+  `道具屋上架了 ${display('Trident')}，提升等級可以增加稀有魚種獲得的機率，快使用 \`87!buy\` 吧'`,
   `有非常低的機率可以釣到 ${display('gem')} 是很值錢的東西！`,
   '有空提醒旁邊的人背包滿了，趕快回來賣魚吧。',
   '接聽語音頻道可以獲得能量點數，進入釣魚模式有較高的機率釣到魚，但拒聽（關閉耳機圖示）視同未接聽語音頻道！',
   '`87!daily` 每日簽到可以獲得固定點數，累計連續簽到的話還可以獲得額外的獎勵點數',
   '`87!slot` 來試試手氣吧！',
+  `\`87!buy\` 道具屋新增了增益道具 ${display('bait')}、${display('candy')}，使用後可以在一定時間內獲得特殊效果，快去看看吧！`,
+  '`87!use` 可以使用背包內的增益道具',
+  '`87!help` 除了指令以外現在還可以用道具或物品的圖示、名稱查詢詳細說明，例如 `87!help :candy:`',
+  '遇到不知道用處的東西就用 `87!help` 查看吧',
+  '為了避免賣掉不該賣的東西，使用 `87!sell` 指令時可以只賣掉特定分類的物品，例如 `87!sell fish`',
 
   // murmur
   '釣到的垃圾會直接丟到旁邊的垃圾桶，地球感謝你讓海洋更乾淨了一點。',

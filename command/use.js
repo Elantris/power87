@@ -20,10 +20,10 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
   if (args[1]) {
     // check exists
     target.name = emoji.unemojify(args[1]).toLowerCase()
-    for (let buffId in buffs) {
-      if (target.name === buffs[buffId].name || target.name === buffs[buffId].icon || target.name === buffs[buffId].displayName) {
-        target.buffId = buffId
-        target.itemId = buffs[buffId].itemId
+    for (let id in buffs) {
+      if (target.name === buffs[id].name || target.name === buffs[id].icon || target.name === buffs[id].displayName) {
+        target.buffId = id
+        target.itemId = buffs[id].itemId
         break
       }
     }
