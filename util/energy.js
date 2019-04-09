@@ -57,12 +57,16 @@ const userFishing = ({ guildInventory, guildInventoryUpdates, userInventory, use
 
   let luck = Math.random()
   let loot = -1
+  let multiplier = 1
 
   fishingLootsChance[fishingPool].some((item, index) => {
-    let multiplier = 1
-    multiplier += parseInt(userInventory.tools.$1) * 0.01 // fishing pole
-    if (userInventory.tools.$3 && index < 7) {
-      multiplier += 0.01 + parseInt(userInventory.tools.$3) * 0.01 // buoy
+    if (index === 1) {
+      multiplier = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole, buoy
+      if (userInventory.tools.$3) {
+        multiplier += 0.01 + parseInt(userInventory.tools.$3) * 0.01 // buoy
+      }
+    } else if (index === 6) {
+      multiplier = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole
     }
 
     if (luck < item[1] * multiplier) {
@@ -111,7 +115,7 @@ const autoFishing = ({ client, banlist, database, fishing }) => {
         }
 
         userFishing({ guildInventory, guildInventoryUpdates, userInventory, userId })
-        if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.5) { // bait buff
+        if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.8) { // bait buff
           userFishing({ guildInventory, guildInventoryUpdates, userInventory, userId })
         }
       })

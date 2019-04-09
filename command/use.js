@@ -5,11 +5,6 @@ const items = require('../util/items')
 const buffs = require('../util/buffs')
 
 module.exports = ({ args, client, database, fishing, message, guildId, userId }) => {
-  if (fishing[guildId] && fishing[guildId][userId]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    return
-  }
-
   let target = {
     itemId: '',
     buffId: '',
@@ -18,6 +13,11 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
   }
 
   if (args[1]) {
+    if (fishing[guildId] && fishing[guildId][userId]) {
+      sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+      return
+    }
+
     // check exists
     target.name = emoji.unemojify(args[1]).toLowerCase()
     for (let id in buffs) {
@@ -56,7 +56,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       let description = `:arrow_double_up: ${message.member.displayName} 背包內可用的增益道具：\n`
 
       for (let itemId in itemsCount) {
-        description += `\n${items[itemId].icon} ${items[itemId].displayName}x${itemsCount[itemId]}`
+        description += `\n${items[itemId].icon}**${items[itemId].displayName}**x${itemsCount[itemId]}，\`87!use ${items[itemId].name}\``
       }
 
       sendResponseMessage({ message, description })
@@ -88,7 +88,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
     database.ref(`/inventory/${guildId}/${userId}`).set(updates)
 
     // response
-    let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${buffs[target.buffId].icon} ${buffs[target.buffId].displayName}`
+    let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${buffs[target.buffId].icon}**${buffs[target.buffId].displayName}**`
     sendResponseMessage({ message, description })
   })
 }

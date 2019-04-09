@@ -6,11 +6,6 @@ const tools = require('../util/tools')
 const items = require('../util/items')
 
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
-  if (fishing[guildId] && fishing[guildId][userId]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    return
-  }
-
   let target = {
     id: '',
     type: '',
@@ -21,6 +16,11 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
 
   // user choice
   if (args[1]) {
+    if (fishing[guildId] && fishing[guildId][userId]) {
+      sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+      return
+    }
+
     target.name = emoji.unemojify(args[1]).toLowerCase()
 
     for (let id in tools) {
@@ -71,14 +71,14 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
           }
         }
 
-        description += `\n${tools[id].icon} **${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
+        description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
       }
 
       description += `\n\n__增益效果__：`
 
       for (let id in items) {
         if (items[id].price) {
-          description += `\n${items[id].icon} **${items[id].displayName}**，:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
+          description += `\n${items[id].icon}**${items[id].displayName}**，:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
         }
       }
 
@@ -133,9 +133,9 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       // response
       let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，成功購買 `
       if (target.type === 'tool') {
-        description += `${tools[target.id].icon} **${tools[target.id].displayName}** +${target.level}`
+        description += `${tools[target.id].icon}**${tools[target.id].displayName}**+${target.level}`
       } else if (target.type === 'item') {
-        description += `${items[target.id].icon} **${items[target.id].displayName}**`
+        description += `${items[target.id].icon}**${items[target.id].displayName}**`
       }
 
       sendResponseMessage({ message, description })

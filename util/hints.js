@@ -12,7 +12,7 @@ const mapping = {
   candy: buffs['%1']
 }
 
-const display = (item) => `${mapping[item].icon} **${mapping[item].displayName}**`
+const display = (item) => `${mapping[item].icon}**${mapping[item].displayName}**`
 
 const hints = [
   // project, system

@@ -34,7 +34,7 @@ module.exports = ({ args, message }) => {
   for (let id in tools) {
     if (target === tools[id].name || target === tools[id].icon || target === tools[id].displayName) {
       targetNotFound = false
-      description += `\n\n${tools[id].icon} **${tools[id].displayName}**，${tools[id].description}`
+      description += `\n\n${tools[id].icon}**${tools[id].displayName}**，${tools[id].description}`
       description += `\n初始購買價格：:battery: **${tools[id].prices[0]}**，\`87!buy ${tools[id].name}\``
       break
     }
@@ -43,7 +43,7 @@ module.exports = ({ args, message }) => {
   for (let id in items) {
     if (target === items[id].name || target === items[id].icon || target === items[id].displayName) {
       targetNotFound = false
-      description += `\n\n${items[id].icon} **${items[id].displayName}**，分類：\`${items[id].kind}\`，${items[id].description}`
+      description += `\n\n${items[id].icon}**${items[id].displayName}**，分類：\`${items[id].kind}\`，${items[id].description}`
       if (items[id].price) {
         description += `\n購買價格：:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
       }

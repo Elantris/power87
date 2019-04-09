@@ -59,7 +59,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       let soldItemsDisplay = ``
       for (let itemId in soldItems) {
         soldItemsNumber += soldItems[itemId]
-        soldItemsDisplay += `${items[itemId].icon}${items[itemId].displayName}x${soldItems[itemId]} `
+        soldItemsDisplay += `${items[itemId].icon}**${items[itemId].displayName}**x${soldItems[itemId]} `
       }
 
       sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })
