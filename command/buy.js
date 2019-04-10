@@ -112,7 +112,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         return
       }
       if (userInventory.items.length + target.amount > userInventory.maxSlots) {
-        sendResponseMessage({ message, errorCode: 'ERROR_BAG_EXCEED' })
+        sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
         return
       }
     }

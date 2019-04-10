@@ -101,7 +101,7 @@ module.exports = {
     icon: ':blowfish:',
     displayName: '河豚',
     description: '常見的漁獲。',
-    value: 4
+    value: 5
   },
   13: {
     kind: 'fishing',
@@ -109,7 +109,7 @@ module.exports = {
     icon: ':tropical_fish:',
     displayName: '熱帶魚',
     description: '常見的漁獲。',
-    value: 3
+    value: 4
   },
   14: {
     kind: 'fishing',
@@ -117,7 +117,7 @@ module.exports = {
     icon: ':fish:',
     displayName: '魚',
     description: '常見的漁獲。',
-    value: 2
+    value: 3
   },
   15: {
     kind: 'fishing',
@@ -125,7 +125,7 @@ module.exports = {
     icon: ':frog:',
     displayName: '青蛙',
     description: '常見的漁獲。',
-    value: 1
+    value: 2
   },
   16: {
     kind: 'fishing',

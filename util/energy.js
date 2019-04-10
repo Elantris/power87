@@ -41,47 +41,54 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
   })
 }
 
-const fishingLootsChance = [
-  [['0', 0.0001], ['1', 0.0003], ['2', 0.0003], ['3', 0.0005], ['4', 0.0007], ['5', 0.0010], ['6', 0.0010], ['11', 0.010], ['12', 0.010], ['13', 0.015], ['14', 0.020], ['15', 0.10], ['16', 0.60]],
-  [['0', 0.0001], ['1', 0.0004], ['2', 0.0004], ['3', 0.0006], ['4', 0.0008], ['5', 0.0011], ['6', 0.0011], ['10', 0.010], ['11', 0.010], ['12', 0.015], ['13', 0.020], ['14', 0.11], ['15', 0.56], ['16', 0.01]],
-  [['0', 0.0001], ['1', 0.0005], ['2', 0.0005], ['3', 0.0007], ['4', 0.0009], ['5', 0.0012], ['6', 0.0012], ['9', 0.010], ['10', 0.010], ['11', 0.015], ['12', 0.020], ['13', 0.12], ['14', 0.52], ['15', 0.01], ['16', 0.01]],
-  [['0', 0.0001], ['1', 0.0006], ['2', 0.0006], ['3', 0.0008], ['4', 0.0010], ['5', 0.0013], ['6', 0.0013], ['8', 0.010], ['9', 0.010], ['10', 0.015], ['11', 0.020], ['12', 0.13], ['13', 0.48], ['14', 0.01], ['15', 0.01], ['16', 0.01]],
-  [['0', 0.0001], ['1', 0.0007], ['2', 0.0007], ['3', 0.0009], ['4', 0.0011], ['5', 0.0014], ['6', 0.0014], ['7', 0.010], ['8', 0.010], ['9', 0.015], ['10', 0.020], ['11', 0.14], ['12', 0.44], ['13', 0.01], ['14', 0.01], ['15', 0.01], ['16', 0.01]]
-]
+const fishingLootsChance = {
+  '0': [0.0001, 0.0001, 0.0001, 0.0001, 0.0001],
 
-const userFishing = ({ guildInventory, guildInventoryUpdates, userInventory, userId }) => {
-  let fishingPool = 0
-  if (userInventory.tools.$2) { // sailboat level
-    fishingPool = parseInt(userInventory.tools.$2) + 1
-  }
+  '1': [0.0001, 0.0002, 0.0003, 0.0004, 0.0005],
+  '2': [0.0001, 0.0002, 0.0003, 0.0004, 0.0005],
+  '3': [0.0002, 0.0003, 0.0004, 0.0005, 0.0006],
+  '4': [0.0005, 0.0006, 0.0007, 0.0008, 0.0009],
+  '5': [0.0008, 0.0009, 0.0010, 0.0011, 0.0012],
+  '6': [0.0010, 0.0011, 0.0012, 0.0013, 0.0014],
 
+  '7': [0.0000, 0.0000, 0.0000, 0.0000, 0.0100],
+  '8': [0.0000, 0.0000, 0.0000, 0.0100, 0.0110],
+  '9': [0.0000, 0.0000, 0.0100, 0.0110, 0.0120],
+  '10': [0.0000, 0.0100, 0.0110, 0.0120, 0.0130],
+  '11': [0.0100, 0.0110, 0.0120, 0.0130, 0.0140],
+
+  '12': [0.0100, 0.0200, 0.0400, 0.0800, 0.5800],
+  '13': [0.0200, 0.0400, 0.0800, 0.6100, 0.0100],
+  '14': [0.0400, 0.0800, 0.6400, 0.0100, 0.0100],
+  '15': [0.0800, 0.6700, 0.0100, 0.0100, 0.0100],
+  '16': [0.7000, 0.0100, 0.0100, 0.0010, 0.0100]
+}
+
+const userFishing = ({ guildInventory, guildInventoryUpdates, userId, fishingPool, multiplierNormal, multiplierRare }) => {
   let luck = Math.random()
   let loot = -1
-  let multiplier = 1
+  let multiplierTmp = 1
 
-  fishingLootsChance[fishingPool].some((item, index) => {
-    if (index === 1) {
-      multiplier = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole, buoy
-      if (userInventory.tools.$3) {
-        multiplier += 0.01 + parseInt(userInventory.tools.$3) * 0.01 // buoy
-      }
-    } else if (index === 6) {
-      multiplier = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole
+  for (let id in fishingLootsChance) {
+    if (id === '1') {
+      multiplierTmp = multiplierRare
+    } else if (id === '6') {
+      multiplierTmp = multiplierNormal
     }
 
-    if (luck < item[1] * multiplier) {
-      loot = item[0]
-      return true
+    if (luck < fishingLootsChance[id][fishingPool] * multiplierTmp) {
+      loot = id
+      break
     }
-    luck -= item[1]
-    return false
-  })
+
+    luck -= fishingLootsChance[id][fishingPool]
+  }
 
   if (loot === -1) { // get nothing
     return
   }
 
-  guildInventoryUpdates[userId] = guildInventory[userId] + `,${loot}`
+  guildInventoryUpdates[userId] = (guildInventoryUpdates[userId] || guildInventory[userId]) + `,${loot}`
 }
 
 const autoFishing = ({ client, banlist, database, fishing }) => {
@@ -114,9 +121,19 @@ const autoFishing = ({ client, banlist, database, fishing }) => {
           return
         }
 
-        userFishing({ guildInventory, guildInventoryUpdates, userInventory, userId })
-        if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.8) { // bait buff
-          userFishing({ guildInventory, guildInventoryUpdates, userInventory, userId })
+        let fishingPool = 0
+        let multiplierNormal = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole
+        let multiplierRare = multiplierNormal
+        if (userInventory.tools.$2) { // sailboat
+          fishingPool = parseInt(userInventory.tools.$2) + 1
+        }
+        if (userInventory.tools.$3) { // buoy
+          multiplierRare += 0.01 + parseInt(userInventory.tools.$3)
+        }
+
+        userFishing({ guildInventory, guildInventoryUpdates, userId, fishingPool, multiplierNormal, multiplierRare })
+        if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.5) { // bait buff
+          userFishing({ guildInventory, guildInventoryUpdates, userId, fishingPool, multiplierNormal, multiplierRare })
         }
       })
 

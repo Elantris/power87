@@ -21,8 +21,7 @@ const errors = {
   ERROR_IS_FISHING: '正在釣魚',
   ERROR_NO_TOOL: '未持有特定道具',
   ERROR_NO_ITEM: '沒有物品',
-  ERROR_BAG_FULL: '背包滿了',
-  ERROR_BAG_EXCEED: '超過背包大小'
+  ERROR_BAG_FULL: '背包沒有足夠空間'
 }
 
 // command history

@@ -43,7 +43,7 @@ module.exports = ({ args, message }) => {
   for (let id in items) {
     if (target === items[id].name || target === items[id].icon || target === items[id].displayName) {
       targetNotFound = false
-      description += `\n\n${items[id].icon}**${items[id].displayName}**，分類：\`${items[id].kind}\`，${items[id].description}`
+      description += `\n\n${items[id].icon}**${items[id].displayName}**，${items[id].description}\n物品分類：\`${items[id].kind}\``
       if (items[id].price) {
         description += `\n購買價格：:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
       }
