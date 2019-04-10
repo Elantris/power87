@@ -33,6 +33,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       if (target.name === tools[id].name || target.name === tools[id].icon || target.name === tools[id].displayName) {
         target.id = id
         target.type = 'tool'
+        target.price = tools[id].prices[0]
         break
       }
     }
