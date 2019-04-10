@@ -19,10 +19,10 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
   }
 
   if (args[1]) {
-    if (fishing[guildId] && fishing[guildId][userId]) {
-      sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-      return
-    }
+    // if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
+    //   sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+    //   return
+    // }
 
     // check exists
     target.name = emoji.unemojify(args[1]).toLowerCase()

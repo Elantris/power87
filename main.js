@@ -49,7 +49,6 @@ client.on('ready', () => {
 
   setInterval(() => {
     energy.gainFromVoiceChannel({ client, banlist, database, fishing })
-    energy.autoFishing({ client, banlist, database, fishing })
   }, config.tick)
 })
 

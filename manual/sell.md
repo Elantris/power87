@@ -10,11 +10,11 @@
 範例：
 ```
 87!sell shrimp
-87!sell fish
+87!sell fishing
 87!sell all
 ```
 說明：
-這間道具販賣屋的店主很八七。收購都用最低價
+這間道具販賣屋的店主很八七。收購都用最低價。釣魚中無法使用 sell 指令。
 
 **jewel**: :gem:
 **fishing**: :penguin: :whale: :whale2: :shark: :dolphin: :octopus: :crocodile: :crab: :duck: :turtle: :squid: :blowfish: :tropical_fish: :fish: :frog: :shrimp:

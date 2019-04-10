@@ -22,7 +22,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
 
   // user target
   if (args[1]) {
-    if (fishing[guildId] && fishing[guildId][userId]) {
+    if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
       sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
       return
     }
@@ -86,7 +86,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
       }
 
-      description += `\n\n__增益效果__：`
+      description += `\n\n__增益道具__：`
 
       for (let id in items) {
         if (items[id].price) {

@@ -1,39 +1,40 @@
 const sendResponseMessage = require('../util/sendResponseMessage')
 const inventory = require('../util/inventory')
 const hints = require('../util/hints')
+const fishings = require('../util/fishings')
 
-module.exports = ({ database, message, guildId, userId }) => {
+module.exports = ({ database, message, fishing, guildId, userId }) => {
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
     let inventoryRaw = snapshot.val()
     if (!snapshot.exists()) {
       inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
-    let usreInventory = inventory.parseInventory(inventoryRaw)
+    let userInventory = inventory.parseInventory(inventoryRaw)
 
-    if (!usreInventory.tools.$0 || !usreInventory.tools.$1) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NO_TOOL' })
-      return
-    }
+    let userStatus = ''
+    let hint = ''
 
-    database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
-      let isFishing = 0
-      let hint = ''
-
-      if (!snapshot.exists()) {
-        database.ref(`/fishing/${guildId}/${userId}`).set(1)
-        isFishing = 1
-        hint = hints()
-      } else {
-        database.ref(`/fishing/${guildId}/${userId}`).remove()
+    if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
+      database.ref(`/fishing/${guildId}/${userId}`).remove()
+      let count = fishing[guildId][userId]
+      fishings({ database, guildId, userId, userInventory, count })
+      userStatus = '結束釣魚'
+    } else {
+      if (!userInventory.tools.$0 || !userInventory.tools.$1) {
+        sendResponseMessage({ message, errorCode: 'ERROR_NO_TOOL' })
+        return
+      }
+      if (!userInventory.hasEmptySlot) {
+        sendResponseMessage(({ message, errorCode: 'ERROR_BAG_FULL' }))
+        return
       }
 
-      let fishingDisplay = [
-        '結束釣魚',
-        '開始釣魚'
-      ]
+      database.ref(`/fishing/${guildId}/${userId}`).set(0)
+      userStatus = '開始釣魚'
+      hint = hints()
+    }
 
-      sendResponseMessage({ message, description: `:fishing_pole_and_fish: ${message.member.displayName} ${fishingDisplay[isFishing]}\n\n${hint}` })
-    })
+    sendResponseMessage({ message, description: `:fishing_pole_and_fish: ${message.member.displayName} ${userStatus}\n\n${hint}` })
   })
 }

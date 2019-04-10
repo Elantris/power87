@@ -10,7 +10,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     return
   }
 
-  if (fishing[guildId] && fishing[guildId][userId]) {
+  if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
