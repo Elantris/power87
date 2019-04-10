@@ -37,7 +37,7 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
 
             guildFishingUpdates[userId] = fishing[guildId][userId] + 1
 
-            if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.5) {
+            if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.8) {
               guildFishingUpdates[userId] += 1 // bait buff
             }
           } else if (isQualified(member)) {
