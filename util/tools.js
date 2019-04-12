@@ -11,7 +11,7 @@ module.exports = {
     name: 'fishingpole',
     icon: ':fishing_pole_and_fish:',
     displayName: '釣竿',
-    description: '購買後才能使用 fishing 指令釣魚，提升等級可以增加整體釣魚機率。',
+    description: '購買後才能釣魚，提升等級可以增加整體釣魚機率與減少釣魚時間。',
     maxLevel: 7,
     prices: [100, 300, 900, 2700, 8100, 24300, 72900, 218700]
   },

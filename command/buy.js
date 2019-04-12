@@ -87,7 +87,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
       }
 
-      description += `\n\n__增益道具__：`
+      description += `\n\n__特色商品__：`
 
       for (let id in items) {
         if (items[id].price) {
