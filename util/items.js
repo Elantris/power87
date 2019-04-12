@@ -167,7 +167,7 @@ module.exports = {
     name: 'lollipop',
     icon: ':lollipop:',
     displayName: '好運棒棒糖',
-    description: '因為賭場裡面全面禁菸，賭客們為了裝帥會去狗買的棒棒糖，因為他們相信吃下去會變得比較幸運。',
+    description: '因為賭場裡面全面禁菸，賭客們為了裝帥會去購買的棒棒糖，因為他們相信吃下去會變得比較幸運。',
     value: 5,
     price: 50
   }
