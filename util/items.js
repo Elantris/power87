@@ -4,7 +4,8 @@ module.exports = {
     name: 'gem',
     icon: ':gem:',
     displayName: '鑽石',
-    description: '可以透過釣魚獲得的稀有物品。',
+    description: '非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫富用的。',
+    price: 1001,
     value: 1000
   },
   1: {
@@ -148,9 +149,9 @@ module.exports = {
     name: 'bait',
     icon: ':bug:',
     displayName: '魚餌',
-    description: '使用後一小時內釣魚時有機會一次釣起多條魚，重複使用會延長時效。',
-    value: 3,
-    price: 30
+    description: '使用後一小時內減少釣魚時間，重複使用會延長時效。',
+    value: 2,
+    price: 20
   },
   19: {
     kind: 'buff',
@@ -160,5 +161,14 @@ module.exports = {
     description: '嚐起來有點甜膩的糖果，專門發給乖巧又懂事的小孩作為獎勵，據說吃下去後會變得比較幸運。',
     value: 1,
     price: 10
+  },
+  20: {
+    kind: 'buff',
+    name: 'lollipop',
+    icon: ':lollipop:',
+    displayName: '好運棒棒糖',
+    description: '因為賭場裡面全面禁菸，賭客們為了裝帥會去狗買的棒棒糖，因為他們相信吃下去會變得比較幸運。',
+    value: 5,
+    price: 50
   }
 }

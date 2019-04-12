@@ -1,12 +1,28 @@
 const energy = require('../util/energy')
+const inventory = require('../util/inventory')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const items = [{ prize: 100, symbol: ':gem:', weight: 5 }, { prize: 77, symbol: ':seven:', weight: 7 }, { prize: 50, symbol: ':trophy:', weight: 11 }, { prize: 30, symbol: ':moneybag:', weight: 13 }, { prize: 20, symbol: ':gift:', weight: 17 }, { prize: 15, symbol: ':ribbon:', weight: 19 }, { prize: 10, symbol: ':balloon:', weight: 23 }, { prize: 5, symbol: ':four_leaf_clover:', weight: 25 }, { prize: 3, symbol: ':battery:', weight: 50 }, { prize: 1, symbol: ':dollar:', weight: 50 }, { prize: 0, symbol: ':wrench:', weight: 1 }, { prize: 0, symbol: ':gear:', weight: 1 }, { prize: 0, symbol: ':bomb:', weight: 1 }, { prize: 0, symbol: ':paperclip:', weight: 1 }, { prize: 0, symbol: ':wastebasket:', weight: 1 }]
-const totalWeight = 225
+const icons = [
+  { prize: 100, symbol: ':gem:', weight: 5 },
+  { prize: 77, symbol: ':seven:', weight: 7 },
+  { prize: 50, symbol: ':trophy:', weight: 11 },
+  { prize: 30, symbol: ':moneybag:', weight: 13 },
+  { prize: 20, symbol: ':gift:', weight: 17 },
+  { prize: 15, symbol: ':ribbon:', weight: 19 },
+  { prize: 10, symbol: ':balloon:', weight: 23 },
+  { prize: 5, symbol: ':four_leaf_clover:', weight: 25 },
+  { prize: 3, symbol: ':battery:', weight: 40 },
+  { prize: 1, symbol: ':dollar:', weight: 60 },
+  { prize: 0, symbol: ':wrench:', weight: 5 },
+  { prize: 0, symbol: ':gear:', weight: 5 },
+  { prize: 0, symbol: ':bomb:', weight: 5 },
+  { prize: 0, symbol: ':paperclip:', weight: 5 },
+  { prize: 0, symbol: ':wastebasket:', weight: 5 }
+]
+const totalWeight = 245
 
 module.exports = ({ args, database, message, guildId, userId }) => {
   let energyCost = 1
-  let announcement = []
   let announcementDisplay = ''
 
   // parse parameters
@@ -17,18 +33,18 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         sendResponseMessage({ message, errorCode: 'ERROR_ENERGY_EXCEED' })
         return
       }
-      announcement = args.slice(2)
+      announcementDisplay = args.slice(2)
     } else {
-      announcement = args.slice(1)
+      announcementDisplay = args.slice(1)
     }
 
-    if (announcement.length) {
-      let tmp = announcement.join(' ')
-      if (tmp.length > 50) {
+    if (announcementDisplay.length) {
+      announcementDisplay = announcementDisplay.join(' ')
+      if (announcementDisplay.length > 50) {
         sendResponseMessage({ message, errorCode: 'ERROR_LENGTH_EXCEED' })
         return
       }
-      announcementDisplay = `說完「**${tmp}**」之後`
+      announcementDisplay = `說完「**${announcementDisplay}**」之後`
     }
   }
 
@@ -43,50 +59,69 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       return
     }
 
-    // main function
-    let result = []
-    for (let i = 0; i < 3; i++) {
-      let luck = Math.random() * totalWeight
-      for (let j in items) {
-        if (luck < items[j].weight) {
-          result.push(j)
-          break
-        }
-        luck -= items[j].weight
+    database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
+      let inventoryRaw = snapshot.val()
+      if (!snapshot.exists()) {
+        inventoryRaw = ''
+        database.ref(`/inventory/${guildId}/${userId}`).set('')
       }
-    }
+      let userInventory = inventory.parseInventory(inventoryRaw)
 
-    let resultDisplay = `-------------------\n${result.map(n => items[n].symbol).join(' : ')}\n-------------------\n`
-    result.sort()
+      let weightMinus = 0
+      if (userInventory.buffs['%2']) {
+        weightMinus = 10
+      } else if (userInventory.buffs['%1']) {
+        weightMinus = 5
+      }
 
-    let multiplier = 0
-    if (result[0] === result[1] && result[1] === result[2]) {
-      multiplier = items[result[0]].prize
-    } else if (result[1] < 8 && (result[0] === result[1] || result[1] === result[2])) {
-      multiplier = Math.floor(items[result[1]].prize / 2)
-    }
+      // main function
+      let result = []
+      for (let i = 0; i < 3; i++) {
+        let luck = Math.random() * (totalWeight - weightMinus)
+        for (let j in icons) {
+          if (luck < icons[j].weight) {
+            result.push(j)
+            break
+          }
+          luck -= icons[j].weight
+        }
+      }
 
-    let energyGain = energyCost * multiplier
-    userEnergy += energyGain - energyCost
+      let resultDisplay = `-------------------\n${result.map(n => icons[n].symbol).join(' : ')}\n-------------------\n`
+      result.sort()
 
-    database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+      let multiplier = 0
+      if (result[0] === result[1] && result[1] === result[2]) {
+        multiplier = icons[result[0]].prize
+      } else if (result[1] < 9 && (result[0] === result[1] || result[1] === result[2])) {
+        multiplier = Math.floor(icons[result[1]].prize / 2)
+      }
 
-    // response
-    let resultDescription = ''
-    if (multiplier === 0) {
-      resultDisplay += `| : : : : **LOST** : : : : |`
-      resultDescription = '結果是一無所獲'
-    } else if (multiplier < items[1].prize) {
-      resultDisplay += `| : : : : **WIN** : : : : : |`
-      resultDescription = `獲得了 ${energyGain} 點八七能量`
-    } else if (multiplier === items[1].prize) {
-      resultDisplay += `| : : **77777777** : : |`
-      resultDescription = `@here 777！<@${message.author.id}> 7 起來，獲得了 ${energyGain} 點八七能量`
-    } else if (multiplier === items[0].prize) {
-      resultDisplay += `| : **CONGRATS** : |`
-      resultDescription = `@here 頭獎快訊！<@${message.author.id}> 或成最大贏家，獲得了 ${energyGain} 點八七能量`
-    }
+      let energyGain = energyCost * multiplier
+      userEnergy += energyGain - energyCost
 
-    sendResponseMessage({ message, description: `:tickets: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${announcementDisplay}投注了 ${energyCost} 點八七能量，${resultDescription}` })
+      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+
+      // response
+      let content
+      let resultMessage = ''
+      if (multiplier === 0) {
+        resultDisplay += `| : : : : **LOST** : : : : |`
+        resultMessage = '結果是一無所獲'
+      } else if (multiplier < icons[1].prize) {
+        resultDisplay += `| : : : : **WIN** : : : : : |`
+        resultMessage = `獲得了 ${energyGain} 點八七能量`
+      } else if (multiplier === icons[1].prize) {
+        content = '@here 777！'
+        resultDisplay += `| : : **77777777** : : |`
+        resultMessage = `<@${message.author.id}> 7 起來，獲得了 ${energyGain} 點八七能量`
+      } else if (multiplier === icons[0].prize) {
+        content = '@here 頭獎快訊！'
+        resultDisplay += `| : **CONGRATS** : |`
+        resultMessage = `<@${message.author.id}> 或成最大贏家，獲得了 ${energyGain} 點八七能量`
+      }
+
+      sendResponseMessage({ message, content, description: `:tickets: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${announcementDisplay}投注了 ${energyCost} 點八七能量，${resultMessage}` })
+    })
   })
 }

@@ -34,14 +34,16 @@ const parseInventory = inventoryRaw => {
   return userInventory
 }
 
-const makeInventory = userInventory => {
+const makeInventory = (userInventory, timenow = Date.now()) => {
   let inventoryData = []
   for (let toolId in userInventory.tools) {
     inventoryData.push(`${toolId}+${userInventory.tools[toolId]}`)
   }
 
   for (let buffId in userInventory.buffs) {
-    inventoryData.push(`${buffId}:${userInventory.buffs[buffId]}`)
+    if (parseInt(userInventory.buffs[buffId]) > timenow) {
+      inventoryData.push(`${buffId}:${userInventory.buffs[buffId]}`)
+    }
   }
 
   userInventory.items.forEach(item => {

@@ -27,7 +27,7 @@ const errors = {
 // command history
 let cmdLogs = {}
 
-module.exports = ({ message, description = '', errorCode }) => {
+module.exports = ({ message, content, description = '', errorCode }) => {
   let embed = {}
   if (errorCode) {
     embed = {
@@ -41,7 +41,7 @@ module.exports = ({ message, description = '', errorCode }) => {
     }
   }
 
-  message.channel.send({ embed })
+  message.channel.send(content, { embed })
 
   // logger
   let userId = message.author.id

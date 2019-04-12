@@ -12,5 +12,12 @@ module.exports = {
     displayName: '好棒棒軟糖',
     duration: 3600000,
     itemId: '19'
+  },
+  '%2': {
+    name: 'lollipop',
+    icon: ':lollipop:',
+    displayName: '好運棒棒糖',
+    duration: 3600000,
+    itemId: '20'
   }
 }
