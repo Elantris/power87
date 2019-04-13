@@ -54,7 +54,7 @@ const make = (userInventory, timenow = Date.now()) => {
     inventoryData.push(`${item.id}${tmpAmount}`)
   })
 
-  return inventoryData.join(',')
+  return inventoryData.sort().join(',')
 }
 
 module.exports = {

@@ -55,7 +55,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       userEnergy += gainEnergy
 
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-      database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory).split(',').sort().join(','))
+      database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
 
       // response
       let soldItemsNumber = 0

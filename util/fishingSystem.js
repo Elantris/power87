@@ -80,7 +80,7 @@ module.exports = ({ database, guildId, userId, userInventory, count }) => {
     emptySlots -= 1
   }
 
-  database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory).split(',').sort().join(','))
+  database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
 
   return userInventory
 }

@@ -132,13 +132,13 @@ module.exports = ({ args, database, message, fishing, guildId, userId }) => {
       let updates = ''
       if (target.type === 'tool') {
         userInventory.tools[target.id] = target.level
-        updates = inventorySystem.makeInventory(userInventory)
+        updates = inventorySystem.make(userInventory)
       } else if (target.type === 'item') {
         updates = inventoryRaw + `,${target.id}`.repeat(target.amount)
       }
 
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
-      database.ref(`/inventory/${guildId}/${userId}`).set(updates.split(',').sort().join(','))
+      database.ref(`/inventory/${guildId}/${userId}`).set(updates)
 
       // response
       let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `

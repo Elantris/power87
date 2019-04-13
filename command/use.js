@@ -102,7 +102,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
     userInventory.buffs[target.buffId] = parseInt(userInventory.buffs[target.buffId]) + buffs[target.buffId].duration * target.amount
 
     // update database
-    database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory).split(',').sort().join(','))
+    database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
 
     // response
     let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${buffs[target.buffId].icon}**${buffs[target.buffId].displayName}**x${target.amount}`
