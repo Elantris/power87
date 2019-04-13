@@ -1,4 +1,4 @@
-const energy = require('../util/energy')
+const energySystem = require('../util/energySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const energyCost = 20
@@ -19,20 +19,24 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       return
     }
 
+    // energy system
     database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
       let userEnergy = snapshot.val()
       if (!snapshot.exists()) {
-        userEnergy = energy.INITIAL_USER_ENERGY
+        userEnergy = energySystem.INITIAL_USER_ENERGY
         database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
       }
+
       if (userEnergy < energyCost) {
         sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
         return
       }
 
+      // update database
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
       database.ref(`/note/${guildId}/${term}/${position}`).remove()
 
+      // response
       sendResponseMessage({ message, description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目` })
     })
   })

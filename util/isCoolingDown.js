@@ -1,7 +1,7 @@
 const commandCooldown = {
   add: 2,
   delete: 2,
-  list: 10,
+  list: 5,
 
   energy: 3,
   daily: 30,
@@ -12,11 +12,11 @@ const commandCooldown = {
   inventory: 5,
   buy: 3,
   sell: 3,
-  fishing: 10,
+  fishing: 5,
   use: 3,
 
   help: 2,
-  clean: 15,
+  clean: 30,
   about: 30,
   hint: 2,
 
@@ -28,21 +28,21 @@ for (let i in commandCooldown) {
   commandCooldown[i] *= 1000 // trasform to minisecond
 }
 
-let lastUsed = {}
+let userLastUsed = {}
 
 const isCoolingDown = ({ userCmd, message, userId }) => {
   // undefined detection
-  lastUsed[userId] = lastUsed[userId] || {}
-  lastUsed[userId][userCmd] = lastUsed[userId][userCmd] || 0
+  userLastUsed[userId] = userLastUsed[userId] || {}
+  userLastUsed[userId][userCmd] = userLastUsed[userId][userCmd] || 0
 
   // calculate cooldown time
   let cooldownTime = commandCooldown[userCmd] || 5000
-  if (message.createdTimestamp - lastUsed[userId][userCmd] < cooldownTime) {
+  if (message.createdTimestamp - userLastUsed[userId][userCmd] < cooldownTime) {
     return true
   }
 
   // update last command timestamp
-  lastUsed[userId][userCmd] = message.createdTimestamp
+  userLastUsed[userId][userCmd] = message.createdTimestamp
   return false
 }
 

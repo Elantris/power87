@@ -8,7 +8,6 @@ module.exports = ({ args, database, message, guildId }) => {
       let notes = snapshot.val()
 
       output += '所有關鍵字\n'
-
       for (let term in notes) {
         output += `\n${term} (${Object.keys(notes[term]).length})`
       }
@@ -25,7 +24,6 @@ module.exports = ({ args, database, message, guildId }) => {
       }
 
       output += `**${term}** 的回應列表 [${Object.keys(responses).length}/50]\n`
-
       for (let index in responses) {
         output += `\n${index}. ${responses[index]}`
       }

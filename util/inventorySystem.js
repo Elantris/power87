@@ -1,4 +1,4 @@
-const parseInventory = inventoryRaw => {
+const parse = inventoryRaw => {
   let inventoryData = inventoryRaw.split(',').filter(v => v)
   let userInventory = {
     tools: {},
@@ -34,7 +34,7 @@ const parseInventory = inventoryRaw => {
   return userInventory
 }
 
-const makeInventory = (userInventory, timenow = Date.now()) => {
+const make = (userInventory, timenow = Date.now()) => {
   let inventoryData = []
   for (let toolId in userInventory.tools) {
     inventoryData.push(`${toolId}+${userInventory.tools[toolId]}`)
@@ -58,6 +58,6 @@ const makeInventory = (userInventory, timenow = Date.now()) => {
 }
 
 module.exports = {
-  parseInventory,
-  makeInventory
+  parse,
+  make
 }

@@ -1,7 +1,7 @@
 const fs = require('fs')
 
 const alias = require('./alias')
-const energy = require('./energy')
+const energySystem = require('./energySystem')
 const isCoolingDown = require('./isCoolingDown')
 
 // * load commands
@@ -17,7 +17,7 @@ module.exports = ({ client, database, message, fishing, guildId, userId }) => {
     if (isCoolingDown({ userCmd: 'gainFromMessage', message, userId })) {
       return
     }
-    energy.gainFromTextChannel({ database, guildId, userId })
+    energySystem.gainFromTextChannel({ database, guildId, userId })
   } else {
     // parse command
     let userCmd = ''
@@ -25,6 +25,9 @@ module.exports = ({ client, database, message, fishing, guildId, userId }) => {
 
     if (args[0] === '87') {
       userCmd = 'res'
+      if (!args[1]) {
+        return
+      }
     } else if (message.content[2] === '!') {
       userCmd = args[0].substring(3).toLowerCase()
       userCmd = alias[userCmd] || userCmd

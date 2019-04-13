@@ -1,11 +1,14 @@
 const fs = require('fs')
 const emoji = require('node-emoji')
+
 const alias = require('../util/alias')
-const sendResponseMessage = require('../util/sendResponseMessage')
 const tools = require('../util/tools')
 const items = require('../util/items')
+const sendResponseMessage = require('../util/sendResponseMessage')
+
 const encoding = 'utf8'
 
+// * load manuals
 let manuals = {}
 fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach(filename => {
   let cmd = filename.split('.md')[0]
@@ -22,12 +25,14 @@ module.exports = ({ args, message }) => {
   let target = emoji.unemojify(args[1]).toLowerCase()
   target = alias[target] || target
 
+  // command manual
   if (manuals[target]) {
     description = manuals[target]
     sendResponseMessage({ message, description })
     return
   }
 
+  // tools and items
   description = ':diamond_shape_with_a_dot_inside: 道具/物品詳細說明'
   let targetNotFound = true
 
@@ -58,5 +63,6 @@ module.exports = ({ args, message }) => {
     return
   }
 
+  // response
   sendResponseMessage({ message, description })
 }

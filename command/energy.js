@@ -1,11 +1,11 @@
-const energy = require('../util/energy')
+const energySystem = require('../util/energySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ database, message, guildId, userId }) => {
   database.ref(`energy/${guildId}/${userId}`).once('value').then(snapshot => {
     let userEnergy = snapshot.val()
     if (!snapshot.exists()) {
-      userEnergy = energy.INITIAL_USER_ENERGY
+      userEnergy = energySystem.INITIAL_USER_ENERGY
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
     }
 

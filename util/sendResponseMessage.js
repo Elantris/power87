@@ -25,7 +25,7 @@ const errors = {
 }
 
 // command history
-let cmdLogs = {}
+let userCmdLogs = {}
 
 module.exports = ({ message, content, description = '', errorCode }) => {
   let embed = {}
@@ -48,14 +48,14 @@ module.exports = ({ message, content, description = '', errorCode }) => {
   let past = message.createdTimestamp - 10 * 60 * 1000
   let warning = ''
 
-  if (!cmdLogs[userId]) {
-    cmdLogs[userId] = []
+  if (!userCmdLogs[userId]) {
+    userCmdLogs[userId] = []
   }
-  cmdLogs[userId].push(message.createdTimestamp)
-  while (cmdLogs[userId][0] < past) {
-    cmdLogs[userId].shift()
+  userCmdLogs[userId].push(message.createdTimestamp)
+  while (userCmdLogs[userId][0] < past) {
+    userCmdLogs[userId].shift()
   }
-  if (cmdLogs[userId].length > 60) {
+  if (userCmdLogs[userId].length > 60) {
     warning = ':warning:'
   }
 
@@ -71,7 +71,7 @@ module.exports = ({ message, content, description = '', errorCode }) => {
     inline: true
   }, {
     name: 'User',
-    value: `${userId} ${warning}\n${message.member.displayName} (${cmdLogs[userId].length})`,
+    value: `${userId}${warning}\n${message.member.displayName} (${userCmdLogs[userId].length})`,
     inline: true
   }]
 

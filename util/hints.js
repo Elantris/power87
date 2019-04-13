@@ -1,6 +1,7 @@
 const tools = require('./tools')
 const items = require('./items')
 const buffs = require('./buffs')
+
 const mapping = {
   Bag: tools.$0,
   FishingPole: tools.$1,

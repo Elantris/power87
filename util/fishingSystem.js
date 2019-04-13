@@ -1,4 +1,4 @@
-const inventory = require('./inventory')
+const inventorySystem = require('./inventorySystem')
 
 const chances = {
   '0': [0.0001, 0.0001, 0.0001, 0.0001, 0.0001],
@@ -59,7 +59,7 @@ module.exports = ({ database, guildId, userId, userInventory, count }) => {
     pool = 1 + parseInt(userInventory.tools.$2)
   }
   if (userInventory.tools.$3) { // buoy
-    multiplierRare += 0.01 + parseInt(userInventory.tools.$3)
+    multiplierRare += 0.01 + parseInt(userInventory.tools.$3) * 0.01
   }
 
   for (let i = 0; i < count; i++) {
@@ -80,9 +80,7 @@ module.exports = ({ database, guildId, userId, userInventory, count }) => {
     emptySlots -= 1
   }
 
-  let updates = inventory.makeInventory(userInventory)
-  updates = updates.split(',').sort().join(',')
-  database.ref(`/inventory/${guildId}/${userId}`).set(updates)
+  database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory).split(',').sort().join(','))
 
   return userInventory
 }

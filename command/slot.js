@@ -1,5 +1,5 @@
-const energy = require('../util/energy')
-const inventory = require('../util/inventory')
+const energySystem = require('../util/energySystem')
+const inventorySystem = require('../util/inventorySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const icons = [
@@ -51,7 +51,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
   database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
     let userEnergy = snapshot.val()
     if (!snapshot.exists()) {
-      userEnergy = energy.INITIAL_USER_ENERGY
+      userEnergy = energySystem.INITIAL_USER_ENERGY
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
     }
     if (userEnergy < energyCost) {
@@ -59,13 +59,14 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       return
     }
 
+    // energy system
     database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
       let inventoryRaw = snapshot.val()
       if (!snapshot.exists()) {
         inventoryRaw = ''
         database.ref(`/inventory/${guildId}/${userId}`).set('')
       }
-      let userInventory = inventory.parseInventory(inventoryRaw)
+      let userInventory = inventorySystem.parse(inventoryRaw)
 
       let weightMinus = 0
       if (userInventory.buffs['%2']) {

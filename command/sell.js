@@ -1,8 +1,9 @@
 const emoji = require('node-emoji')
-const energy = require('../util/energy')
-const sendResponseMessage = require('../util/sendResponseMessage')
-const inventory = require('../util/inventory')
+
+const energySystem = require('../util/energySystem')
+const inventorySystem = require('../util/inventorySystem')
 const items = require('../util/items')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ args, database, fishing, message, guildId, userId }) => {
   if (args.length !== 2) {
@@ -10,7 +11,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     return
   }
 
-  if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
+  if (fishing[guildId] && fishing[guildId][userId]) {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
@@ -21,7 +22,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
-    let userInventory = inventory.parseInventory(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw)
 
     let soldItems = {}
     let gainEnergy = 0
@@ -45,16 +46,18 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       return
     }
 
+    // energy system
     database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
       let userEnergy = snapshot.val()
       if (!snapshot.exists()) {
-        userEnergy = energy.INITIAL_USER_ENERGY
+        userEnergy = energySystem.INITIAL_USER_ENERGY
       }
       userEnergy += gainEnergy
 
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-      database.ref(`/inventory/${guildId}/${userId}`).set(inventory.makeInventory(userInventory))
+      database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory).split(',').sort().join(','))
 
+      // response
       let soldItemsNumber = 0
       let soldItemsDisplay = ``
       for (let itemId in soldItems) {

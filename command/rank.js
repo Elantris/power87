@@ -1,4 +1,5 @@
 const sendResponseMessage = require('../util/sendResponseMessage')
+
 const updateInterval = 10 * 60 * 1000 // 10 min
 
 function makeOutput ({ message, rank }) {

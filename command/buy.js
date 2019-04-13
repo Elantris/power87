@@ -1,18 +1,19 @@
 const emoji = require('node-emoji')
-const energy = require('../util/energy')
-const sendResponseMessage = require('../util/sendResponseMessage')
-const inventory = require('../util/inventory')
+
+const energySystem = require('../util/energySystem')
+const inventorySystem = require('../util/inventorySystem')
 const tools = require('../util/tools')
 const items = require('../util/items')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, database, fishing, message, guildId, userId }) => {
+module.exports = ({ args, database, message, fishing, guildId, userId }) => {
   if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
 
   let target = {
-    name: '',
+    search: '',
     id: '',
     type: '',
     level: 0,
@@ -20,17 +21,16 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     amount: 1
   }
 
-  // user target
+  // check target exists
   if (args[1]) {
-    if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
+    if (fishing[guildId] && fishing[guildId][userId]) {
       sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
       return
     }
-
-    target.name = emoji.unemojify(args[1]).toLowerCase()
+    target.search = emoji.unemojify(args[1]).toLowerCase()
 
     for (let id in tools) {
-      if (target.name === tools[id].name || target.name === tools[id].icon || target.name === tools[id].displayName) {
+      if (target.search === tools[id].name || target.search === tools[id].icon || target.search === tools[id].displayName) {
         target.id = id
         target.type = 'tool'
         target.price = tools[id].prices[0]
@@ -39,14 +39,14 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     }
 
     for (let id in items) {
-      if (target.type) {
+      if (target.id) {
         break
       }
       if (!items[id].price) {
         continue
       }
 
-      if (target.name === items[id].name || target.name === items[id].icon || target.name === items[id].displayName) {
+      if (target.search === items[id].name || target.search === items[id].icon || target.search === items[id].displayName) {
         target.id = id
         target.type = 'item'
         target.price = items[id].price
@@ -69,7 +69,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
-    let userInventory = inventory.parseInventory(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw)
 
     // no arguments
     if (args.length === 1) {
@@ -108,11 +108,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
       }
       target.price = tools[target.id].prices[target.level]
     } else if (target.type === 'item') {
-      if (!userInventory.hasEmptySlot) {
-        sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
-        return
-      }
-      if (userInventory.items.length + target.amount > userInventory.maxSlots) {
+      if (!userInventory.hasEmptySlot || userInventory.items.length + target.amount > userInventory.maxSlots) {
         sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
         return
       }
@@ -122,7 +118,7 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
     database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
       let userEnergy = snapshot.val()
       if (!snapshot.exists()) {
-        userEnergy = energy.INITIAL_USER_ENERGY
+        userEnergy = energySystem.INITIAL_USER_ENERGY
         database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
       }
 
@@ -132,18 +128,17 @@ module.exports = ({ args, database, fishing, message, guildId, userId }) => {
         return
       }
 
-      userEnergy -= energyCost
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-
+      // update database
       let updates = ''
       if (target.type === 'tool') {
         userInventory.tools[target.id] = target.level
-        updates = inventory.makeInventory(userInventory)
+        updates = inventorySystem.makeInventory(userInventory)
       } else if (target.type === 'item') {
         updates = inventoryRaw + `,${target.id}`.repeat(target.amount)
       }
-      updates = updates.split(',').sort().join(',')
-      database.ref(`/inventory/${guildId}/${userId}`).set(updates)
+
+      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
+      database.ref(`/inventory/${guildId}/${userId}`).set(updates.split(',').sort().join(','))
 
       // response
       let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `

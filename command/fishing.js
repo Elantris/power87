@@ -1,7 +1,7 @@
-const sendResponseMessage = require('../util/sendResponseMessage')
-const inventory = require('../util/inventory')
+const inventorySystem = require('../util/inventorySystem')
+const fishingSystem = require('../util/fishingSystem')
 const hints = require('../util/hints')
-const fishings = require('../util/fishings')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ database, message, fishing, guildId, userId }) => {
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
@@ -10,15 +10,17 @@ module.exports = ({ database, message, fishing, guildId, userId }) => {
       inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
-    let userInventory = inventory.parseInventory(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw)
 
     let userStatus = ''
     let hint = ''
 
-    if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
+    if (fishing[guildId] && fishing[guildId][userId]) {
+      let count = parseInt(fishing[guildId][userId].split(';')[1])
       database.ref(`/fishing/${guildId}/${userId}`).remove()
-      let count = fishing[guildId][userId]
-      fishings({ database, guildId, userId, userInventory, count })
+
+      fishingSystem({ database, guildId, userId, userInventory, count })
+
       userStatus = '結束釣魚'
     } else {
       if (!userInventory.tools.$0 || !userInventory.tools.$1) {
@@ -30,11 +32,16 @@ module.exports = ({ database, message, fishing, guildId, userId }) => {
         return
       }
 
-      database.ref(`/fishing/${guildId}/${userId}`).set(0)
+      // update database
+      userInventory.items = []
+      let updates = inventorySystem.make(userInventory) + ';0'
+      database.ref(`/fishing/${guildId}/${userId}`).set(updates)
+
       userStatus = '開始釣魚'
       hint = hints()
     }
 
+    // response
     sendResponseMessage({ message, description: `:fishing_pole_and_fish: ${message.member.displayName} ${userStatus}\n\n${hint}` })
   })
 }

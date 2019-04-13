@@ -1,8 +1,10 @@
 const emoji = require('node-emoji')
-const sendResponseMessage = require('../util/sendResponseMessage')
-const inventory = require('../util/inventory')
-const items = require('../util/items')
+
+const inventorySystem = require('../util/inventorySystem')
 const buffs = require('../util/buffs')
+const items = require('../util/items')
+
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ args, client, database, fishing, message, guildId, userId }) => {
   if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
@@ -18,13 +20,13 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
     firstIndex: 0
   }
 
+  // check target exists
   if (args[1]) {
-    // if (fishing[guildId] && typeof fishing[guildId][userId] === 'number') {
-    //   sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    //   return
-    // }
+    if (fishing[guildId] && fishing[guildId][userId]) {
+      sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+      return
+    }
 
-    // check exists
     target.name = emoji.unemojify(args[1]).toLowerCase()
     for (let id in buffs) {
       if (target.name === buffs[id].name || target.name === buffs[id].icon || target.name === buffs[id].displayName) {
@@ -51,7 +53,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
       return
     }
-    let userInventory = inventory.parseInventory(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw)
 
     let itemsCount = {}
     userInventory.items.filter(item => items[item.id].kind === 'buff').forEach(item => {
@@ -83,6 +85,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       target.amount = itemsCount[target.itemId]
     }
 
+    // remove items from bags
     userInventory.items.some((item, index) => {
       if (target.itemId === item.id) {
         target.firstIndex = index
@@ -92,14 +95,14 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
     })
     userInventory.items.splice(target.firstIndex, target.amount)
 
+    // extend duration of buff
     if (!userInventory.buffs[target.buffId] || userInventory.buffs[target.buffId] < message.createdTimestamp) {
       userInventory.buffs[target.buffId] = message.createdTimestamp
     }
     userInventory.buffs[target.buffId] = parseInt(userInventory.buffs[target.buffId]) + buffs[target.buffId].duration * target.amount
 
-    let updates = inventory.makeInventory(userInventory)
-    updates = updates.split(',').sort().join(',')
-    database.ref(`/inventory/${guildId}/${userId}`).set(updates)
+    // update database
+    database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory).split(',').sort().join(','))
 
     // response
     let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${buffs[target.buffId].icon}**${buffs[target.buffId].displayName}**x${target.amount}`

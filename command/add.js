@@ -1,4 +1,4 @@
-const energy = require('../util/energy')
+const energySystem = require('../util/energySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const maxResNum = 50
@@ -20,7 +20,6 @@ module.exports = ({ args, database, message, guildId, userId }) => {
 
   database.ref(`/note/${guildId}/${term}`).once('value').then(snapshot => {
     let notes = snapshot.val() || {}
-    let updates = {}
 
     let emptyPosition
     for (emptyPosition = 1; emptyPosition <= maxResNum; emptyPosition++) {
@@ -33,23 +32,28 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       return
     }
 
+    // energy system
     database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
       let userEnergy = snapshot.val()
       if (!snapshot.exists()) {
-        userEnergy = energy.INITIAL_USER_ENERGY
+        userEnergy = energySystem.INITIAL_USER_ENERGY
         database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
       }
+
       if (userEnergy < energyCost) {
         sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
         return
       }
 
+      // update database
       let newResponse = args.slice(2).join(' ')
+      let updates = {}
       updates[emptyPosition] = newResponse
 
       database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
       database.ref(`/note/${guildId}/${term}`).update(updates)
 
+      // response
       sendResponseMessage({ message, description: `:white_check_mark: 你說 **87 ${term} ${emptyPosition}** 我說 **${newResponse}**` })
     })
   })

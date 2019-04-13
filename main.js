@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
 const firebase = require('firebase')
+
 const config = require('./config')
-const energy = require('./util/energy')
+const energySystem = require('./util/energySystem')
 const handleMessage = require('./util/handleMessage')
 
 const client = new Discord.Client()
@@ -48,7 +49,7 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
   setInterval(() => {
-    energy.gainFromVoiceChannel({ client, banlist, database, fishing })
+    energySystem.gainFromVoiceChannel({ client, banlist, database, fishing })
   }, config.tick)
 })
 

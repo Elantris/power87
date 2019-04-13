@@ -1,5 +1,5 @@
-const sendResponseMessage = require('../util/sendResponseMessage')
 const hints = require('../util/hints')
+const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = ({ args, message }) => {
   let hint = ''

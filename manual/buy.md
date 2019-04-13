@@ -3,16 +3,16 @@
 
 語法：
 ```
-87!buy [tool] [amount]
+87!buy [target] [amount]
 ```
-`tool` 道具的名稱
+`target` 商品的名稱
 `amount` 大於 1 的整數數字
 
 範例：
 ```
 87!buy
-87!buy Bag
-87!buy FishingPole
+87!buy bag
+87!buy fishingpole
 87!buy bait 3
 ```
 說明：
