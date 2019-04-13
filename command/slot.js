@@ -48,6 +48,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     }
   }
 
+  // energy system
   database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
     let userEnergy = snapshot.val()
     if (!snapshot.exists()) {
@@ -59,7 +60,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       return
     }
 
-    // energy system
+    // check buffs
     database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
       let inventoryRaw = snapshot.val()
       if (!snapshot.exists()) {
@@ -75,7 +76,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         weightMinus = 5
       }
 
-      // main function
+      // slot results
       let result = []
       for (let i = 0; i < 3; i++) {
         let luck = Math.random() * (totalWeight - weightMinus)
@@ -91,17 +92,17 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       let resultDisplay = `-------------------\n${result.map(n => icons[n].symbol).join(' : ')}\n-------------------\n`
       result.sort()
 
+      // energy system
       let multiplier = 0
       if (result[0] === result[1] && result[1] === result[2]) {
         multiplier = icons[result[0]].prize
-      } else if (result[1] < 9 && (result[0] === result[1] || result[1] === result[2])) {
+      } else if (result[1] < 8 && (result[0] === result[1] || result[1] === result[2])) {
         multiplier = Math.floor(icons[result[1]].prize / 2)
       }
 
       let energyGain = energyCost * multiplier
-      userEnergy += energyGain - energyCost
 
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain - energyCost)
 
       // response
       let content
