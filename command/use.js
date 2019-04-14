@@ -29,9 +29,10 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
 
     target.name = emoji.unemojify(args[1]).toLowerCase()
     for (let id in buffs) {
-      if (target.name === buffs[id].name || target.name === buffs[id].icon || target.name === buffs[id].displayName) {
+      let itemId = buffs[id].itemId
+      if (target.name === items[itemId].name || target.name === items[itemId].icon || target.name === items[itemId].displayName) {
         target.buffId = id
-        target.itemId = buffs[id].itemId
+        target.itemId = itemId
         if (args[2]) {
           target.amount = parseInt(args[2])
         }
@@ -105,7 +106,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
     database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
 
     // response
-    let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${buffs[target.buffId].icon}**${buffs[target.buffId].displayName}**x${target.amount}`
+    let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}`
     sendResponseMessage({ message, description })
   })
 }

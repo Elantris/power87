@@ -70,7 +70,9 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       let userInventory = inventorySystem.parse(inventoryRaw)
 
       let weightMinus = 0
-      if (userInventory.buffs['%2']) {
+      if (userInventory.buffs['%3']) {
+        weightMinus = 15
+      } else if (userInventory.buffs['%2']) {
         weightMinus = 10
       } else if (userInventory.buffs['%1']) {
         weightMinus = 5

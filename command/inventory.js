@@ -42,7 +42,7 @@ module.exports = ({ args, database, message, fishing, guildId, userId }) => {
         let buffLastTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
         let buffDisplayHour = Math.floor(buffLastTime / 60).toString().padStart(2, '0')
         let buffDisplayMinute = Math.floor(buffLastTime % 60).toString().padStart(2, '0')
-        inventoryDisplay += `${buffs[id].icon}${buffDisplayHour}:${buffDisplayMinute}`
+        inventoryDisplay += `${items[buffs[id].itemId].icon}${buffDisplayHour}:${buffDisplayMinute}`
       }
     }
 

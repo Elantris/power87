@@ -170,5 +170,14 @@ module.exports = {
     description: '因為賭場裡面全面禁菸，賭客們為了裝帥會去購買的棒棒糖，因為他們相信吃下去會變得比較幸運。',
     value: 5,
     price: 50
+  },
+  21: {
+    kind: 'buff',
+    name: 'chocolatebar',
+    icon: ':chocolate_bar:',
+    displayName: '巧克力好棒',
+    description: '能夠迅速補充體力，適合那些在賭場裡流連忘返又不吃飯的賭客們。',
+    value: 25,
+    price: 250
   }
 }

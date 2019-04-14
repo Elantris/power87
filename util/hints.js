@@ -1,45 +1,31 @@
 const tools = require('./tools')
 const items = require('./items')
-const buffs = require('./buffs')
-
-const mapping = {
-  Bag: tools.$0,
-  FishingPole: tools.$1,
-  SailBoat: tools.$2,
-  Trident: tools.$3,
-  gem: items[0],
-  penguin: items[1],
-  bait: buffs['%0'],
-  candy: buffs['%1']
-}
-
-const wrappedItem = (item) => `${mapping[item].icon}**${mapping[item].displayName}**`
-const wrappedCode = (code) => `\`87!${code}\``
 
 const hints = [
   // project, system
-  `公告頁面的連結，這裡可以看到更新資訊！ <https://hackmd.io/s/VkLSj2pOJW>`,
-  `意見調查的表單，有什麼話想對開發者說？ <https://forms.gle/9iYELzNoQ2JRDKeR7>`,
-  `${wrappedCode('help')} 除了指令以外現在還可以用道具或物品的圖示、名稱查詢詳細說明，例如 ${wrappedCode('help :candy:')}`,
-  `遇到不知道用處的物品可以用 ${wrappedCode('help')} 查看詳細說明`,
-  `${wrappedCode('help')} 是個很棒的指令，真希望每個人下指令前都先用一次`,
-  `${wrappedCode('hint')} 可能會有一些攻略提示或是開發者的喃喃自語`,
+  '公告頁面的連結，這裡可以看到更新資訊！ <https://hackmd.io/s/VkLSj2pOJW>',
+  '意見調查的表單，有什麼話想對開發者說？ <https://forms.gle/9iYELzNoQ2JRDKeR7>',
+  '`87!help` 除了指令以外現在還可以用道具或物品的圖示、名稱查詢詳細說明，例如 `87!help :candy:`',
+  '遇到不知道用處的物品可以用 `87!help` 查看詳細說明',
+  '`87!help` 是個很棒的指令，真希望每個人下指令前都先用一次',
+  '`87!hint` 可能會有一些攻略提示或是開發者的喃喃自語',
 
   // game
-  `${wrappedCode('help list')} 有人還記得這個機器人最一開始只是一個筆記機器人嗎？`,
-  `${wrappedCode('daily')} 每日簽到可以獲得固定點數，累計連續簽到的話還可以獲得額外的獎勵點數`,
-  `${wrappedCode('slot')} 來試試手氣吧！`,
-  `${wrappedCode('buy')} 釣魚前記得購買 ${wrappedItem('Bag')} 與 ${wrappedItem('FishingPole')}`,
-  `${wrappedCode('buy')} 購買的增益道具會放進背包裡，記得使用 ${wrappedCode('use')} 來獲得特殊效果`,
-  `為了避免賣掉不該賣的東西，${wrappedCode('sell')} 可以只賣掉特定分類的物品，例如 ${wrappedCode('sell fish')}`,
-  `${wrappedItem('FishingPole')} 等級越高越容易釣到魚`,
-  `提升 ${wrappedItem('SailBoat')} 等級可以解鎖更多種類的魚獲，說不定還可以看到 ${wrappedItem('penguin')}`,
-  `道具屋上架了 ${wrappedItem('Trident')}，提升等級可以增加稀有魚種獲得的機率`,
-  `有非常低的機率可以釣到 ${wrappedItem('gem')} 是很值錢的東西！`,
-  `${wrappedItem('bait')} 購買後會放進背包裡，記得使用 ${wrappedCode('87!use')} 指令獲得增益效果`,
-  `你是不是把 ${wrappedItem('bait')} 放在身上當護身符啊？`,
-  `有空提醒旁邊的人背包滿了，趕快回來賣魚吧。`,
-  `接聽語音頻道可以獲得能量點數，進入釣魚模式有較高的機率釣到魚，但拒聽（關閉耳機圖示）視同未接聽語音頻道！`,
+  '`87!help list` 有人還記得這個機器人最一開始只是一個筆記機器人嗎？',
+  '`87!daily` 每日簽到可以獲得固定點數，累計連續簽到的話還可以獲得額外的獎勵點數',
+  '`87!slot` 來試試手氣吧！',
+  '`87!buy` 釣魚前記得購買 {{bag}} 與 {{fishingpole}}',
+  '`87!buy` 購買的增益道具會放進背包裡，記得使用 `87!use` 來獲得特殊效果',
+  '為了避免賣掉不該賣的東西，`87!sell` 可以只賣掉特定分類的物品，例如 `87!sell fish`',
+  '{{fishingpole}} 等級越高越容易釣到魚',
+  '提升 {{sailboat}} 等級可以解鎖更多種類的魚獲，說不定還可以看到 {{penguin}}',
+  '道具屋上架了 {{buoy}}，提升等級可以增加稀有魚種獲得的機率',
+  '有非常低的機率可以釣到 {{gem}} 是很值錢的東西！',
+  '{{bait}} 購買後會放進背包裡，記得使用 `87!use` 指令獲得增益效果',
+  '你是不是把 {{bait}} 放在身上當護身符啊？',
+  '有空提醒旁邊的人背包滿了，趕快回來賣魚吧。',
+  '接聽語音頻道可以獲得能量點數，進入釣魚模式有較高的機率釣到魚，但拒聽（關閉耳機圖示）視同未接聽語音頻道！',
+  '「好運食品」對於點心的堅持一再推陳出新，據說賭客們吃了 {{lollipop}} 之後拉霸都拿一百倍。',
 
   // murmur
   '釣到的垃圾會直接丟到旁邊的垃圾桶，地球感謝你讓海洋更乾淨了一點。',
@@ -47,10 +33,11 @@ const hints = [
   '機率遊戲最討厭抽不到想要的，更討厭這遊戲明明是自己寫的運氣卻爛到不行 ╮(′～‵〞)╭',
   ':warning: 警告：本遊戲遊玩過程中並沒有任何動物實際受到傷害。',
   '寫這個遊戲還真的見識到了不少東西，比如說人類賭性堅強的一面',
-  '「贏要衝、輸要梭哈」\n「小賭怡情、大賭尤加利葉」\n「有錢不賭愧對父母，賭光輸光為國爭光」\n「有賭有希望，沒錢有腎臟」',
+  '「贏要衝、輸要梭哈」\n「小賭怡情、大賭尤加利葉」\n「有錢不賭愧對父母，賭光輸光為國爭光」',
   '喵PASS ~(*′△`)ﾉ',
   '你已經被 :doughnut:**幸運甜甜圈** 造訪，它對你的人生並不會帶來什麼改變。',
   '2019 年的我開始在 YouTube 上隨便亂逛，這是寫 Power87 時最常聽的頻道其中一首歌 <https://www.youtube.com/watch?v=BCt9lS_Uv_Y>',
+  '「有賭有希望，沒錢有腎臟」—— 夜光，2019',
   '「想要富，先下注。」—— Afei，2019',
   '「沒有孩子天天哭，哪家賭客天天輸？賭就對了。」—— Afei，2019',
   '*按一下以新增文字*',
@@ -65,12 +52,38 @@ const hints = [
   '找工作中的開發者，歡迎引薦 (`・ω・´)'
 ]
 
-module.exports = (luck) => {
-  if (luck) {
-    return hints[luck] || -1
+const mapping = item => {
+  for (let id in tools) {
+    if (item === tools[id].name) {
+      return `${tools[id].icon}**${tools[id].displayName}**`
+    }
   }
 
-  luck = Math.floor(Math.random() * hints.length)
+  for (let id in items) {
+    if (item === items[id].name) {
+      return `${items[id].icon}**${items[id].displayName}**`
+    }
+  }
 
-  return hints[luck]
+  return ''
+}
+
+module.exports = (luck) => {
+  if (luck && !hints[luck]) {
+    return -1
+  }
+
+  if (!luck) {
+    luck = Math.floor(Math.random() * hints.length)
+  }
+
+  let hint = hints[luck]
+  let items = hint.match(/\{\{[a-z]*\}\}/g)
+  if (items) {
+    items.forEach(item => {
+      hint = hint.replace(item, mapping(item.slice(2, -2)))
+    })
+  }
+
+  return hint
 }

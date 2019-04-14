@@ -40,9 +40,9 @@ const make = (userInventory, timenow = Date.now()) => {
     inventoryData.push(`${toolId}+${userInventory.tools[toolId]}`)
   }
 
-  for (let buffId in userInventory.buffs) {
-    if (parseInt(userInventory.buffs[buffId]) > timenow) {
-      inventoryData.push(`${buffId}:${userInventory.buffs[buffId]}`)
+  for (let id in userInventory.buffs) {
+    if (parseInt(userInventory.buffs[id]) > timenow) {
+      inventoryData.push(`${id}:${userInventory.buffs[id]}`)
     }
   }
 
