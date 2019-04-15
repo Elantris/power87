@@ -23,7 +23,7 @@ const totalWeight = 245
 
 module.exports = ({ args, database, message, guildId, userId }) => {
   let energyCost = 1
-  let announcementDisplay = ''
+  let sayMessage = ''
 
   // parse parameters
   if (args.length > 1) {
@@ -33,18 +33,18 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         sendResponseMessage({ message, errorCode: 'ERROR_ENERGY_EXCEED' })
         return
       }
-      announcementDisplay = args.slice(2)
+      sayMessage = args.slice(2)
     } else {
-      announcementDisplay = args.slice(1)
+      sayMessage = args.slice(1)
     }
 
-    if (announcementDisplay.length) {
-      announcementDisplay = announcementDisplay.join(' ')
-      if (announcementDisplay.length > 50) {
+    if (sayMessage.length) {
+      sayMessage = sayMessage.join(' ')
+      if (sayMessage.length > 50) {
         sendResponseMessage({ message, errorCode: 'ERROR_LENGTH_EXCEED' })
         return
       }
-      announcementDisplay = `說完「**${announcementDisplay}**」之後`
+      sayMessage = `說完「${sayMessage}」之後`
     }
   }
 
@@ -125,7 +125,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         resultMessage = `<@${message.author.id}> 或成最大贏家，獲得了 ${energyGain} 點八七能量`
       }
 
-      sendResponseMessage({ message, content, description: `:tickets: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${announcementDisplay}投注了 ${energyCost} 點八七能量，${resultMessage}` })
+      sendResponseMessage({ message, content, description: `:tickets: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${sayMessage}投注了 ${energyCost} 點八七能量，${resultMessage}` })
     })
   })
 }

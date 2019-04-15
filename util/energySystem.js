@@ -13,7 +13,7 @@ const gainFromTextChannel = ({ database, energy, guildId, userId }) => {
 
 const isQualified = member => member.voiceChannelID && !member.deaf
 
-const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
+const gainFromVoiceChannel = ({ client, banlist, database }) => {
   let timenow = Date.now()
 
   client.guilds.filter(guild => !banlist[guild.id]).tap(guild => {
@@ -22,37 +22,41 @@ const gainFromVoiceChannel = ({ client, banlist, database, fishing }) => {
     database.ref(`/energy/${guildId}`).once('value').then(snapshot => {
       let guildEnergy = snapshot.val() || {}
       let guildEnergyUpdates = {}
-      let guildFishingUpdates = {}
 
-      guild.members.filter(member => !banlist[member.id] && !member.user.bot).tap(member => {
-        let userId = member.id
-        if (fishing[guildId] && fishing[guildId][userId]) {
-          if (!isQualified(member) && Math.random() < 0.8) {
-            return
-          }
+      database.ref(`/fishing/${guildId}`).once('value').then(snapshot => {
+        let guildFishing = snapshot.val() || {}
+        let guildFishingUpdates = {}
 
-          let fishingData = fishing[guildId][userId].split(';')
-          let userInventory = inventorySystem.parse(fishingData[0])
-          let fishTimes = parseInt(fishingData[1]) + 1
+        guild.members.filter(member => !banlist[member.id] && !member.user.bot).tap(member => {
+          let userId = member.id
+          if (guildFishing[userId]) {
+            if (!isQualified(member) && Math.random() < 0.8) {
+              return
+            }
 
-          if (Math.random() < parseInt(userInventory.tools.$1) * 0.05) {
-            fishTimes += 1 // fishing pole ability
-          }
-          if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.5) {
-            fishTimes += 1 // bait buff
-          }
-          guildFishingUpdates[userId] = `${fishingData[0]};${fishTimes}`
-        } else if (isQualified(member)) {
-          if (typeof guildEnergy[userId] === 'undefined') {
-            guildEnergy[userId] = INITIAL_USER_ENERGY
-          }
+            let fishingData = guildFishing[userId].split(';')
+            let userInventory = inventorySystem.parse(fishingData[0])
+            let fishTimes = parseInt(fishingData[1]) + 1
 
-          guildEnergyUpdates[userId] = guildEnergy[userId] + 1
-        }
+            if (Math.random() < parseInt(userInventory.tools.$1) * 0.05) {
+              fishTimes += 1 // fishing pole ability
+            }
+            if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.5) {
+              fishTimes += 1 // bait buff
+            }
+            guildFishingUpdates[userId] = `${fishingData[0]};${fishTimes}`
+          } else if (isQualified(member)) {
+            if (typeof guildEnergy[userId] === 'undefined') {
+              guildEnergy[userId] = INITIAL_USER_ENERGY
+            }
+
+            guildEnergyUpdates[userId] = guildEnergy[userId] + 1
+          }
+        })
+
+        database.ref(`/energy/${guildId}`).update(guildEnergyUpdates)
+        database.ref(`/fishing/${guildId}`).update(guildFishingUpdates)
       })
-
-      database.ref(`/energy/${guildId}`).update(guildEnergyUpdates)
-      database.ref(`/fishing/${guildId}`).update(guildFishingUpdates)
     })
   })
 }

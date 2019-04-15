@@ -2,8 +2,9 @@ const Discord = require('discord.js')
 const firebase = require('firebase')
 
 const config = require('./config')
-const energySystem = require('./util/energySystem')
+const isCoolingDown = require('./util/isCoolingDown')
 const handleMessage = require('./util/handleMessage')
+const energySystem = require('./util/energySystem')
 
 const client = new Discord.Client()
 firebase.initializeApp(config.FIREBASE)
@@ -18,12 +19,8 @@ database.ref('/lastUsed/').update({ _keep: 1 })
 database.ref('/note/').update({ _keep: 1 })
 
 let banlist = {}
-let fishing = {}
 database.ref('/banlist').on('value', snapshot => {
   banlist = snapshot.val()
-})
-database.ref('/fishing').on('value', snapshot => {
-  fishing = snapshot.val()
 })
 
 // handle message
@@ -31,7 +28,7 @@ client.on('message', message => {
   let guildId = message.guild.id
   let userId = message.author.id
 
-  if (message.author.bot || banlist[guildId]) {
+  if (message.author.bot) {
     return
   }
 
@@ -42,14 +39,21 @@ client.on('message', message => {
     database.ref(`/banlist/${userId}`).remove()
   }
 
-  handleMessage({ client, database, fishing, message, guildId, userId })
+  if (!message.content.startsWith('87')) {
+    if (!isCoolingDown({ userCmd: 'gainFromMessage', message, userId })) {
+      energySystem.gainFromTextChannel({ database, guildId, userId })
+    }
+    return
+  }
+
+  handleMessage({ client, database, message, guildId, userId })
 })
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
 
   setInterval(() => {
-    energySystem.gainFromVoiceChannel({ client, banlist, database, fishing })
+    energySystem.gainFromVoiceChannel({ client, banlist, database })
   }, config.tick)
 })
 

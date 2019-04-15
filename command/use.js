@@ -6,14 +6,14 @@ const items = require('../util/items')
 
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, client, database, fishing, message, guildId, userId }) => {
+module.exports = ({ args, client, database, message, guildId, userId }) => {
   if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
 
   let target = {
-    name: '',
+    search: '',
     itemId: '',
     buffId: '',
     amount: 1,
@@ -22,15 +22,10 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
 
   // check target exists
   if (args[1]) {
-    if (fishing[guildId] && fishing[guildId][userId]) {
-      sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-      return
-    }
-
-    target.name = emoji.unemojify(args[1]).toLowerCase()
+    target.search = emoji.unemojify(args[1]).toLowerCase()
     for (let id in buffs) {
       let itemId = buffs[id].itemId
-      if (target.name === items[itemId].name || target.name === items[itemId].icon || target.name === items[itemId].displayName) {
+      if (target.search === items[itemId].name || target.search === items[itemId].icon || target.search === items[itemId].displayName) {
         target.buffId = id
         target.itemId = itemId
         if (args[2]) {
@@ -46,6 +41,7 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
     }
   }
 
+  // inventory system
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
     let inventoryRaw = snapshot.val()
     if (!snapshot.exists()) {
@@ -82,31 +78,39 @@ module.exports = ({ args, client, database, fishing, message, guildId, userId })
       return
     }
 
-    if (target.amount > itemsCount[target.itemId]) {
-      target.amount = itemsCount[target.itemId]
-    }
-
-    // remove items from bags
-    userInventory.items.some((item, index) => {
-      if (target.itemId === item.id) {
-        target.firstIndex = index
-        return true
+    database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
+      let fishingRaw = snapshot.val()
+      if (fishingRaw) {
+        sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+        return
       }
-      return false
+
+      if (target.amount > itemsCount[target.itemId]) {
+        target.amount = itemsCount[target.itemId]
+      }
+
+      // remove items from bags
+      userInventory.items.some((item, index) => {
+        if (target.itemId === item.id) {
+          target.firstIndex = index
+          return true
+        }
+        return false
+      })
+      userInventory.items.splice(target.firstIndex, target.amount)
+
+      // extend duration of buff
+      if (!userInventory.buffs[target.buffId] || userInventory.buffs[target.buffId] < message.createdTimestamp) {
+        userInventory.buffs[target.buffId] = message.createdTimestamp
+      }
+      userInventory.buffs[target.buffId] = parseInt(userInventory.buffs[target.buffId]) + buffs[target.buffId].duration * target.amount
+
+      // update database
+      database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory, message.createdTimestamp))
+
+      // response
+      let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}`
+      sendResponseMessage({ message, description })
     })
-    userInventory.items.splice(target.firstIndex, target.amount)
-
-    // extend duration of buff
-    if (!userInventory.buffs[target.buffId] || userInventory.buffs[target.buffId] < message.createdTimestamp) {
-      userInventory.buffs[target.buffId] = message.createdTimestamp
-    }
-    userInventory.buffs[target.buffId] = parseInt(userInventory.buffs[target.buffId]) + buffs[target.buffId].duration * target.amount
-
-    // update database
-    database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
-
-    // response
-    let description = `:arrow_double_up: ${message.member.displayName} 使用了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}`
-    sendResponseMessage({ message, description })
   })
 }

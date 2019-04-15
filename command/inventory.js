@@ -5,7 +5,7 @@ const items = require('../util/items')
 const fishingSystem = require('../util/fishingSystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, database, message, fishing, guildId, userId }) => {
+module.exports = ({ args, database, message, guildId, userId }) => {
   database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
     let inventoryRaw = snapshot.val()
     if (!snapshot.exists()) {
@@ -14,49 +14,52 @@ module.exports = ({ args, database, message, fishing, guildId, userId }) => {
     }
     let userInventory = inventorySystem.parse(inventoryRaw)
 
-    // user status / fishing system
-    let userStatus = '在村莊裡發呆'
-    if (fishing[guildId] && fishing[guildId][userId]) {
-      let fishingData = fishing[guildId][userId].split(';')
-      let count = parseInt(fishingData[1])
-      userInventory = fishingSystem({ database, guildId, userId, userInventory, count })
+    database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
+      let fishingRaw = snapshot.val()
 
-      if (userInventory.hasEmptySlot) {
-        userStatus = '出海捕魚中'
-        database.ref(`/fishing/${guildId}/${userId}`).set(`${fishingData[0]};0`)
-      } else {
-        userStatus = '從大洋歸來'
-        database.ref(`/fishing/${guildId}/${userId}`).remove()
+      let userStatus = '在村莊裡發呆'
+      if (fishingRaw) {
+        let fishingData = fishingRaw.split(';')
+        let count = parseInt(fishingData[1])
+        userInventory = fishingSystem({ database, guildId, userId, userInventory, count })
+
+        if (userInventory.hasEmptySlot) {
+          userStatus = '出海捕魚中'
+          database.ref(`/fishing/${guildId}/${userId}`).set(`${fishingData[0]};0`)
+        } else {
+          userStatus = '從大洋歸來'
+          database.ref(`/fishing/${guildId}/${userId}`).remove()
+        }
       }
-    }
 
-    // inventory display
-    let inventoryDisplay = `\n裝備道具：`
-    for (let id in userInventory.tools) {
-      inventoryDisplay += `${tools[id].icon}+${userInventory.tools[id]} `
-    }
-
-    inventoryDisplay += `\n增益效果：`
-    for (let id in userInventory.buffs) {
-      if (userInventory.buffs[id] > message.createdTimestamp) {
-        let buffLastTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
-        let buffDisplayHour = Math.floor(buffLastTime / 60).toString().padStart(2, '0')
-        let buffDisplayMinute = Math.floor(buffLastTime % 60).toString().padStart(2, '0')
-        inventoryDisplay += `${items[buffs[id].itemId].icon}${buffDisplayHour}:${buffDisplayMinute}`
+      // inventory display
+      let inventoryDisplay = `\n裝備道具：`
+      for (let id in userInventory.tools) {
+        inventoryDisplay += `${tools[id].icon}+${userInventory.tools[id]} `
       }
-    }
 
-    inventoryDisplay += `\n\n背包物品：[${userInventory.items.length}/${userInventory.maxSlots}]`
-    userInventory.items.sort((itemA, itemB) => (~~itemA.id - ~~itemB.id)).forEach((item, index) => {
-      if (index % 8 === 0) {
-        inventoryDisplay += '\n'
-      } else {
-        inventoryDisplay += ' '
+      inventoryDisplay += `\n增益效果：`
+      for (let id in userInventory.buffs) {
+        if (userInventory.buffs[id] > message.createdTimestamp) {
+          let buffLastTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
+          let buffDisplayHour = Math.floor(buffLastTime / 60).toString().padStart(2, '0')
+          let buffDisplayMinute = Math.floor(buffLastTime % 60).toString().padStart(2, '0')
+          inventoryDisplay += `${items[buffs[id].itemId].icon}${buffDisplayHour}:${buffDisplayMinute}`
+        }
       }
-      inventoryDisplay += `${items[item.id].icon}`
+
+      inventoryDisplay += `\n\n背包物品：[${userInventory.items.length}/${userInventory.maxSlots}]`
+      userInventory.items.sort((itemA, itemB) => (~~itemA.id - ~~itemB.id)).forEach((item, index) => {
+        if (index % 8 === 0) {
+          inventoryDisplay += '\n'
+        } else {
+          inventoryDisplay += ' '
+        }
+        inventoryDisplay += `${items[item.id].icon}`
+      })
+
+      // response
+      sendResponseMessage({ message, description: `:diamond_shape_with_a_dot_inside: ${message.member.displayName} ${userStatus}\n${inventoryDisplay}` })
     })
-
-    // response
-    sendResponseMessage({ message, description: `:diamond_shape_with_a_dot_inside: ${message.member.displayName} ${userStatus}\n${inventoryDisplay}` })
   })
 }
