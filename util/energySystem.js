@@ -33,7 +33,7 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
             let counts = fishingData[0].split(',').map(v => parseInt(v))
 
             let hasBaitBuff = false
-            if (fishingData[1] && parseInt([1]) > timenow) {
+            if (fishingData[1] && parseInt(fishingData[1]) > timenow) {
               hasBaitBuff = true
             }
 
