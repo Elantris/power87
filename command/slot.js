@@ -67,10 +67,12 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         inventoryRaw = ''
         database.ref(`/inventory/${guildId}/${userId}`).set('')
       }
-      let userInventory = inventorySystem.parse(inventoryRaw)
+      let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
 
       let weightMinus = 0
-      if (userInventory.buffs['%3']) {
+      if (userInventory.buffs['%4']) {
+        weightMinus = 25
+      } else if (userInventory.buffs['%3']) {
         weightMinus = 15
       } else if (userInventory.buffs['%2']) {
         weightMinus = 10

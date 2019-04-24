@@ -1,4 +1,3 @@
-const inventorySystem = require('./inventorySystem')
 const INITIAL_USER_ENERGY = 50
 
 const gainFromTextChannel = ({ database, energy, guildId, userId }) => {
@@ -30,21 +29,32 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
         guild.members.filter(member => !banlist[member.id] && !member.user.bot).tap(member => {
           let userId = member.id
           if (guildFishing[userId]) {
-            if (!isQualified(member) && Math.random() < 0.8) {
-              return
-            }
-
             let fishingData = guildFishing[userId].split(';')
-            let userInventory = inventorySystem.parse(fishingData[0])
-            let fishTimes = parseInt(fishingData[1]) + 1
+            let counts = fishingData[0].split(',').map(v => parseInt(v))
 
-            if (Math.random() < parseInt(userInventory.tools.$1) * 0.05) {
-              fishTimes += 1 // fishing pole ability
+            let hasBaitBuff = false
+            if (fishingData[1] && parseInt([1]) > timenow) {
+              hasBaitBuff = true
             }
-            if (userInventory.buffs['%0'] && parseInt(userInventory.buffs['%0']) > timenow && Math.random() < 0.5) {
-              fishTimes += 1 // bait buff
+
+            if (isQualified(member)) {
+              if (hasBaitBuff) {
+                counts[3]++
+              } else {
+                counts[2]++
+              }
+            } else {
+              if (hasBaitBuff) {
+                counts[1]++
+              } else {
+                counts[0]++
+              }
             }
-            guildFishingUpdates[userId] = `${fishingData[0]};${fishTimes}`
+
+            guildFishingUpdates[userId] = counts.join(',') + ';'
+            if (hasBaitBuff) {
+              guildFishingUpdates[userId] += fishingData[1]
+            }
           } else if (isQualified(member)) {
             if (typeof guildEnergy[userId] === 'undefined') {
               guildEnergy[userId] = INITIAL_USER_ENERGY

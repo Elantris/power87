@@ -12,20 +12,18 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
-    let userInventory = inventorySystem.parse(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
 
     database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
       let fishingRaw = snapshot.val()
 
       let userStatus = '在村莊裡發呆'
       if (fishingRaw) {
-        let fishingData = fishingRaw.split(';')
-        let count = parseInt(fishingData[1])
-        userInventory = fishingSystem({ database, guildId, userId, userInventory, count })
+        userInventory = fishingSystem({ database, guildId, userId, userInventory, fishingRaw })
 
         if (userInventory.hasEmptySlot) {
           userStatus = '出海捕魚中'
-          database.ref(`/fishing/${guildId}/${userId}`).set(`${fishingData[0]};0`)
+          database.ref(`/fishing/${guildId}/${userId}`).set(`0,0,0,0;${fishingRaw.split(';')[1]}`)
         } else {
           userStatus = '從大洋歸來'
           database.ref(`/fishing/${guildId}/${userId}`).remove()

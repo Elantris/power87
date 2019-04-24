@@ -50,7 +50,7 @@ module.exports = ({ args, client, database, message, guildId, userId }) => {
       sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
       return
     }
-    let userInventory = inventorySystem.parse(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
 
     let itemsCount = {}
     userInventory.items.filter(item => items[item.id].kind === 'buff').forEach(item => {

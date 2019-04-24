@@ -45,7 +45,7 @@ const getLoot = ({ pool, multiplierNormal, multiplierRare }) => {
   return -1
 }
 
-module.exports = ({ database, guildId, userId, userInventory, count }) => {
+module.exports = ({ database, guildId, userId, userInventory, fishingRaw }) => {
   if (!userInventory.hasEmptySlot) {
     return userInventory
   }
@@ -62,9 +62,28 @@ module.exports = ({ database, guildId, userId, userInventory, count }) => {
     multiplierRare += 0.01 + parseInt(userInventory.tools.$3) * 0.01
   }
 
+  let count = 0
+  let counts = fishingRaw.split(';')[0].split(',').map(v => parseInt(v))
+
+  for (let i = 0; i < counts[0]; i++) {
+    if (Math.random() < 0.2) {
+      count++
+    }
+  }
+  for (let i = 0; i < counts[1]; i++) {
+    if (Math.random() < 0.3) {
+      count++
+    }
+  }
+  for (let i = 0; i < counts[3]; i++) {
+    if (Math.random() < 0.5) {
+      count++
+    }
+  }
+  count += counts[2] + counts[3]
+
   for (let i = 0; i < count; i++) {
     if (emptySlots < 1) {
-      userInventory.hasEmptySlot = false
       break
     }
 
@@ -78,6 +97,10 @@ module.exports = ({ database, guildId, userId, userInventory, count }) => {
       amount: 1
     })
     emptySlots -= 1
+  }
+
+  if (emptySlots < 1) {
+    userInventory.hasEmptySlot = false
   }
 
   database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))

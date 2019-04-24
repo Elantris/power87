@@ -37,7 +37,7 @@ module.exports = ({ args, database, message, guildId, userId }) => {
       inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
-    let userInventory = inventorySystem.parse(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
 
     // no arguments
     if (args.length === 1) {

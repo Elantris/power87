@@ -4,8 +4,8 @@ module.exports = {
     name: 'gem',
     icon: ':gem:',
     displayName: '鑽石',
-    description: '非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫富用的。',
-    price: 1001,
+    description: '非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫耀自己的財富。',
+    price: 10000,
     value: 1000
   },
   1: {
@@ -179,5 +179,14 @@ module.exports = {
     description: '能夠迅速補充體力，適合那些在賭場裡流連忘返又不吃飯的賭客們。',
     value: 25,
     price: 250
+  },
+  22: {
+    kind: 'buff',
+    name: 'popcorn',
+    icon: ':popcorn:',
+    displayName: '棒棒爆米花',
+    description: '',
+    value: 125,
+    price: 1250
   }
 }

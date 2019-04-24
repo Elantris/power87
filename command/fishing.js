@@ -10,7 +10,7 @@ module.exports = ({ database, message, guildId, userId }) => {
       inventoryRaw = ''
       database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
-    let userInventory = inventorySystem.parse(inventoryRaw)
+    let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
 
     let userStatus = ''
     let hint = ''
@@ -18,11 +18,10 @@ module.exports = ({ database, message, guildId, userId }) => {
     database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
       let fishingRaw = snapshot.val()
       if (fishingRaw) {
-        let fishingData = fishingRaw.split(';')
-        let count = parseInt(fishingData[1])
         database.ref(`/fishing/${guildId}/${userId}`).remove()
 
-        fishingSystem({ database, guildId, userId, userInventory, count })
+        userInventory = fishingSystem({ database, guildId, userId, userInventory, fishingRaw })
+        database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
 
         userStatus = '結束釣魚'
       } else {
@@ -36,8 +35,10 @@ module.exports = ({ database, message, guildId, userId }) => {
         }
 
         // update database
-        userInventory.items = []
-        let updates = inventorySystem.make(userInventory, message.createdTimestamp) + ';0'
+        let updates = '0,0,0,0;'
+        if (userInventory.buffs['%0']) {
+          updates += userInventory.buffs['%0']
+        }
         database.ref(`/fishing/${guildId}/${userId}`).set(updates)
 
         userStatus = '開始釣魚'

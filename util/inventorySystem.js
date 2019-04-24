@@ -1,4 +1,4 @@
-const parse = inventoryRaw => {
+const parse = (inventoryRaw, timenow = Date.now()) => {
   let inventoryData = inventoryRaw.split(',').filter(v => v)
   let userInventory = {
     tools: {},
@@ -17,7 +17,9 @@ const parse = inventoryRaw => {
       }
     } else if (item[0] === '%') { // buff
       let tmp = item.split(':') // %id:timestamp
-      userInventory.buffs[tmp[0]] = tmp[1]
+      if (parseInt(tmp[1]) > timenow) {
+        userInventory.buffs[tmp[0]] = parseInt(tmp[1])
+      }
     } else { // item
       let tmp = item.split('.') // id.amount
       userInventory.items.push({
@@ -41,7 +43,7 @@ const make = (userInventory, timenow = Date.now()) => {
   }
 
   for (let id in userInventory.buffs) {
-    if (parseInt(userInventory.buffs[id]) > timenow) {
+    if (userInventory.buffs[id] > timenow) {
       inventoryData.push(`${id}:${userInventory.buffs[id]}`)
     }
   }
