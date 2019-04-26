@@ -51,8 +51,9 @@ module.exports = ({ database, guildId, userId, userInventory, fishingRaw }) => {
   }
 
   let emptySlots = userInventory.maxSlots - userInventory.items.length
+  let fishingPoleLevel = parseInt(userInventory.tools.$1)
   let pool = 0
-  let multiplierNormal = 1 + parseInt(userInventory.tools.$1) * 0.01 // fishing pole
+  let multiplierNormal = 1 + fishingPoleLevel * 0.01 // fishing pole
   let multiplierRare = multiplierNormal
 
   if (userInventory.tools.$2) { // sailboat
@@ -65,22 +66,17 @@ module.exports = ({ database, guildId, userId, userInventory, fishingRaw }) => {
   let count = 0
   let counts = fishingRaw.split(';')[0].split(',').map(v => parseInt(v))
 
-  for (let i = 0; i < counts[0]; i++) {
-    if (Math.random() < 0.2) {
+  count += counts[0] + counts[1]
+  for (let i = 0; i < counts[0]; i++) { // fishing pole
+    if (Math.random() < fishingPoleLevel * 0.05) {
       count++
     }
   }
-  for (let i = 0; i < counts[1]; i++) {
-    if (Math.random() < 0.3) {
+  for (let i = 0; i < counts[1]; i++) { // buff
+    if (Math.random() < fishingPoleLevel * 0.05 + 0.5) {
       count++
     }
   }
-  for (let i = 0; i < counts[3]; i++) {
-    if (Math.random() < 0.5) {
-      count++
-    }
-  }
-  count += counts[2] + counts[3]
 
   for (let i = 0; i < count; i++) {
     if (emptySlots < 1) {
@@ -101,6 +97,7 @@ module.exports = ({ database, guildId, userId, userInventory, fishingRaw }) => {
 
   if (emptySlots < 1) {
     userInventory.hasEmptySlot = false
+    database.ref(`/fishing/${guildId}/${userId}`).remove()
   }
 
   database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))

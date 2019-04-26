@@ -23,10 +23,9 @@ module.exports = ({ args, database, message, guildId, userId }) => {
 
         if (userInventory.hasEmptySlot) {
           userStatus = '出海捕魚中'
-          database.ref(`/fishing/${guildId}/${userId}`).set(`0,0,0,0;${fishingRaw.split(';')[1]}`)
+          database.ref(`/fishing/${guildId}/${userId}`).set(`0,0;${fishingRaw.split(';')[1]}`)
         } else {
           userStatus = '從大洋歸來'
-          database.ref(`/fishing/${guildId}/${userId}`).remove()
         }
       }
 

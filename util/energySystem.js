@@ -1,3 +1,5 @@
+const inventorySystem = require('./inventorySystem')
+const fishingSystem = require('./fishingSystem')
 const INITIAL_USER_ENERGY = 50
 
 const gainFromTextChannel = ({ database, energy, guildId, userId }) => {
@@ -29,31 +31,31 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
         guild.members.filter(member => !banlist[member.id] && !member.user.bot).tap(member => {
           let userId = member.id
           if (guildFishing[userId]) {
-            let fishingData = guildFishing[userId].split(';')
-            let counts = fishingData[0].split(',').map(v => parseInt(v))
-
-            let hasBaitBuff = false
-            if (fishingData[1] && parseInt(fishingData[1]) > timenow) {
-              hasBaitBuff = true
+            if (!isQualified(member) && Math.random() < 0.2) {
+              return
             }
 
-            if (isQualified(member)) {
-              if (hasBaitBuff) {
-                counts[3]++
-              } else {
-                counts[2]++
-              }
-            } else {
-              if (hasBaitBuff) {
+            let fishingData = guildFishing[userId].split(';')
+            let counts = fishingData[0].split(',').map(v => parseInt(v))
+            guildFishingUpdates[userId] = fishingData[1]
+
+            if (counts[0] + counts[1] < 240) {
+              if (fishingData[1] && parseInt(fishingData[1]) > timenow) {
                 counts[1]++
               } else {
                 counts[0]++
               }
-            }
 
-            guildFishingUpdates[userId] = counts.join(',') + ';'
-            if (hasBaitBuff) {
-              guildFishingUpdates[userId] += fishingData[1]
+              guildFishingUpdates[userId] = counts.join(',') + ';' + guildFishingUpdates[userId]
+            } else { // stop auto fishing
+              database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
+                let inventoryRaw = snapshot.val()
+                let userInventory = inventorySystem.parse(inventoryRaw)
+
+                let fishingRaw = `${counts[0]},${counts[1]};`
+                fishingSystem({ database, guildId, userId, userInventory, fishingRaw })
+              })
+              guildFishingUpdates[userId] = null
             }
           } else if (isQualified(member)) {
             if (typeof guildEnergy[userId] === 'undefined') {

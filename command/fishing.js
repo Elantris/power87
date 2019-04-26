@@ -35,7 +35,7 @@ module.exports = ({ database, message, guildId, userId }) => {
         }
 
         // update database
-        let updates = '0,0,0,0;'
+        let updates = '0,0;'
         if (userInventory.buffs['%0']) {
           updates += userInventory.buffs['%0']
         }

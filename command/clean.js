@@ -1,5 +1,5 @@
 module.exports = ({ args, client, message }) => {
-  let limit = 30
+  let limit = 10
 
   if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {
     limit = parseInt(args[1])

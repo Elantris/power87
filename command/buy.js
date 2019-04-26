@@ -55,11 +55,11 @@ module.exports = ({ args, database, message, guildId, userId }) => {
         description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
       }
 
-      description += `\n\n__特色商品__：`
+      description += `\n\n__特色商品__：\n`
 
       for (let id in items) {
         if (items[id].price) {
-          description += `\n${items[id].icon}**${items[id].displayName}**，:battery: **${items[id].price}**，\`87!buy ${items[id].name}\``
+          description += `${items[id].icon} \`${items[id].name}\` `
         }
       }
 
