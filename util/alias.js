@@ -7,8 +7,9 @@ module.exports = {
   d: 'delete',
 
   e: 'energy',
-  18: 'roll',
-  24: 'roll',
+  '18': 'roll',
+  '18la': 'roll',
+  '24': 'roll',
 
   ls: 'list',
   l: 'list',
