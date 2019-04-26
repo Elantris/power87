@@ -8,6 +8,7 @@ const commandCooldown = {
   give: 3,
   rank: 30,
   slot: 15,
+  roll: 15,
 
   inventory: 5,
   buy: 3,

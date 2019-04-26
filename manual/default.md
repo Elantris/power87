@@ -14,6 +14,7 @@
 `87!give` __usertag__ __amount__：贈與能量
 `87!rank`：能量排行榜
 `87!slot` [energy] [message]：拉霸幾
+`87!roll` [energy] [message]：擲骰子
 
 道具：
 `87!inventory`：查看背包

@@ -10,7 +10,6 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     let inventoryRaw = snapshot.val()
     if (!snapshot.exists()) {
       inventoryRaw = ''
-      database.ref(`/inventory/${guildId}/${userId}`).set('')
     }
     let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
 

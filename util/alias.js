@@ -3,20 +3,21 @@ module.exports = {
   a: 'add',
   n: 'add',
 
-  clear: 'clean',
-
   del: 'delete',
   d: 'delete',
 
   e: 'energy',
-
-  h: 'help',
-  manual: 'help',
+  18: 'roll',
+  24: 'roll',
 
   ls: 'list',
   l: 'list',
   all: 'list',
 
   inv: 'inventory',
-  fish: 'fishing'
+  fish: 'fishing',
+
+  h: 'help',
+  manual: 'help',
+  clear: 'clean'
 }

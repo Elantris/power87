@@ -46,7 +46,6 @@ module.exports = ({ args, client, database, message, guildId, userId }) => {
     let inventoryRaw = snapshot.val()
     if (!snapshot.exists()) {
       inventoryRaw = ''
-      database.ref(`/inventory/${guildId}/${userId}`).set('')
       sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
       return
     }
