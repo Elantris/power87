@@ -79,33 +79,33 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     }
 
     // game
-    let gameDisplay = ''
+    let gameDisplay = '莊家擲出了 '
     let energyGain = 0
     let host = rollDice()
     if (host.score === 'same') {
-      gameDisplay += `莊家擲出了 **一色！**\n${host.diceDisplay}`
+      gameDisplay += `**一色！**\n${host.diceDisplay}`
       energyGain = bet * -1
     } else if (host.score === 12) {
-      gameDisplay += `莊家擲出了 **豹子！**\n${host.diceDisplay}`
+      gameDisplay += `**豹子！**\n${host.diceDisplay}`
       energyGain = bet * -1
     } else if (host.score === 3) {
-      gameDisplay += `莊家擲出了 **3 點**\n${host.diceDisplay}`
+      gameDisplay += `**最小的 3 點！**\n${host.diceDisplay}`
       energyGain = bet
     } else {
-      gameDisplay += `莊家擲出了 **${host.score} 點**\n${host.diceDisplay}\n\n`
+      gameDisplay += `**${host.score} 點**\n${host.diceDisplay}\n\n${message.member.displayName} ${sayMessage}擲出了 `
 
       let player = rollDice()
       if (player.score === 'same') {
-        gameDisplay += `${message.member.displayName} ${sayMessage}擲出了 **一色！**\n${player.diceDisplay}`
+        gameDisplay += `**一色！**`
         energyGain = bet * 2
       } else if (player.score === 12) {
-        gameDisplay += `${message.member.displayName} ${sayMessage}擲出了 **豹子！**\n${player.diceDisplay}`
+        gameDisplay += `**豹子！**`
         energyGain = bet * 2
       } else if (player.score === 3) {
-        gameDisplay += `${message.member.displayName} ${sayMessage}擲出了 **3 點**\n${player.diceDisplay}`
+        gameDisplay += `**最小的 3 點！**`
         energyGain = bet * -2
       } else {
-        gameDisplay += `${message.member.displayName} ${sayMessage}擲出了 **${player.score} 點**\n${player.diceDisplay}`
+        gameDisplay += `**${player.score} 點**`
 
         if (player.score > host.score) {
           energyGain = bet
@@ -113,18 +113,18 @@ module.exports = ({ args, database, message, guildId, userId }) => {
           energyGain = bet * -1
         }
       }
+      gameDisplay += `\n${player.diceDisplay}`
     }
 
     database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain)
 
-    let resultDisplay = ''
-
+    let resultDisplay = ``
     if (energyGain > 0) {
       resultDisplay = `${message.member.displayName} 贏得了 ${energyGain} 點八七能量`
     } else if (energyGain < 0) {
       resultDisplay = `${message.member.displayName} 失去了 ${energyGain * -1} 點八七能量`
     }
 
-    sendResponseMessage({ message, description: `:game_die: 碗公發出了清脆的聲音\n\n${gameDisplay}\n\n${resultDisplay}` })
+    sendResponseMessage({ message, description: `:game_die: 碗公裡發出了清脆的聲響\n\n${gameDisplay}\n\n${resultDisplay}` })
   })
 }
