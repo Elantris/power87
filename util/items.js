@@ -188,5 +188,13 @@ module.exports = {
     description: '',
     value: 125,
     price: 1250
+  },
+  23: {
+    kind: 'event',
+    name: 'birthdaycake',
+    icon: ':birthday:',
+    displayName: '生日蛋糕',
+    description: '5/4 是開發者的生日 ヽ( ° ▽°)ノ',
+    value: 1000
   }
 }
