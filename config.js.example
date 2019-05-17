@@ -1,8 +1,12 @@
 module.exports = {
-    FIREBASE: {},
-    LoggerHook: {
-        id: '',
-        token: ''
-    },
-    TOKEN: ''
+  FIREBASE: {},
+  LoggerHook: {
+    id: '',
+    token: ''
+  },
+  TOKEN: '',
+  admins: {
+    ID: 'name'
+  },
+  tick: 360000
 }

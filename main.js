@@ -25,6 +25,21 @@ database.ref('/banlist').on('value', snapshot => {
 
 // handle message
 client.on('message', message => {
+  if (message.channel.type === 'dm') {
+    if (message.author.id === client.user.id) {
+      return
+    }
+
+    message.reply(':stuck_out_tongue_winking_eye: Power87 目前沒有提供私訊服務，請參照開發文件說明或填寫意見調查表\n\n:loudspeaker: 公告頁面：<https://hackmd.io/s/VkLSj2pOJW>\n\n:envelope: 意見調查：<https://forms.gle/9iYELzNoQ2JRDKeR7>')
+
+    for (let adminId in config.admins) {
+      client.fetchUser(adminId).then(user => {
+        user.send(`**${message.author.username}**: ${message.content}`)
+      })
+    }
+    return
+  }
+
   let guildId = message.guild.id
   let userId = message.author.id
 

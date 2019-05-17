@@ -6,7 +6,7 @@
 筆記：
 `87!add` __term__ __response__：新增關鍵字
 `87!delete` __term__ __position__：刪除特定回應
-`87!list` [term]：列出伺服器所有關鍵字或列出單一關鍵字的所有回應
+`87!list` [term]：列出關鍵字或回應
 
 能量：
 `87!energy`：查看八七能量點數
@@ -26,5 +26,5 @@
 其他：
 `87!help` [target]：詳細說明
 `87!hint` [number]：攻略提示
-`87!clean` [amount]：清除機器人訊息、預設 20 則
-`87!about`：Power87 專案介紹、公告、更新資訊、意見調查
+`87!clean` [amount]：清除機器人訊息
+`87!about`：關於 Power87

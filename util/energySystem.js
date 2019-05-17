@@ -39,7 +39,7 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
             let counts = fishingData[0].split(',').map(v => parseInt(v))
             guildFishingUpdates[userId] = fishingData[1]
 
-            if (counts[0] + counts[1] < 240) {
+            if (counts[0] + counts[1] < 120) {
               if (fishingData[1] && parseInt(fishingData[1]) > timenow) {
                 counts[1]++
               } else {
