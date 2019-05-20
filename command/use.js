@@ -149,6 +149,15 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
     userHero.exp += expGain
 
+    for (let i = 0; i < expGain; i++) {
+      if (Math.random() < 0.01) {
+        userInventory.items.push({
+          id: '28',
+          amount: 1
+        })
+      }
+    }
+
     database.ref(`/hero/${guildId}/${userId}`).set(heroSystem.make(userHero, message.createdTimestamp))
 
     description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 食用了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}，恢復 ${expGain} 點飽食度`

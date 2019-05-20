@@ -228,7 +228,7 @@ module.exports = {
     name: 'cookie',
     icon: ':cookie:',
     displayName: '營養口糧',
-    description: '《營養食品》生產能夠方便攜帶的餅乾，恢復英雄飽食度 +25',
+    description: '《營養食品》生產能夠方便攜帶的餅乾，恢復英雄飽食度 +25。',
     value: 5,
     price: 50,
     feed: 25
@@ -238,7 +238,7 @@ module.exports = {
     name: 'riceball',
     icon: ':rice_ball:',
     displayName: '營養飯糰',
-    description: '《營養食品》製造可以迅速補足英雄體力的飯糰，恢復英雄飽食度 +50',
+    description: '《營養食品》製造可以迅速補足英雄體力的飯糰，恢復英雄飽食度 +50。',
     value: 11,
     price: 110,
     feed: 50
@@ -248,7 +248,7 @@ module.exports = {
     name: 'sushi',
     icon: ':sushi:',
     displayName: '營養壽司',
-    description: '《營養食品》推出能夠滿足英雄的口腹之慾的特等壽司，恢復英雄飽食度 +100',
+    description: '《營養食品》推出能夠滿足英雄的口腹之慾的特等壽司，恢復英雄飽食度 +100。',
     value: 24,
     price: 240,
     feed: 100
@@ -258,9 +258,17 @@ module.exports = {
     name: 'bento',
     icon: ':bento:',
     displayName: '營養便當',
-    description: '《營養食品》強力推薦菜色多元、豐富口感、多重層次的精緻便當，恢復全部英雄飽食度',
+    description: '《營養食品》強力推薦菜色多元、豐富口感、多重層次的精緻便當，恢復全部英雄飽食度。',
     value: 50,
     price: 500,
     feed: 300
+  },
+  28: {
+    kind: 'mark',
+    name: 'feed-stamp',
+    icon: ':heart:',
+    displayName: '閃亮的印章-英雄飼養',
+    description: '當英雄飽食度恢復時有機率獲得的印章，似乎可以賣個好價錢。',
+    value: 100
   }
 }
