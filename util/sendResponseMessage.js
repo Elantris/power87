@@ -18,10 +18,18 @@ const errors = {
   ERROR_NO_ENERGY: '八七能量不足',
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
   ERROR_MAX_LEVEL: '無法購買更高等級的道具',
-  ERROR_IS_FISHING: '正在釣魚',
+  ERROR_IS_FISHING: '出海捕魚中',
   ERROR_NO_TOOL: '未持有特定道具',
   ERROR_NO_ITEM: '沒有物品',
-  ERROR_BAG_FULL: '背包沒有足夠空間'
+  ERROR_BAG_FULL: '背包沒有足夠空間',
+  ERROR_NOT_USABLE: '不可使用的物品',
+
+  // hero
+  ERROR_NO_HERO: '沒有召喚的英雄',
+  ERROR_HERO_DEAD: '英雄已經死亡',
+  ERROR_HERO_EXISTS: '只能召喚一隻英雄',
+  ERROR_HERO_NAME: '請輸入英雄的名字',
+  ERROR_MAX_RARITY: '已達最高星數'
 }
 
 // command history

@@ -14,6 +14,7 @@ const database = firebase.database()
 database.ref('/banlist/').update({ _keep: 1 })
 database.ref('/energy/').update({ _keep: 1 })
 database.ref('/fishing/').update({ _keep: 1 })
+database.ref('/hero/').update({ _keep: 1 })
 database.ref('/inventory/').update({ _keep: 1 })
 database.ref('/lastUsed/').update({ _keep: 1 })
 database.ref('/note/').update({ _keep: 1 })
@@ -30,7 +31,12 @@ client.on('message', message => {
       return
     }
 
-    message.reply(':stuck_out_tongue_winking_eye: Power87 目前沒有提供私訊服務，請參照開發文件說明或填寫意見調查表\n\n:loudspeaker: 公告頁面：<https://hackmd.io/s/VkLSj2pOJW>\n\n:envelope: 意見調查：<https://forms.gle/9iYELzNoQ2JRDKeR7>')
+    message.reply({
+      embed: {
+        color: 0xffe066,
+        description: ':warning: Power87 目前沒有提供私訊服務\n\n:loudspeaker: 公告頁面：<https://hackmd.io/s/VkLSj2pOJW>\n:envelope: 意見調查：<https://forms.gle/9iYELzNoQ2JRDKeR7>'
+      }
+    })
 
     for (let adminId in config.admins) {
       client.fetchUser(adminId).then(user => {

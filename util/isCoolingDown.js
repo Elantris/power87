@@ -16,6 +16,11 @@ const commandCooldown = {
   fishing: 5,
   use: 3,
 
+  hero: 5,
+  summon: 5,
+  free: 5,
+  rarityup: 5,
+
   help: 2,
   clean: 30,
   about: 30,

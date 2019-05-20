@@ -20,7 +20,7 @@ module.exports = ({ database, message, guildId, userId }) => {
         database.ref(`/fishing/${guildId}/${userId}`).remove()
 
         userInventory = fishingSystem({ database, guildId, userId, userInventory, fishingRaw })
-        database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
+        database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory, message.createdTimestamp))
 
         userStatus = '結束釣魚'
       } else {
