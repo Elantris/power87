@@ -1,7 +1,7 @@
 const heroSystem = require('../util/heroSystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const upCosts = [0, 100, 200, 400, 800]
+const upCosts = [0, 400, 800, 1600, 3200]
 const upChances = [0, 0.81, 0.27, 0.09, 0.03]
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
