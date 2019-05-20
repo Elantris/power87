@@ -26,7 +26,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // energy system
   let energyCost = upCosts[userHero.rarity]
-  let userEnergy = database.ref(`/energy/${guildId}/${userId}`).once('value')
+  let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
   userEnergy = userEnergy.val()
   if (!userEnergy || userEnergy < energyCost) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })

@@ -57,5 +57,5 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
   database.ref(`/hero/${guildId}/${userId}`).set(`${args[1]};${heroSpecies};${heroRarity};0;100;${timeGap}:stay`)
 
-  sendResponseMessage({ message, description: `:scroll: ${message.member.displayName} 消耗 ${energyCost} 點八七能量召喚出 ${heroSystem.rarityDisplay(heroRarity)} :${heroSpecies}:**${args[1]}**！` })
+  sendResponseMessage({ message, description: `:scroll: ${message.member.displayName} 消耗 ${energyCost} 點八七能量召喚出 :${heroSpecies}: **${args[1]}** ${heroSystem.rarityDisplay(heroRarity)}！` })
 }
