@@ -33,13 +33,13 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return
   }
 
-  let description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)} `
+  let description = `:scroll: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，:${userHero.species}: **${userHero.name}** `
   let luck = Math.random()
   if (luck < upChances[userHero.rarity]) {
-    description = `突破成功，提升星數`
     userHero.rarity += 1
+    description += `突破成功，提升星數 ${heroSystem.rarityDisplay(userHero.rarity)}！`
   } else {
-    description = `突破失敗，維持原狀`
+    description += `突破失敗，維持原狀`
   }
 
   // update database
