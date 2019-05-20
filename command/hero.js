@@ -25,7 +25,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
 
     // enery system
-    let userEnergy = await database.ref(`/hero/${guildId}/${userId}`).once('value')
+    let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
     userEnergy = userEnergy.val()
     if (!userEnergy || userEnergy < energyCost) {
       sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
@@ -34,7 +34,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     userHero.name = args[1]
     database.ref(`/hero/${guildId}/${userId}`).set(userEnergy - energyCost)
-    sendResponseMessage({ message, description: `:scroll: ${message.member.displayName} 將召喚的英雄更名為 :${userHero.species}: **${userHero.name}**` })
+    sendResponseMessage({ message, description: `:scroll: ${message.member.displayName} 消耗 ${energyCost} 點八七能量，將召喚的英雄更名為 :${userHero.species}: **${userHero.name}**` })
   } else {
     // display hero info
     let feedDisplay = (userHero.feed < 0 ? 0 : userHero.feed)
