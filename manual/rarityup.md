@@ -13,7 +13,7 @@
 說明：
 消耗 87 能量以一定的機率提升英雄的星數，每多一顆星可以提升等級上限 10 等，最多五顆星
 
-:battery: **400** :star:
-:battery: **800** :star::star:
-:battery: **1600** :star::star::star:
-:battery: **3200** :star::star::star::star:
+:star: `1`：:battery: **400**，81%
+:star: `2`：:battery: **800**，27%
+:star: `3`：:battery: **1600**，9%
+:star: `4`：:battery: **3200**，3%

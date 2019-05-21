@@ -29,7 +29,8 @@ const errors = {
   ERROR_HERO_DEAD: '英雄已經死亡',
   ERROR_HERO_EXISTS: '只能召喚一隻英雄',
   ERROR_HERO_NAME: '請輸入英雄的名字',
-  ERROR_MAX_RARITY: '已達最高星數'
+  ERROR_MAX_RARITY: '已達最高星數',
+  ERROR_NO_SPECIES: '不存在的外觀'
 }
 
 // command history

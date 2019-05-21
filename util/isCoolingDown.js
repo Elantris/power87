@@ -20,6 +20,7 @@ const commandCooldown = {
   summon: 5,
   free: 5,
   rarityup: 5,
+  changelooks: 10,
 
   help: 2,
   clean: 30,
