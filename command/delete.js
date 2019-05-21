@@ -1,9 +1,9 @@
 const energySystem = require('../util/energySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const energyCost = 20
+const energyCost = 15
 
-module.exports = ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   // check command format
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
@@ -13,31 +13,30 @@ module.exports = ({ args, database, message, guildId, userId }) => {
   let term = args[1]
   let position = parseInt(args[2])
 
-  database.ref(`/note/${guildId}/${term}/${position}`).once('value').then(snapshot => {
-    if (!snapshot.val()) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
-    }
+  let note = await database.ref(`/note/${guildId}/${term}/${position}`).once('value')
+  if (!note.exists()) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
+    return
+  }
 
-    // energy system
-    database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
-      let userEnergy = snapshot.val()
-      if (!snapshot.exists()) {
-        userEnergy = energySystem.INITIAL_USER_ENERGY
-        database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-      }
+  // energy system
+  let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
+  if (userEnergy.exists()) {
+    userEnergy = userEnergy.val()
+  } else {
+    userEnergy = energySystem.INITIAL_USER_ENERGY
+    database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+  }
 
-      if (userEnergy < energyCost) {
-        sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-        return
-      }
+  if (userEnergy < energyCost) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
+    return
+  }
 
-      // update database
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
-      database.ref(`/note/${guildId}/${term}/${position}`).remove()
+  // update database
+  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
+  database.ref(`/note/${guildId}/${term}/${position}`).remove()
 
-      // response
-      sendResponseMessage({ message, description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目` })
-    })
-  })
+  // response
+  sendResponseMessage({ message, description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目` })
 }
