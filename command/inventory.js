@@ -7,7 +7,7 @@ const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-  let userInventory = inventorySystem.parse(inventoryRaw.val(), message.createdTimestamp)
+  let userInventory = inventorySystem.parse(inventoryRaw.val() || '', message.createdTimestamp)
 
   let fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
   fishingRaw = fishingRaw.val()

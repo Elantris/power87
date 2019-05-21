@@ -1,4 +1,4 @@
-const parse = (inventoryRaw = '', timenow = Date.now()) => {
+const parse = (inventoryRaw, timenow = Date.now()) => {
   let inventoryData = inventoryRaw.split(',').filter(v => v)
   let userInventory = {
     tools: {},

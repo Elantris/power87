@@ -19,7 +19,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // inventory system
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-  let userInventory = inventorySystem.parse(inventoryRaw.val(), message.createdTimestamp)
+  let userInventory = inventorySystem.parse(inventoryRaw.val() || '', message.createdTimestamp)
 
   let soldItems = {}
   let gainEnergy = 0

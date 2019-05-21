@@ -58,7 +58,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
 
-  let userInventory = inventorySystem.parse(inventoryRaw.val(), message.createdTimestamp)
+  let userInventory = inventorySystem.parse(inventoryRaw.val() || '', message.createdTimestamp)
 
   let itemsCount = {}
   userInventory.items.filter(item => usableKinds[items[item.id].kind]).forEach(item => {
