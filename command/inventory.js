@@ -15,6 +15,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let userStatus = '在村莊裡發呆'
   if (fishingRaw) {
     userInventory = fishingSystem({ database, guildId, userId, userInventory, fishingRaw })
+    inventorySystem.sortItems(userInventory)
 
     if (userInventory.hasEmptySlot) {
       userStatus = '出海捕魚中'

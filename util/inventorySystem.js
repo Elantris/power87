@@ -33,16 +33,7 @@ const parse = (inventoryRaw, timenow = Date.now()) => {
     userInventory.hasEmptySlot = true
   }
 
-  userInventory.items = userInventory.items.sort((itemA, itemB) => {
-    if (itemA.kind < itemB.kind) {
-      return -1
-    }
-    if (itemA.kind > itemB.kind) {
-      return 1
-    }
-
-    return parseInt(itemA.id) - parseInt(itemB.id)
-  })
+  sortItems(userInventory)
 
   return userInventory
 }
@@ -70,6 +61,19 @@ const make = (userInventory, timenow = Date.now()) => {
   return inventoryData.join(',')
 }
 
+const sortItems = (userInventory) => {
+  userInventory.items = userInventory.items.sort((itemA, itemB) => {
+    if (itemA.kind < itemB.kind) {
+      return -1
+    }
+    if (itemA.kind > itemB.kind) {
+      return 1
+    }
+
+    return parseInt(itemA.id) - parseInt(itemB.id)
+  })
+}
+
 const removeItems = (userInventory, itemId, amount = 1) => {
   let firstIndex = -1
 
@@ -89,5 +93,6 @@ const removeItems = (userInventory, itemId, amount = 1) => {
 module.exports = {
   parse,
   make,
+  sortItems,
   removeItems
 }
