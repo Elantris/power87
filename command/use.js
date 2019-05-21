@@ -53,13 +53,12 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // inventory system
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-  inventoryRaw = inventoryRaw.val() || ''
-  if (!inventoryRaw) {
+  if (!inventoryRaw.exists()) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
     return
   }
 
-  let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
+  let userInventory = inventorySystem.parse(inventoryRaw.val(), message.createdTimestamp)
 
   let itemsCount = {}
   userInventory.items.filter(item => usableKinds[items[item.id].kind]).forEach(item => {
@@ -101,11 +100,12 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   if (target.itemKind === 'buff') {
+    let buffId = items[target.itemId].buffId
     // extend duration of buff
-    if (!userInventory.buffs[target.buffId] || userInventory.buffs[target.buffId] < message.createdTimestamp) {
-      userInventory.buffs[target.buffId] = message.createdTimestamp
+    if (!userInventory.buffs[buffId] || userInventory.buffs[buffId] < message.createdTimestamp) {
+      userInventory.buffs[buffId] = message.createdTimestamp
     }
-    userInventory.buffs[target.buffId] = userInventory.buffs[target.buffId] + items[target.itemId].duration * target.amount
+    userInventory.buffs[buffId] = userInventory.buffs[buffId] + items[target.itemId].duration * target.amount
 
     // update database
     database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory, message.createdTimestamp))
@@ -141,15 +141,15 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     // feed hero
-    let expGain = items[target.itemId].feed * target.amount
-    userHero.feed += expGain
+    let feedGain = items[target.itemId].feed * target.amount
+    userHero.feed += feedGain
     if (userHero.feed > userHero.maxFeed) {
-      expGain = hunger
+      feedGain = hunger
       userHero.feed = userHero.maxFeed
     }
-    userHero.exp += expGain
+    userHero.exp += Math.floor(Math.random() * (feedGain - target.amount) + target.amount)
 
-    for (let i = 0; i < expGain; i++) {
+    for (let i = 0; i < feedGain; i++) {
       if (Math.random() < 0.01) {
         userInventory.items.push({
           id: '28',
@@ -160,18 +160,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     database.ref(`/hero/${guildId}/${userId}`).set(heroSystem.make(userHero, message.createdTimestamp))
 
-    description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 食用了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}，恢復 ${expGain} 點飽食度`
+    description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 吃了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}，恢復 ${feedGain} 點飽食度`
   }
 
-  // remove items from bags
-  userInventory.items.some((item, index) => {
-    if (target.itemId === item.id) {
-      target.firstIndex = index
-      return true
-    }
-    return false
-  })
-  userInventory.items.splice(target.firstIndex, target.amount)
+  inventorySystem.removeItems(userInventory, target.itemId, target.amount)
 
   // update database
   database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory, message.createdTimestamp))

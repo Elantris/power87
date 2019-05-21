@@ -1,4 +1,4 @@
-const parse = (inventoryRaw, timenow = Date.now()) => {
+const parse = (inventoryRaw = '', timenow = Date.now()) => {
   let inventoryData = inventoryRaw.split(',').filter(v => v)
   let userInventory = {
     tools: {},
@@ -33,6 +33,17 @@ const parse = (inventoryRaw, timenow = Date.now()) => {
     userInventory.hasEmptySlot = true
   }
 
+  userInventory.items = userInventory.items.sort((itemA, itemB) => {
+    if (itemA.kind < itemB.kind) {
+      return -1
+    }
+    if (itemA.kind > itemB.kind) {
+      return 1
+    }
+
+    return parseInt(itemA.id) - parseInt(itemB.id)
+  })
+
   return userInventory
 }
 
@@ -56,10 +67,27 @@ const make = (userInventory, timenow = Date.now()) => {
     inventoryData.push(`${item.id}${tmpAmount}`)
   })
 
-  return inventoryData.sort().join(',')
+  return inventoryData.join(',')
+}
+
+const removeItems = (userInventory, itemId, amount = 1) => {
+  let firstIndex = -1
+
+  userInventory.items.some((item, index) => {
+    if (item.id === itemId) {
+      firstIndex = index
+      return true
+    }
+    return false
+  })
+
+  if (firstIndex !== -1) {
+    userInventory.items.splice(firstIndex, amount)
+  }
 }
 
 module.exports = {
   parse,
-  make
+  make,
+  removeItems
 }

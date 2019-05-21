@@ -7,7 +7,7 @@ const items = require('../util/items')
 const findTarget = require('../util/findTarget')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
@@ -31,99 +31,92 @@ module.exports = ({ args, database, message, guildId, userId }) => {
     }
   }
 
-  database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
-    let inventoryRaw = snapshot.val()
-    if (!snapshot.exists()) {
-      inventoryRaw = ''
+  let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
+  let userInventory = inventorySystem.parse(inventoryRaw.val(), message.createdTimestamp)
+
+  // no arguments
+  if (args.length === 1) {
+    let description = `:shopping_cart: ${message.member.displayName} 可購買的商品：\n\n__裝備道具__：`
+
+    for (let id in tools) {
+      let toolLevel = 0
+      if (userInventory.tools[id]) {
+        toolLevel = parseInt(userInventory.tools[id]) + 1
+        if (toolLevel > tools[id].maxLevel) {
+          continue
+        }
+      }
+
+      description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
     }
-    let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
 
-    // no arguments
-    if (args.length === 1) {
-      let description = `:shopping_cart: ${message.member.displayName} 可購買的商品：\n\n__裝備道具__：`
+    description += `\n\n__特色商品__：\n`
 
-      for (let id in tools) {
-        let toolLevel = 0
-        if (userInventory.tools[id]) {
-          toolLevel = parseInt(userInventory.tools[id]) + 1
-          if (toolLevel > tools[id].maxLevel) {
-            continue
-          }
-        }
-
-        description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
+    for (let id in items) {
+      if (items[id].price) {
+        description += `${items[id].icon} \`${items[id].name}\` `
       }
+    }
 
-      description += `\n\n__特色商品__：\n`
+    sendResponseMessage({ message, description })
+    return
+  }
 
-      for (let id in items) {
-        if (items[id].price) {
-          description += `${items[id].icon} \`${items[id].name}\` `
-        }
-      }
+  let fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
+  if (fishingRaw.exists()) {
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+    return
+  }
 
-      sendResponseMessage({ message, description })
+  // user target
+  if (target.type === 'tool' && userInventory.tools[target.id]) {
+    target.level = parseInt(userInventory.tools[target.id]) + 1
+    if (target.level > tools[target.id].maxLevel) {
+      sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
       return
     }
+    target.price = tools[target.id].prices[target.level]
+  } else if (target.type === 'item') {
+    if (!userInventory.hasEmptySlot || userInventory.items.length + target.amount > userInventory.maxSlots) {
+      sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
+      return
+    }
+  }
 
-    database.ref(`/fishing/${guildId}/${userId}`).once('value').then(snapshot => {
-      let fishingRaw = snapshot.val()
-      if (fishingRaw) {
-        sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-        return
-      }
+  // energy system
+  let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
+  if (userEnergy.exists()) {
+    userEnergy = userEnergy.val()
+  } else {
+    userEnergy = energySystem.INITIAL_USER_ENERGY
+    database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+  }
 
-      // user target
-      if (target.type === 'tool' && userInventory.tools[target.id]) {
-        target.level = parseInt(userInventory.tools[target.id]) + 1
-        if (target.level > tools[target.id].maxLevel) {
-          sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
-          return
-        }
-        target.price = tools[target.id].prices[target.level]
-      } else if (target.type === 'item') {
-        if (!userInventory.hasEmptySlot || userInventory.items.length + target.amount > userInventory.maxSlots) {
-          sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
-          return
-        }
-      }
+  let energyCost = target.price * target.amount
+  if (userEnergy < energyCost) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
+    return
+  }
 
-      // energy system
-      database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
-        let userEnergy = snapshot.val()
-        if (!snapshot.exists()) {
-          userEnergy = energySystem.INITIAL_USER_ENERGY
-          database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-        }
+  // update database
+  let updates = ''
+  if (target.type === 'tool') {
+    userInventory.tools[target.id] = target.level
+    updates = inventorySystem.make(userInventory, message.createdTimestamp)
+  } else if (target.type === 'item') {
+    updates = inventoryRaw + `,${target.id}`.repeat(target.amount)
+  }
 
-        let energyCost = target.price * target.amount
-        if (userEnergy < energyCost) {
-          sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-          return
-        }
+  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
+  database.ref(`/inventory/${guildId}/${userId}`).set(updates)
 
-        // update database
-        let updates = ''
-        if (target.type === 'tool') {
-          userInventory.tools[target.id] = target.level
-          updates = inventorySystem.make(userInventory, message.createdTimestamp)
-        } else if (target.type === 'item') {
-          updates = inventoryRaw + `,${target.id}`.repeat(target.amount)
-        }
+  // response
+  let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `
+  if (target.type === 'tool') {
+    description += `${tools[target.id].icon}**${tools[target.id].displayName}**+${target.level}`
+  } else if (target.type === 'item') {
+    description += `${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}`
+  }
 
-        database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
-        database.ref(`/inventory/${guildId}/${userId}`).set(updates)
-
-        // response
-        let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `
-        if (target.type === 'tool') {
-          description += `${tools[target.id].icon}**${tools[target.id].displayName}**+${target.level}`
-        } else if (target.type === 'item') {
-          description += `${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}`
-        }
-
-        sendResponseMessage({ message, description })
-      })
-    })
-  })
+  sendResponseMessage({ message, description })
 }
