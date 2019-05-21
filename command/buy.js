@@ -104,7 +104,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     userInventory.tools[target.id] = target.level
     updates = inventorySystem.make(userInventory, message.createdTimestamp)
   } else if (target.type === 'item') {
-    updates = inventoryRaw + `,${target.id}`.repeat(target.amount)
+    updates = inventoryRaw.val() + `,${target.id}`.repeat(target.amount)
   }
 
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
