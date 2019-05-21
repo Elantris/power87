@@ -39,7 +39,7 @@ const rollDice = () => {
   }
 }
 
-module.exports = ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let bet = 1
   let sayMessage = ''
 
@@ -67,64 +67,65 @@ module.exports = ({ args, database, message, guildId, userId }) => {
   }
 
   // energy system
-  database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
-    let userEnergy = snapshot.val()
-    if (!snapshot.exists()) {
-      userEnergy = energySystem.INITIAL_USER_ENERGY
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-    }
-    if (userEnergy < bet) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-      return
-    }
+  let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
+  if (userEnergy.exists()) {
+    userEnergy = userEnergy.val()
+  } else {
+    userEnergy = energySystem.INITIAL_USER_ENERGY
+    database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+  }
 
-    // game
-    let gameDisplay = '莊家擲出了 '
-    let energyGain = 0
-    let host = rollDice()
-    if (host.score === 'same') {
-      gameDisplay += `**一色！**\n${host.diceDisplay}`
-      energyGain = bet * -1
-    } else if (host.score === 12) {
-      gameDisplay += `**豹子！**\n${host.diceDisplay}`
-      energyGain = bet * -1
-    } else if (host.score === 3) {
-      gameDisplay += `**最小的 3 點！**\n${host.diceDisplay}`
-      energyGain = bet
+  if (userEnergy < bet) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
+    return
+  }
+
+  // game
+  let gameDisplay = '莊家擲出了 '
+  let energyGain = 0
+  let host = rollDice()
+  if (host.score === 'same') {
+    gameDisplay += `**一色！**\n${host.diceDisplay}`
+    energyGain = bet * -1
+  } else if (host.score === 12) {
+    gameDisplay += `**豹子！**\n${host.diceDisplay}`
+    energyGain = bet * -1
+  } else if (host.score === 3) {
+    gameDisplay += `**最小的 3 點！**\n${host.diceDisplay}`
+    energyGain = bet
+  } else {
+    gameDisplay += `**${host.score} 點**\n${host.diceDisplay}\n\n${message.member.displayName} ${sayMessage}擲出了 `
+
+    let player = rollDice()
+    if (player.score === 'same') {
+      gameDisplay += `**一色！**`
+      energyGain = bet * 2
+    } else if (player.score === 12) {
+      gameDisplay += `**豹子！**`
+      energyGain = bet * 2
+    } else if (player.score === 3) {
+      gameDisplay += `**最小的 3 點！**`
+      energyGain = bet * -2
     } else {
-      gameDisplay += `**${host.score} 點**\n${host.diceDisplay}\n\n${message.member.displayName} ${sayMessage}擲出了 `
+      gameDisplay += `**${player.score} 點**`
 
-      let player = rollDice()
-      if (player.score === 'same') {
-        gameDisplay += `**一色！**`
-        energyGain = bet * 2
-      } else if (player.score === 12) {
-        gameDisplay += `**豹子！**`
-        energyGain = bet * 2
-      } else if (player.score === 3) {
-        gameDisplay += `**最小的 3 點！**`
-        energyGain = bet * -2
+      if (player.score > host.score) {
+        energyGain = bet
       } else {
-        gameDisplay += `**${player.score} 點**`
-
-        if (player.score > host.score) {
-          energyGain = bet
-        } else {
-          energyGain = bet * -1
-        }
+        energyGain = bet * -1
       }
-      gameDisplay += `\n${player.diceDisplay}`
     }
+    gameDisplay += `\n${player.diceDisplay}`
+  }
 
-    database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain)
+  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain)
 
-    let resultDisplay = ``
-    if (energyGain > 0) {
-      resultDisplay = `${message.member.displayName} 贏得了 ${energyGain} 點八七能量`
-    } else if (energyGain < 0) {
-      resultDisplay = `${message.member.displayName} 失去了 ${energyGain * -1} 點八七能量`
-    }
+  let resultDisplay = ``
+  if (energyGain > 0) {
+    resultDisplay = `${message.member.displayName} 贏得了 ${energyGain} 點八七能量`
+  } else if (energyGain < 0) {
+    resultDisplay = `${message.member.displayName} 失去了 ${energyGain * -1} 點八七能量`
+  }
 
-    sendResponseMessage({ message, description: `:game_die: 碗公裡發出了清脆的聲響\n\n${gameDisplay}\n\n${resultDisplay}` })
-  })
+  sendResponseMessage({ message, description: `:game_die: 碗公裡發出了清脆的聲響\n\n${gameDisplay}\n\n${resultDisplay}` })
 }

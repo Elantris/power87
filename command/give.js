@@ -1,7 +1,7 @@
 const energySystem = require('../util/energySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args.length < 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
@@ -22,30 +22,31 @@ module.exports = ({ args, database, message, guildId, userId }) => {
   }
 
   // energy system
-  database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
-    let userEnergy = snapshot.val()
-    if (!snapshot.exists()) {
-      userEnergy = energySystem.INITIAL_USER_ENERGY
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
-    }
+  let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
+  // let userEnergy = snapshot.val()
+  if (userEnergy.exists()) {
+    userEnergy = userEnergy.val()
+  } else {
+    userEnergy = energySystem.INITIAL_USER_ENERGY
+    database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+  }
 
-    if (userEnergy < energyCost) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-      return
-    }
+  if (userEnergy < energyCost) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
+    return
+  }
 
-    database.ref(`/energy/${guildId}/${targetId}`).once('value').then(snapshot => {
-      let targetEnergy = snapshot.val()
-      if (!snapshot.exists()) {
-        targetEnergy = energySystem.INITIAL_USER_ENERGY
-      }
+  let targetEnergy = await database.ref(`/energy/${guildId}/${targetId}`).once('value')
+  if (targetEnergy.exists()) {
+    targetEnergy = targetEnergy.val()
+  } else {
+    targetEnergy = energySystem.INITIAL_USER_ENERGY
+  }
 
-      // update databse
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
-      database.ref(`/energy/${guildId}/${targetId}`).set(targetEnergy + energyGain)
+  // update databse
+  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
+  database.ref(`/energy/${guildId}/${targetId}`).set(targetEnergy + energyGain)
 
-      // response
-      sendResponseMessage({ message, description: `:money_mouth: ${sayMessage}${message.member.displayName} 消耗了 ${energyCost} 點八七能量，<@${targetId}> 獲得了 ${energyGain} 點八七能量` })
-    })
-  })
+  // response
+  sendResponseMessage({ message, description: `:money_mouth: ${sayMessage}${message.member.displayName} 消耗了 ${energyCost} 點八七能量，<@${targetId}> 獲得了 ${energyGain} 點八七能量` })
 }

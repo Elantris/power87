@@ -21,7 +21,7 @@ const icons = [
 ]
 const totalWeight = 245
 
-module.exports = ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let energyCost = 1
   let sayMessage = ''
 
@@ -49,84 +49,79 @@ module.exports = ({ args, database, message, guildId, userId }) => {
   }
 
   // energy system
-  database.ref(`/energy/${guildId}/${userId}`).once('value').then(snapshot => {
-    let userEnergy = snapshot.val()
-    if (!snapshot.exists()) {
-      userEnergy = energySystem.INITIAL_USER_ENERGY
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+  let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
+  if (userEnergy.exists()) {
+    userEnergy = userEnergy.val()
+  } else {
+    userEnergy = energySystem.INITIAL_USER_ENERGY
+    database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
+  }
+  if (userEnergy < energyCost) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
+    return
+  }
+
+  // check buffs
+  let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
+  let userInventory = inventorySystem.parse(inventoryRaw.val(), message.createdTimestamp)
+
+  let weightMinus = 0
+  if (userInventory.buffs['%4']) {
+    weightMinus = 25
+  } else if (userInventory.buffs['%3']) {
+    weightMinus = 15
+  } else if (userInventory.buffs['%2']) {
+    weightMinus = 10
+  } else if (userInventory.buffs['%1']) {
+    weightMinus = 5
+  }
+
+  // slot results
+  let result = []
+  for (let i = 0; i < 3; i++) {
+    let luck = Math.random() * (totalWeight - weightMinus)
+    for (let j in icons) {
+      if (luck < icons[j].weight) {
+        result.push(j)
+        break
+      }
+      luck -= icons[j].weight
     }
-    if (userEnergy < energyCost) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-      return
-    }
+  }
 
-    // check buffs
-    database.ref(`/inventory/${guildId}/${userId}`).once('value').then(snapshot => {
-      let inventoryRaw = snapshot.val()
-      if (!snapshot.exists()) {
-        inventoryRaw = ''
-      }
-      let userInventory = inventorySystem.parse(inventoryRaw, message.createdTimestamp)
+  let resultDisplay = `-------------------\n${result.map(n => icons[n].symbol).join(' : ')}\n-------------------\n`
+  result.sort()
 
-      let weightMinus = 0
-      if (userInventory.buffs['%4']) {
-        weightMinus = 25
-      } else if (userInventory.buffs['%3']) {
-        weightMinus = 15
-      } else if (userInventory.buffs['%2']) {
-        weightMinus = 10
-      } else if (userInventory.buffs['%1']) {
-        weightMinus = 5
-      }
+  // energy system
+  let multiplier = 0
+  if (result[0] === result[1] && result[1] === result[2]) {
+    multiplier = icons[result[0]].prize
+  } else if (result[1] < 8 && (result[0] === result[1] || result[1] === result[2])) {
+    multiplier = Math.floor(icons[result[1]].prize / 2)
+  }
 
-      // slot results
-      let result = []
-      for (let i = 0; i < 3; i++) {
-        let luck = Math.random() * (totalWeight - weightMinus)
-        for (let j in icons) {
-          if (luck < icons[j].weight) {
-            result.push(j)
-            break
-          }
-          luck -= icons[j].weight
-        }
-      }
+  let energyGain = energyCost * multiplier
 
-      let resultDisplay = `-------------------\n${result.map(n => icons[n].symbol).join(' : ')}\n-------------------\n`
-      result.sort()
+  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain - energyCost)
 
-      // energy system
-      let multiplier = 0
-      if (result[0] === result[1] && result[1] === result[2]) {
-        multiplier = icons[result[0]].prize
-      } else if (result[1] < 8 && (result[0] === result[1] || result[1] === result[2])) {
-        multiplier = Math.floor(icons[result[1]].prize / 2)
-      }
+  // response
+  let content
+  let resultMessage = ''
+  if (multiplier === 0) {
+    resultDisplay += `| : : : : **LOST** : : : : |`
+    resultMessage = '結果是一無所獲'
+  } else if (multiplier < icons[1].prize) {
+    resultDisplay += `| : : : : **WIN** : : : : : |`
+    resultMessage = `獲得了 ${energyGain} 點八七能量`
+  } else if (multiplier === icons[1].prize) {
+    content = '@here 777！'
+    resultDisplay += `| : : **77777777** : : |`
+    resultMessage = `<@${message.author.id}> 7 起來，獲得了 ${energyGain} 點八七能量`
+  } else if (multiplier === icons[0].prize) {
+    content = '@here 頭獎快訊！'
+    resultDisplay += `| : **CONGRATS** : |`
+    resultMessage = `<@${message.author.id}> 或成最大贏家，獲得了 ${energyGain} 點八七能量`
+  }
 
-      let energyGain = energyCost * multiplier
-
-      database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain - energyCost)
-
-      // response
-      let content
-      let resultMessage = ''
-      if (multiplier === 0) {
-        resultDisplay += `| : : : : **LOST** : : : : |`
-        resultMessage = '結果是一無所獲'
-      } else if (multiplier < icons[1].prize) {
-        resultDisplay += `| : : : : **WIN** : : : : : |`
-        resultMessage = `獲得了 ${energyGain} 點八七能量`
-      } else if (multiplier === icons[1].prize) {
-        content = '@here 777！'
-        resultDisplay += `| : : **77777777** : : |`
-        resultMessage = `<@${message.author.id}> 7 起來，獲得了 ${energyGain} 點八七能量`
-      } else if (multiplier === icons[0].prize) {
-        content = '@here 頭獎快訊！'
-        resultDisplay += `| : **CONGRATS** : |`
-        resultMessage = `<@${message.author.id}> 或成最大贏家，獲得了 ${energyGain} 點八七能量`
-      }
-
-      sendResponseMessage({ message, content, description: `:slot_machine: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${sayMessage}投注了 ${energyCost} 點八七能量，${resultMessage}` })
-    })
-  })
+  sendResponseMessage({ message, content, description: `:slot_machine: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${sayMessage}投注了 ${energyCost} 點八七能量，${resultMessage}` })
 }

@@ -14,36 +14,35 @@ function makeOutput ({ message, rank }) {
   sendResponseMessage({ message, description: rankDisplay })
 }
 
-module.exports = ({ database, message, guildId, userId }) => {
-  database.ref(`/lastUsed/rank/${guildId}`).once('value').then(snapshot => {
-    let rank = snapshot.val()
-    if (!snapshot.exists()) {
-      rank = [0]
-    }
-    if (message.createdTimestamp - rank[0] < updateInterval) {
-      // cache output
-      makeOutput({ message, rank })
-    } else {
-      // udpate rank data
-      database.ref(`/energy/${guildId}`).once('value').then(snapshot => {
-        let guildEnergy = snapshot.val() || {}
+module.exports = async ({ database, message, guildId, userId }) => {
+  let rank = await database.ref(`/lastUsed/rank/${guildId}`).once('value')
+  if (rank.exists()) {
+    rank = rank.val()
+  } else {
+    rank = [0]
+  }
+  if (message.createdTimestamp - rank[0] < updateInterval) {
+    // cache output
+    makeOutput({ message, rank })
+  } else {
+    // udpate rank data
+    let guildEnergy = await database.ref(`/energy/${guildId}`).once('value')
+    guildEnergy = guildEnergy.val() || {}
 
-        // sort guild energy
-        let tmpRank = []
-        for (let userId in guildEnergy) {
-          tmpRank.push({
-            userId,
-            amount: guildEnergy[userId]
-          })
-        }
-        tmpRank = tmpRank.sort((a, b) => b.amount - a.amount).slice(0, 5)
-        rank = tmpRank.map(data => `${data.userId}:${data.amount}`)
-        rank.unshift(message.createdTimestamp)
-
-        database.ref(`/lastUsed/rank/${guildId}`).set(rank)
-
-        makeOutput({ message, rank })
+    // sort guild energy
+    let tmpRank = []
+    for (let userId in guildEnergy) {
+      tmpRank.push({
+        userId,
+        amount: guildEnergy[userId]
       })
     }
-  })
+    tmpRank = tmpRank.sort((a, b) => b.amount - a.amount).slice(0, 5)
+    rank = tmpRank.map(data => `${data.userId}:${data.amount}`)
+    rank.unshift(message.createdTimestamp)
+
+    database.ref(`/lastUsed/rank/${guildId}`).set(rank)
+
+    makeOutput({ message, rank })
+  }
 }
