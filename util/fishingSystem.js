@@ -100,7 +100,7 @@ module.exports = ({ database, guildId, userId, userInventory, fishingRaw }) => {
     database.ref(`/fishing/${guildId}/${userId}`).remove()
   }
 
-  database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory))
+  inventorySystem.set(database, guildId, userId, userInventory)
 
   return userInventory
 }

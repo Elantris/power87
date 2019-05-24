@@ -48,7 +48,7 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
           guildFishingUpdates[userId] = counts.join(',') + ';' + guildFishingUpdates[userId]
         } else { // stop auto fishing
           let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-          let userInventory = inventorySystem.parse(inventoryRaw.val() || '')
+          let userInventory = inventorySystem.parse(inventoryRaw.val(), timenow)
 
           let fishingRaw = `${counts[0]},${counts[1]};`
           fishingSystem({ database, guildId, userId, userInventory, fishingRaw })

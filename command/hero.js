@@ -1,7 +1,7 @@
 const heroSystem = require('../util/heroSystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const energyCost = 50
+const energyCost = 50 // change hero name
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   let heroRaw = await database.ref(`/hero/${guildId}/${userId}`).once('value')

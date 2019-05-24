@@ -4,8 +4,7 @@ const hints = require('../util/hints')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ database, message, guildId, userId }) => {
-  let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-  let userInventory = inventorySystem.parse(inventoryRaw.val() || '', message.createdTimestamp)
+  let userInventory = inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let userStatus = ''
   let hint = ''
@@ -14,7 +13,7 @@ module.exports = async ({ database, message, guildId, userId }) => {
   if (fishingRaw.exists()) {
     userInventory = fishingSystem({ database, guildId, userId, userInventory, fishingRaw: fishingRaw.val() })
     database.ref(`/fishing/${guildId}/${userId}`).remove()
-    database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory, message.createdTimestamp))
+    inventorySystem.set(database, guildId, userId, userInventory, message.createdTimestamp)
 
     userStatus = '結束釣魚'
   } else {

@@ -15,7 +15,7 @@ const errors = {
   ERROR_RES_EXCEED: '回應數量過多',
 
   // energy
-  ERROR_NO_ENERGY: '八七能量不足',
+  ERROR_NO_ENERGY: '八七能量不足，看來你還不夠八七喔',
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
   ERROR_MAX_LEVEL: '無法購買更高等級的道具',
   ERROR_IS_FISHING: '出海捕魚中',
@@ -30,7 +30,8 @@ const errors = {
   ERROR_HERO_EXISTS: '只能召喚一隻英雄',
   ERROR_HERO_NAME: '請輸入英雄的名字',
   ERROR_MAX_RARITY: '已達最高星數',
-  ERROR_NO_SPECIES: '不存在的外觀'
+  ERROR_NO_SPECIES: '不存在的外觀',
+  ERROR_NO_FEED: '飽食度不足，你的英雄現在很餓'
 }
 
 // command history

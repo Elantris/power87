@@ -75,7 +75,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
   }
 
-  if (userEnergy < bet) {
+  if (userEnergy < bet * 2) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
     return
   }

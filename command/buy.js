@@ -31,8 +31,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
   }
 
-  let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-  let userInventory = inventorySystem.parse(inventoryRaw.val() || '', message.createdTimestamp)
+  let userInventory = inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   // no arguments
   if (args.length === 1) {
@@ -99,16 +98,19 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // update database
-  let updates = ''
   if (target.type === 'tool') {
     userInventory.tools[target.id] = target.level
-    updates = inventorySystem.make(userInventory, message.createdTimestamp)
   } else if (target.type === 'item') {
-    updates = inventoryRaw.val() + `,${target.id}`.repeat(target.amount)
+    for (let i = 0; i < target.amount; i++) {
+      userInventory.items.push({
+        id: target.id,
+        amount: 1
+      })
+    }
   }
 
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
-  database.ref(`/inventory/${guildId}/${userId}`).set(updates)
+  inventorySystem.set(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `

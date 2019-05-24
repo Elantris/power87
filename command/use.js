@@ -52,13 +52,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   // inventory system
-  let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-  if (!inventoryRaw.exists()) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
-    return
-  }
-
-  let userInventory = inventorySystem.parse(inventoryRaw.val() || '', message.createdTimestamp)
+  let userInventory = inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let itemsCount = {}
   userInventory.items.filter(item => usableKinds[items[item.id].kind]).forEach(item => {
@@ -106,9 +100,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       userInventory.buffs[buffId] = message.createdTimestamp
     }
     userInventory.buffs[buffId] = userInventory.buffs[buffId] + items[target.itemId].duration * target.amount
-
-    // update database
-    database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory, message.createdTimestamp))
 
     description = `:arrow_double_up: ${message.member.displayName} 使用了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}`
   } else if (target.itemKind === 'petfood' || target.itemKind === 'fishing') {
@@ -163,10 +154,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 吃了 ${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}，恢復 ${feedGain} 點飽食度`
   }
 
-  inventorySystem.removeItems(userInventory, target.itemId, target.amount)
-
   // update database
-  database.ref(`/inventory/${guildId}/${userId}`).set(inventorySystem.make(userInventory, message.createdTimestamp))
+  inventorySystem.removeItems(userInventory, target.itemId, target.amount)
+  inventorySystem.set(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   sendResponseMessage({ message, description })
