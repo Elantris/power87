@@ -1,5 +1,4 @@
 const inventorySystem = require('./inventorySystem')
-const fishingSystem = require('./fishingSystem')
 const INITIAL_USER_ENERGY = 50
 
 const gainFromTextChannel = async ({ database, energy, guildId, userId }) => {
@@ -9,7 +8,7 @@ const gainFromTextChannel = async ({ database, energy, guildId, userId }) => {
   } else {
     userEnergy = INITIAL_USER_ENERGY
   }
-  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + 1)
+  await database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + 1)
 }
 
 const isQualified = member => member.voiceChannelID && !member.deaf
@@ -36,23 +35,17 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
 
         let fishingData = guildFishing[userId].split(';')
         let counts = fishingData[0].split(',').map(v => parseInt(v))
-        guildFishingUpdates[userId] = fishingData[1]
 
-        if (counts[0] + counts[1] < 120) {
+        if (counts[0] + counts[1] < 240) {
           if (fishingData[1] && parseInt(fishingData[1]) > timenow) {
             counts[1]++
           } else {
             counts[0]++
           }
 
-          guildFishingUpdates[userId] = counts.join(',') + ';' + guildFishingUpdates[userId]
+          guildFishingUpdates[userId] = counts.join(',') + ';' + fishingData[1]
         } else { // stop auto fishing
-          let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
-          let userInventory = inventorySystem.parse(inventoryRaw.val(), timenow)
-
-          let fishingRaw = `${counts[0]},${counts[1]};`
-          fishingSystem({ database, guildId, userId, userInventory, fishingRaw })
-          guildFishingUpdates[userId] = null
+          await inventorySystem.read(database, guildId, userId, timenow)
         }
       } else if (isQualified(member)) {
         if (typeof guildEnergy[userId] === 'undefined') {

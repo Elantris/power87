@@ -1,47 +1,4 @@
-const parse = (inventoryRaw = '', timenow = Date.now()) => {
-  let userInventory = {
-    tools: {},
-    buffs: {},
-    items: [],
-    maxSlots: 0,
-    hasEmptySlot: false
-  }
-
-  if (!inventoryRaw) {
-    return userInventory
-  }
-
-  let inventoryData = inventoryRaw.split(',').filter(v => v)
-
-  inventoryData.forEach(item => {
-    if (item[0] === '$') { // tool
-      let tmp = item.split('+') // $id+level
-      userInventory.tools[tmp[0]] = tmp[1]
-      if (tmp[0] === '$0') {
-        userInventory.maxSlots = (parseInt(tmp[1]) + 1) * 8
-      }
-    } else if (item[0] === '%') { // buff
-      let tmp = item.split(':') // %id:timestamp
-      if (parseInt(tmp[1]) > timenow) {
-        userInventory.buffs[tmp[0]] = parseInt(tmp[1])
-      }
-    } else { // item
-      let tmp = item.split('.') // id.amount
-      userInventory.items.push({
-        id: tmp[0],
-        amount: parseInt(tmp[1] || 1)
-      })
-    }
-  })
-
-  if (userInventory.items.length < userInventory.maxSlots) {
-    userInventory.hasEmptySlot = true
-  }
-
-  sortItems(userInventory)
-
-  return userInventory
-}
+let fishingSystem = require('./fishingSystem')
 
 const sortItems = (userInventory) => {
   userInventory.items = userInventory.items.sort((itemA, itemB) => {
@@ -75,10 +32,68 @@ const removeItems = (userInventory, itemId, amount = 1) => {
 const read = async (database, guildId, userId, timenow = Date.now()) => {
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
 
-  return parse(inventoryRaw.val() || '', timenow)
+  let userInventory = {
+    status: 'stay', // stay or fishing
+    tools: {},
+    buffs: {},
+    items: [],
+    maxSlots: 0,
+    isFull: false
+  }
+
+  if (!inventoryRaw.val()) {
+    return userInventory
+  }
+
+  let inventoryData = inventoryRaw.val().split(',').filter(v => v)
+
+  inventoryData.forEach(item => {
+    if (item[0] === '$') { // tool
+      let tmp = item.split('+') // $id+level
+      userInventory.tools[tmp[0]] = tmp[1]
+      if (tmp[0] === '$0') {
+        userInventory.maxSlots = (parseInt(tmp[1]) + 1) * 8
+      }
+    } else if (item[0] === '%') { // buff
+      let tmp = item.split(':') // %id:timestamp
+      if (parseInt(tmp[1]) > timenow) {
+        userInventory.buffs[tmp[0]] = parseInt(tmp[1])
+      }
+    } else { // item
+      let tmp = item.split('.') // id.amount
+      userInventory.items.push({
+        id: tmp[0],
+        amount: parseInt(tmp[1] || 1)
+      })
+    }
+  })
+
+  if (userInventory.items.length >= userInventory.maxSlots) {
+    userInventory.isFull = true
+  }
+
+  // fishing system
+  let fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
+  if (fishingRaw.exists()) {
+    fishingSystem(userInventory, fishingRaw.val())
+
+    if (userInventory.isFull) {
+      userInventory.status = 'return'
+      await database.ref(`/fishing/${guildId}/${userId}`).remove()
+    } else {
+      userInventory.status = 'fishing'
+      await database.ref(`/fishing/${guildId}/${userId}`).set(`0,0;${userInventory.buffs['%0'] || ''}`)
+    }
+
+    write(database, guildId, userId, userInventory, timenow)
+  }
+
+  sortItems(userInventory)
+
+  return userInventory
 }
 
-const set = (database, guildId, userId, userInventory, timenow = Date.now()) => {
+const write = (database, guildId, userId, userInventory, timenow = Date.now()) => {
   let inventoryData = []
   for (let toolId in userInventory.tools) {
     inventoryData.push(`${toolId}+${userInventory.tools[toolId]}`)
@@ -102,9 +117,8 @@ const set = (database, guildId, userId, userInventory, timenow = Date.now()) => 
 }
 
 module.exports = {
-  parse,
-  sortItems,
-  removeItems,
   read,
-  set
+  write,
+  sortItems,
+  removeItems
 }

@@ -11,14 +11,13 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return
   }
 
-  let fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
-  if (fishingRaw.exists()) {
+  // inventory system
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+
+  if (userInventory.status === 'fishing') {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
-
-  // inventory system
-  let userInventory = inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let soldItems = {}
   let gainEnergy = 0
@@ -52,7 +51,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // update database
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + gainEnergy)
-  inventorySystem.set(database, guildId, userId, userInventory, message.createdTimestamp)
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   let soldItemsNumber = 0

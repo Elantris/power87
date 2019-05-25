@@ -52,7 +52,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   // inventory system
-  let userInventory = inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let itemsCount = {}
   userInventory.items.filter(item => usableKinds[items[item.id].kind]).forEach(item => {
@@ -156,7 +156,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // update database
   inventorySystem.removeItems(userInventory, target.itemId, target.amount)
-  inventorySystem.set(database, guildId, userId, userInventory, message.createdTimestamp)
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   sendResponseMessage({ message, description })

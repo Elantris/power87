@@ -26,11 +26,21 @@ database.ref('/banlist').on('value', snapshot => {
 
 // handle message
 client.on('message', message => {
-  if (message.channel.type === 'dm') {
-    if (message.author.id === client.user.id) {
+  if (message.author.bot || !message.member || message.author.id === client.user.id) {
+    return
+  }
+
+  let guildId = message.guild.id
+  let userId = message.author.id
+
+  if (banlist[userId]) {
+    if (banlist[userId] > message.createdTimestamp) {
       return
     }
+    database.ref(`/banlist/${userId}`).remove()
+  }
 
+  if (message.channel.type === 'dm') {
     message.reply({
       embed: {
         color: 0xffe066,
@@ -44,20 +54,6 @@ client.on('message', message => {
       })
     }
     return
-  }
-
-  let guildId = message.guild.id
-  let userId = message.author.id
-
-  if (message.author.bot) {
-    return
-  }
-
-  if (banlist[userId]) {
-    if (banlist[userId] > message.createdTimestamp) {
-      return
-    }
-    database.ref(`/banlist/${userId}`).remove()
   }
 
   if (!message.content.startsWith('87')) {

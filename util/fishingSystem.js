@@ -1,5 +1,3 @@
-const inventorySystem = require('./inventorySystem')
-
 const chances = {
   '0': [0.0001, 0.0001, 0.0001, 0.0001, 0.0001],
 
@@ -45,17 +43,17 @@ const getLoot = ({ pool, multiplierNormal, multiplierRare }) => {
   return -1
 }
 
-module.exports = ({ database, guildId, userId, userInventory, fishingRaw }) => {
-  if (!userInventory.hasEmptySlot) {
+module.exports = (userInventory, fishingRaw) => {
+  if (userInventory.isFull) {
     return userInventory
   }
 
   let emptySlots = userInventory.maxSlots - userInventory.items.length
+
   let fishingPoleLevel = parseInt(userInventory.tools.$1)
-  let pool = 0
   let multiplierNormal = 1 + fishingPoleLevel * 0.01 // fishing pole
   let multiplierRare = multiplierNormal
-
+  let pool = 0
   if (userInventory.tools.$2) { // sailboat
     pool = 1 + parseInt(userInventory.tools.$2)
   }
@@ -96,11 +94,8 @@ module.exports = ({ database, guildId, userId, userInventory, fishingRaw }) => {
   }
 
   if (emptySlots < 1) {
-    userInventory.hasEmptySlot = false
-    database.ref(`/fishing/${guildId}/${userId}`).remove()
+    userInventory.isFull = true
   }
-
-  inventorySystem.set(database, guildId, userId, userInventory)
 
   return userInventory
 }

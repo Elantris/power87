@@ -4,7 +4,6 @@ const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
 const tools = require('../util/tools')
 const items = require('../util/items')
-const findTarget = require('../util/findTarget')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
@@ -13,11 +12,30 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return
   }
 
-  let target = {}
-
   // check target exists
+  let target = {}
   if (args[1]) {
-    target = findTarget(emoji.unemojify(args[1]).toLowerCase())
+    let search = emoji.unemojify(args[1]).toLowerCase()
+    for (let id in tools) {
+      if (search === tools[id].name || search === tools[id].icon || search === tools[id].displayName) {
+        target = {
+          id,
+          type: 'tool',
+          price: tools[id].prices[0],
+          level: 0
+        }
+      }
+    }
+
+    for (let id in items) {
+      if (search === items[id].name || search === items[id].icon || search === items[id].displayName) {
+        target = {
+          id,
+          type: 'item',
+          price: items[id].price
+        }
+      }
+    }
 
     if (!target.id || !target.price) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
@@ -31,7 +49,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
   }
 
-  let userInventory = inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   // no arguments
   if (args.length === 1) {
@@ -61,8 +79,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return
   }
 
-  let fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
-  if (fishingRaw.exists()) {
+  if (userInventory.status === 'fishing') {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
@@ -76,7 +93,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
     target.price = tools[target.id].prices[target.level]
   } else if (target.type === 'item') {
-    if (!userInventory.hasEmptySlot || userInventory.items.length + target.amount > userInventory.maxSlots) {
+    if (userInventory.isFull || userInventory.items.length + target.amount > userInventory.maxSlots) {
       sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
       return
     }
@@ -110,7 +127,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
-  inventorySystem.set(database, guildId, userId, userInventory, message.createdTimestamp)
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `

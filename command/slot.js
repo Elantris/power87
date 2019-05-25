@@ -62,7 +62,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // check buffs
-  let userInventory = inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let weightMinus = 0
   if (userInventory.buffs['%4']) {
