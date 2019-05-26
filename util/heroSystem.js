@@ -84,7 +84,6 @@ const write = (database, guildId, userId, userHero, timenow = Date.now()) => {
 const rarityDisplay = (rarity) => ':star:'.repeat(parseInt(rarity))
 
 module.exports = {
-  species,
   read,
   write,
   rarityDisplay
