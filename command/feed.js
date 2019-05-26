@@ -47,14 +47,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
-  // let itemsCount = {}
-  // userInventory.items.filter(item => usableKinds[items[item.id].kind]).forEach(item => {
-  //   if (!itemsCount[item.id]) {
-  //     itemsCount[item.id] = 0
-  //   }
-  //   itemsCount[item.id]++
-  // })
-
   let description = ''
 
   if (args.length === 1) { // list all usable items
@@ -121,7 +113,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   userHero.exp += Math.floor(Math.random() * (feedGain - target.amount) + target.amount)
 
-  userInventory.items[target.id] -= target.amount
+  userInventory.items[target.itemId] -= target.amount
 
   let stampAmount = 0
   for (let i = 0; i < feedGain; i++) {
