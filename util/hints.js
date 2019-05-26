@@ -78,9 +78,9 @@ module.exports = (luck) => {
   }
 
   let hint = hints[luck]
-  let items = hint.match(/\{\{[a-z]*\}\}/g)
-  if (items) {
-    items.forEach(item => {
+  let itemsNotation = hint.match(/\{\{[a-z]*\}\}/g)
+  if (itemsNotation) {
+    itemsNotation.forEach(item => {
       hint = hint.replace(item, mapping(item.slice(2, -2)))
     })
   }

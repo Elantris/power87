@@ -2,13 +2,12 @@ const heroSystem = require('../util/heroSystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
-  let heroRaw = await database.ref(`/hero/${guildId}/${userId}`).once('value')
-  if (!heroRaw.exists()) {
+  let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+  if (!userHero) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
     return
   }
 
-  let userHero = heroSystem.parse(heroRaw.val(), message.createdTimestamp)
   if (userHero.status === 'dead') {
     database.ref(`/hero/${guildId}/${userId}`).remove()
     sendResponseMessage({ message, errorCode: 'ERROR_HERO_DEAD' })

@@ -3,14 +3,27 @@ const sendResponseMessage = require('../util/sendResponseMessage')
 
 const energyCost = 50 // change hero name
 
+const statusMapping = {
+  starve: ['極度飢餓', '餓昏頭', '長期饑餓', '找不到東西吃', '需要主人的關愛'],
+  hungry: ['肚子餓了', '想吃東西', '肚子還有點餓', '快給我吃的', '給我...吃...的...'],
+  stay: ['閒置', '發呆', '空閑', '無聊', '站著', '坐著', '躺著'],
+  work: ['工作中', '賣命工作中', '勤奮工作中', '為了錢工作中', '為了食物工作中']
+}
+const statusDisplay = (status) => {
+  if (!statusMapping[status]) {
+    return status
+  }
+
+  return statusMapping[status][Math.floor(Math.random() * statusMapping[status].length)]
+}
+
 module.exports = async ({ args, database, message, guildId, userId }) => {
-  let heroRaw = await database.ref(`/hero/${guildId}/${userId}`).once('value')
-  if (!heroRaw.exists()) {
+  let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+  if (!userHero) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
     return
   }
 
-  let userHero = heroSystem.parse(heroRaw.val(), message.createdTimestamp)
   if (userHero.status === 'dead') {
     database.ref(`/hero/${guildId}/${userId}`).remove()
     sendResponseMessage({ message, errorCode: 'ERROR_HERO_DEAD' })
@@ -38,8 +51,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   } else {
     // display hero info
     let feedDisplay = (userHero.feed < 0 ? 0 : userHero.feed)
-    sendResponseMessage({ message, description: `:scroll: ${message.member.displayName} 召喚的英雄\n\n:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}\n\n成長：**Lv.${userHero.level}** (${userHero.expPercent}%)\n飽食度：${feedDisplay}/${userHero.maxFeed} (${userHero.feedPercent}%)\n狀態：${heroSystem.statusDisplay(userHero.status)}` })
+    sendResponseMessage({ message, description: `:scroll: ${message.member.displayName} 召喚的英雄\n\n:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}\n\n成長：**Lv.${userHero.level}** (${userHero.expPercent}%)\n飽食度：${feedDisplay}/${userHero.maxFeed} (${userHero.feedPercent}%)\n狀態：${statusDisplay(userHero.status)}` })
   }
 
-  database.ref(`/hero/${guildId}/${userId}`).set(heroSystem.make(userHero, message.createdTimestamp))
+  heroSystem.write(database, guildId, userId, userHero)
 }

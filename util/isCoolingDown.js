@@ -21,6 +21,7 @@ const commandCooldown = {
   free: 5,
   rarityup: 5,
   changelooks: 10,
+  feed: 3,
 
   help: 2,
   clean: 30,

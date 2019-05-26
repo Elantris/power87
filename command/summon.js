@@ -1,5 +1,6 @@
 const config = require('../config')
 const heroSystem = require('../util/heroSystem')
+const species = require('../util/species')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const energyCost = 100
@@ -49,7 +50,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // hero system
-  let heroSpecies = heroSystem.species[Math.floor(Math.random() * heroSystem.species.length)]
+  let heroSpecies = species[Math.floor(Math.random() * species.length)]
   let heroRarity = getRarity()
   let timeGap = Math.floor(message.createdTimestamp / config.tick)
 
