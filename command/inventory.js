@@ -4,11 +4,13 @@ const buffs = require('../util/buffs')
 const items = require('../util/items')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-let userStatusMapping = {
+const userStatusMapping = {
   stay: '在村莊裡發呆',
   fishing: '出海捕魚中',
   return: '從大洋歸來'
 }
+
+const kindOrders = ['event', 'mark', 'buff', 'petfood', 'jewel', 'fishing']
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
@@ -21,21 +23,31 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   inventoryDisplay += `\n增益效果：`
   for (let id in userInventory.buffs) {
     if (userInventory.buffs[id] > message.createdTimestamp) {
-      let buffLastTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
-      let buffDisplayHour = Math.floor(buffLastTime / 60).toString().padStart(2, '0')
-      let buffDisplayMinute = Math.floor(buffLastTime % 60).toString().padStart(2, '0')
-      inventoryDisplay += `${items[buffs[id].itemId].icon}${buffDisplayHour}:${buffDisplayMinute}`
+      let buffTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
+      let buffTimeHour = Math.floor(buffTime / 60).toString().padStart(2, '0')
+      let buffTimeMinute = Math.floor(buffTime % 60).toString().padStart(2, '0')
+      inventoryDisplay += `${items[buffs[id].itemId].icon}${buffTimeHour}:${buffTimeMinute}`
     }
   }
 
-  inventoryDisplay += `\n\n背包物品：[${userInventory.items.length}/${userInventory.maxSlots}]`
-  userInventory.items.forEach((item, index) => {
+  inventoryDisplay += `\n\n背包物品：[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]`
+  let slotContents = []
+  kindOrders.forEach(kind => {
+    for (let itemId in userInventory.items) {
+      if (items[itemId].kind === kind) {
+        for (let i = 0; i < Math.ceil(userInventory.items[itemId] / items[itemId].maxStack); i++) {
+          slotContents.push(items[itemId].icon)
+        }
+      }
+    }
+  })
+  slotContents.forEach((icon, index) => {
     if (index % 8 === 0) {
       inventoryDisplay += '\n'
     } else {
       inventoryDisplay += ' '
     }
-    inventoryDisplay += `${items[item.id].icon}`
+    inventoryDisplay += icon
   })
 
   // response

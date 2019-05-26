@@ -15,37 +15,32 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   // check target exists
   let target = {}
   if (args[1]) {
-    let search = emoji.unemojify(args[1]).toLowerCase()
-    for (let id in tools) {
-      if (search === tools[id].name || search === tools[id].icon || search === tools[id].displayName) {
+    let search = args[1].toLowerCase()
+    for (let toolId in tools) {
+      if (search === tools[toolId].name || search === emoji.emojify(tools[toolId].icon) || search === tools[toolId].displayName) {
         target = {
-          id,
+          toolId,
           type: 'tool',
-          price: tools[id].prices[0],
+          price: tools[toolId].prices[0],
           level: 0
         }
       }
     }
 
-    for (let id in items) {
-      if (search === items[id].name || search === items[id].icon || search === items[id].displayName) {
+    for (let itemId in items) {
+      if (search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || search === items[itemId].displayName) {
         target = {
-          id,
+          itemId,
           type: 'item',
-          price: items[id].price
+          price: items[itemId].price,
+          amount: parseInt(args[2] || 1)
         }
       }
     }
 
-    if (!target.id || !target.price) {
+    if (!target.price) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return
-    }
-
-    if (args[2]) {
-      target.amount = parseInt(args[2])
-    } else {
-      target.amount = 1
     }
   }
 
@@ -54,24 +49,22 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   // no arguments
   if (args.length === 1) {
     let description = `:shopping_cart: ${message.member.displayName} 可購買的商品：\n\n__裝備道具__：`
-
-    for (let id in tools) {
+    for (let toolId in tools) {
       let toolLevel = 0
-      if (userInventory.tools[id]) {
-        toolLevel = parseInt(userInventory.tools[id]) + 1
-        if (toolLevel > tools[id].maxLevel) {
+      if (userInventory.tools[toolId]) {
+        toolLevel = parseInt(userInventory.tools[toolId]) + 1
+        if (toolLevel > tools[toolId].maxLevel) {
           continue
         }
       }
 
-      description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
+      description += `\n${tools[toolId].icon}**${tools[toolId].displayName}**+${toolLevel}，:battery: **${tools[toolId].prices[toolLevel]}**，\`87!buy ${tools[toolId].name}\``
     }
 
     description += `\n\n__特色商品__：\n`
-
-    for (let id in items) {
-      if (items[id].price) {
-        description += `${items[id].icon} \`${items[id].name}\` `
+    for (let itemId in items) {
+      if (items[itemId].price) {
+        description += `${items[itemId].icon} \`${items[itemId].name}\` `
       }
     }
 
@@ -85,15 +78,21 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // user target
-  if (target.type === 'tool' && userInventory.tools[target.id]) {
-    target.level = parseInt(userInventory.tools[target.id]) + 1
-    if (target.level > tools[target.id].maxLevel) {
+  if (target.type === 'tool' && userInventory.tools[target.toolId]) {
+    target.level = parseInt(userInventory.tools[target.toolId]) + 1
+    if (target.level > tools[target.toolId].maxLevel) {
       sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
       return
     }
-    target.price = tools[target.id].prices[target.level]
+    target.price = tools[target.toolId].prices[target.level]
   } else if (target.type === 'item') {
-    if (userInventory.isFull || userInventory.items.length + target.amount > userInventory.maxSlots) {
+    target.maxBuy = items[target.itemId].maxStack * userInventory.emptySlots
+
+    if (userInventory.items[target.itemId] && userInventory.items[target.itemId] % items[target.itemId].maxStack) {
+      target.maxBuy += items[target.itemId].maxStack - userInventory.items[target.itemId] % items[target.itemId].maxStack
+    }
+
+    if (target.amount > target.maxBuy) {
       sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
       return
     }
@@ -115,15 +114,11 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // update database
+
   if (target.type === 'tool') {
-    userInventory.tools[target.id] = target.level
+    userInventory.tools[target.toolId] = target.level
   } else if (target.type === 'item') {
-    for (let i = 0; i < target.amount; i++) {
-      userInventory.items.push({
-        id: target.id,
-        amount: 1
-      })
-    }
+    userInventory.items[target.itemId] += target.amount
   }
 
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
@@ -132,9 +127,9 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   // response
   let description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `
   if (target.type === 'tool') {
-    description += `${tools[target.id].icon}**${tools[target.id].displayName}**+${target.level}`
+    description += `${tools[target.toolId].icon}**${tools[target.toolId].displayName}**+${target.level}`
   } else if (target.type === 'item') {
-    description += `${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}`
+    description += `${items[target.itemId].icon}**${items[target.itemId].displayName}**x${target.amount}`
   }
 
   sendResponseMessage({ message, description })

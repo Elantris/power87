@@ -44,11 +44,9 @@ const getLoot = ({ pool, multiplierNormal, multiplierRare }) => {
 }
 
 module.exports = (userInventory, fishingRaw) => {
-  if (userInventory.isFull) {
+  if (userInventory.emptySlots <= 0) {
     return userInventory
   }
-
-  let emptySlots = userInventory.maxSlots - userInventory.items.length
 
   let fishingPoleLevel = parseInt(userInventory.tools.$1)
   let multiplierNormal = 1 + fishingPoleLevel * 0.01 // fishing pole
@@ -76,25 +74,14 @@ module.exports = (userInventory, fishingRaw) => {
     }
   }
 
-  for (let i = 0; i < count; i++) {
-    if (emptySlots < 1) {
-      break
-    }
-
+  for (let i = 0; i < count && userInventory.emptySlots > 0; i++) {
     let loot = getLoot({ pool, multiplierNormal, multiplierRare })
     if (loot === -1) {
       continue
     }
 
-    userInventory.items.push({
-      id: loot,
-      amount: 1
-    })
-    emptySlots -= 1
-  }
-
-  if (emptySlots < 1) {
-    userInventory.isFull = true
+    userInventory.items[loot] = (userInventory.items[loot] || 0) + 1
+    userInventory.emptySlots -= 1
   }
 
   return userInventory

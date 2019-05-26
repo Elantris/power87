@@ -6,7 +6,7 @@ const items = require('../util/items')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
-  if (args.length !== 2) {
+  if (args.length < 2) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
@@ -19,24 +19,24 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return
   }
 
+  let search = args[1].toLowerCase()
+
   let soldItems = {}
   let gainEnergy = 0
-  let target = emoji.unemojify(args[1]).toLowerCase()
-  let originItemsLength = userInventory.items.length
+  let soldItemsNumber = 0
 
-  userInventory.items = userInventory.items.filter(item => {
-    if (target === 'all' || target === items[item.id].kind || target === items[item.id].name || target === items[item.id].icon || target === items[item.id].displayName) {
-      if (!soldItems[item.id]) {
-        soldItems[item.id] = 0
+  for (let itemId in userInventory.items) {
+    if (search === 'all' || search === items[itemId].kind || search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || items[itemId].displayName) {
+      if (!soldItems[itemId]) {
+        soldItems[itemId] = 0
       }
-      soldItems[item.id] += item.amount
-      gainEnergy += items[item.id].value * item.amount
-      return false
+      soldItems[itemId] += userInventory.items[itemId]
+      soldItemsNumber += userInventory.items[itemId]
+      userInventory.items[itemId] = 0
     }
-    return true
-  })
+  }
 
-  if (originItemsLength === userInventory.items.length) {
+  if (soldItems === 0) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
     return
   }
@@ -54,10 +54,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
-  let soldItemsNumber = 0
   let soldItemsDisplay = ``
   for (let itemId in soldItems) {
-    soldItemsNumber += soldItems[itemId]
     soldItemsDisplay += `${items[itemId].icon}**${items[itemId].displayName}**x${soldItems[itemId]} `
   }
 

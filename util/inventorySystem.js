@@ -1,33 +1,5 @@
-let fishingSystem = require('./fishingSystem')
-
-const sortItems = (userInventory) => {
-  userInventory.items = userInventory.items.sort((itemA, itemB) => {
-    if (itemA.kind < itemB.kind) {
-      return -1
-    }
-    if (itemA.kind > itemB.kind) {
-      return 1
-    }
-
-    return parseInt(itemA.id) - parseInt(itemB.id)
-  })
-}
-
-const removeItems = (userInventory, itemId, amount = 1) => {
-  let firstIndex = -1
-
-  userInventory.items.some((item, index) => {
-    if (item.id === itemId) {
-      firstIndex = index
-      return true
-    }
-    return false
-  })
-
-  if (firstIndex !== -1) {
-    userInventory.items.splice(firstIndex, amount)
-  }
-}
+const items = require('./items')
+const fishingSystem = require('./fishingSystem')
 
 const read = async (database, guildId, userId, timenow = Date.now()) => {
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
@@ -36,9 +8,9 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     status: 'stay', // stay or fishing
     tools: {},
     buffs: {},
-    items: [],
+    items: {},
     maxSlots: 0,
-    isFull: false
+    emptySlots: 0
   }
 
   if (!inventoryRaw.val()) {
@@ -48,47 +20,41 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   let inventoryData = inventoryRaw.val().split(',').filter(v => v)
 
   inventoryData.forEach(item => {
-    if (item[0] === '$') { // tool
-      let tmp = item.split('+') // $id+level
-      userInventory.tools[tmp[0]] = tmp[1]
-      if (tmp[0] === '$0') {
-        userInventory.maxSlots = (parseInt(tmp[1]) + 1) * 8
+    if (item[0] === '$') { // tool, $id+level
+      let tmp = item.split('+')
+      userInventory.tools[tmp[0]] = parseInt(tmp[1])
+
+      if (tmp[0] === '$0') { // bag
+        userInventory.maxSlots = userInventory.emptySlots = (parseInt(tmp[1]) + 1) * 8
       }
-    } else if (item[0] === '%') { // buff
-      let tmp = item.split(':') // %id:timestamp
+    } else if (item[0] === '%') { // buff, %id:timestamp
+      let tmp = item.split(':')
       if (parseInt(tmp[1]) > timenow) {
         userInventory.buffs[tmp[0]] = parseInt(tmp[1])
       }
-    } else { // item
-      let tmp = item.split('.') // id.amount
-      userInventory.items.push({
-        id: tmp[0],
-        amount: parseInt(tmp[1] || 1)
-      })
+    } else { // item, id.amount
+      let tmp = item.split('.')
+      userInventory.items[tmp[0]] = userInventory.items[tmp[0]] || 0
+      userInventory.items[tmp[0]] += parseInt(tmp[1] || 1)
+      userInventory.emptySlots -= Math.ceil(parseInt(tmp[1] || 1) / items[tmp[0]].maxStack)
     }
   })
-
-  if (userInventory.items.length >= userInventory.maxSlots) {
-    userInventory.isFull = true
-  }
 
   // fishing system
   let fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
   if (fishingRaw.exists()) {
     fishingSystem(userInventory, fishingRaw.val())
 
-    if (userInventory.isFull) {
-      userInventory.status = 'return'
-      await database.ref(`/fishing/${guildId}/${userId}`).remove()
-    } else {
+    if (userInventory.emptySlots > 0) {
       userInventory.status = 'fishing'
       await database.ref(`/fishing/${guildId}/${userId}`).set(`0,0;${userInventory.buffs['%0'] || ''}`)
+    } else {
+      userInventory.status = 'return'
+      await database.ref(`/fishing/${guildId}/${userId}`).remove()
     }
 
     write(database, guildId, userId, userInventory, timenow)
   }
-
-  sortItems(userInventory)
 
   return userInventory
 }
@@ -105,20 +71,16 @@ const write = (database, guildId, userId, userInventory, timenow = Date.now()) =
     }
   }
 
-  userInventory.items.forEach(item => {
-    let tmpAmount = ''
-    if (item.amount > 1) {
-      tmpAmount = '.' + item.amount
+  for (let itemId in items) {
+    if (userInventory.items[itemId]) {
+      inventoryData.push(`${itemId}.${userInventory.items[itemId]}`)
     }
-    inventoryData.push(`${item.id}${tmpAmount}`)
-  })
+  }
 
   database.ref(`/inventory/${guildId}/${userId}`).set(inventoryData.join(','))
 }
 
 module.exports = {
   read,
-  write,
-  sortItems,
-  removeItems
+  write
 }
