@@ -23,7 +23,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     let search = args[1].toLowerCase()
 
     for (let itemId in items) {
-      if (search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || search === items[itemId].displayName) {
+      if (search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || emoji.unemojify(search) === items[itemId].icon || search === items[itemId].displayName) {
         target = {
           itemId,
           kind: items[itemId].kind,

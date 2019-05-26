@@ -17,7 +17,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args[1]) {
     let search = args[1].toLowerCase()
     for (let toolId in tools) {
-      if (search === tools[toolId].name || search === emoji.emojify(tools[toolId].icon) || search === tools[toolId].displayName) {
+      if (search === tools[toolId].name || search === emoji.emojify(tools[toolId].icon) || emoji.unemojify(search) === tools[toolId].icon || search === tools[toolId].displayName) {
         target = {
           toolId,
           type: 'tool',
@@ -28,7 +28,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
 
     for (let itemId in items) {
-      if (search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || search === items[itemId].displayName) {
+      if (search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || emoji.unemojify(search) === items[itemId].icon || search === items[itemId].displayName) {
         target = {
           itemId,
           type: 'item',

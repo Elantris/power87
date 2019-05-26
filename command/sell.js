@@ -26,7 +26,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let gainEnergy = 0
 
   for (let itemId in userInventory.items) {
-    if (search === 'all' || search === items[itemId].kind || search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || search === items[itemId].displayName) {
+    if (search === 'all' || search === items[itemId].kind || search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || emoji.unemojify(search) === items[itemId].icon || search === items[itemId].displayName) {
       if (!soldItems[itemId]) {
         soldItems[itemId] = 0
       }

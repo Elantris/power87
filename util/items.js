@@ -304,7 +304,7 @@ module.exports = {
     kind: 'mark',
     name: '-stamp',
     icon: ':yellow_heart:',
-    maxStack: 10000,
+    maxStack: 1000,
     displayName: '閃亮的印章-',
     description: '',
     value: 0
@@ -313,7 +313,7 @@ module.exports = {
     kind: 'mark',
     name: '-stamp',
     icon: ':green_heart:',
-    maxStack: 10000,
+    maxStack: 1000,
     displayName: '閃亮的印章-',
     description: '',
     value: 0
@@ -322,7 +322,7 @@ module.exports = {
     kind: 'mark',
     name: '-stamp',
     icon: ':blue_heart:',
-    maxStack: 10000,
+    maxStack: 1000,
     displayName: '閃亮的印章-',
     description: '',
     value: 0
@@ -331,7 +331,7 @@ module.exports = {
     kind: 'mark',
     name: '-stamp',
     icon: ':purple_heart:',
-    maxStack: 10000,
+    maxStack: 1000,
     displayName: '閃亮的印章-',
     description: '',
     value: 0
