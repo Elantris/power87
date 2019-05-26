@@ -37,7 +37,7 @@ module.exports = ({ args, message }) => {
   let targetNotFound = true
 
   for (let id in tools) {
-    if (target === tools[id].name || target === emoji.emojify(tools[id].icon) || emoji.unemojify(target) === items[id].icon || target === tools[id].displayName) {
+    if (target === tools[id].name || target === emoji.emojify(tools[id].icon) || emoji.unemojify(target) === tools[id].icon || target === tools[id].displayName) {
       targetNotFound = false
       description += `\n\n${tools[id].icon}**${tools[id].displayName}**，\`${tools[id].name}\`` +
         `\n> 說明：${tools[id].description}` +
