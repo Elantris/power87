@@ -118,6 +118,9 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   if (target.type === 'tool') {
     userInventory.tools[target.toolId] = target.level
   } else if (target.type === 'item') {
+    if (!userInventory.items[target.itemId]) {
+      userInventory.items[target.itemId] = 0
+    }
     userInventory.items[target.itemId] += target.amount
   }
 

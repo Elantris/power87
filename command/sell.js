@@ -22,16 +22,18 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let search = args[1].toLowerCase()
 
   let soldItems = {}
-  let gainEnergy = 0
   let soldItemsNumber = 0
+  let gainEnergy = 0
 
   for (let itemId in userInventory.items) {
-    if (search === 'all' || search === items[itemId].kind || search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || items[itemId].displayName) {
+    if (search === 'all' || search === items[itemId].kind || search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || search === items[itemId].displayName) {
       if (!soldItems[itemId]) {
         soldItems[itemId] = 0
       }
       soldItems[itemId] += userInventory.items[itemId]
       soldItemsNumber += userInventory.items[itemId]
+      gainEnergy += userInventory.items[itemId] * items[itemId].value
+
       userInventory.items[itemId] = 0
     }
   }
