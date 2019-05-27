@@ -293,7 +293,7 @@ module.exports = {
   },
   28: {
     kind: 'mark',
-    name: 'feed-stamp',
+    name: 'stamp-feed',
     icon: ':heart:',
     maxStack: 1000,
     displayName: '閃亮的印章-英雄飼養',
@@ -302,7 +302,7 @@ module.exports = {
   },
   29: {
     kind: 'mark',
-    name: '-stamp',
+    name: 'stamp-',
     icon: ':yellow_heart:',
     maxStack: 1000,
     displayName: '閃亮的印章-',
@@ -311,7 +311,7 @@ module.exports = {
   },
   30: {
     kind: 'mark',
-    name: '-stamp',
+    name: 'stamp-',
     icon: ':green_heart:',
     maxStack: 1000,
     displayName: '閃亮的印章-',
@@ -320,7 +320,7 @@ module.exports = {
   },
   31: {
     kind: 'mark',
-    name: '-stamp',
+    name: 'stamp-',
     icon: ':blue_heart:',
     maxStack: 1000,
     displayName: '閃亮的印章-',
@@ -329,7 +329,7 @@ module.exports = {
   },
   32: {
     kind: 'mark',
-    name: '-stamp',
+    name: 'stamp-',
     icon: ':purple_heart:',
     maxStack: 1000,
     displayName: '閃亮的印章-',

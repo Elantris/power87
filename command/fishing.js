@@ -17,7 +17,7 @@ module.exports = async ({ database, message, guildId, userId }) => {
       sendResponseMessage({ message, errorCode: 'ERROR_NO_TOOL' })
       return
     }
-    if (userInventory.isFull) {
+    if (userInventory.emptySlots <= 0) {
       sendResponseMessage(({ message, errorCode: 'ERROR_BAG_FULL' }))
       return
     }
