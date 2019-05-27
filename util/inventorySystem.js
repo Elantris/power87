@@ -22,7 +22,7 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   inventoryData.forEach(item => {
     if (item[0] === '$') { // tool, $id+level
       let tmp = item.split('+')
-      userInventory.tools[tmp[0]] = parseInt(tmp[1])
+      userInventory.tools[tmp[0]] = tmp[1]
 
       if (tmp[0] === '$0') { // bag
         userInventory.maxSlots = userInventory.emptySlots = (parseInt(tmp[1]) + 1) * 8
