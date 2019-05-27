@@ -22,7 +22,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
           toolId,
           type: 'tool',
           price: tools[toolId].prices[0],
-          level: 0
+          level: 0,
+          amount: 1
         }
       }
     }
