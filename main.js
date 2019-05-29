@@ -12,6 +12,7 @@ const database = firebase.database()
 
 // init database
 database.ref('/banlist/').update({ _keep: 1 })
+database.ref('/monthlyReward/').update({ _keep: 1 })
 database.ref('/energy/').update({ _keep: 1 })
 database.ref('/fishing/').update({ _keep: 1 })
 database.ref('/hero/').update({ _keep: 1 })
