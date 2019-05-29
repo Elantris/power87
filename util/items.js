@@ -1,3 +1,11 @@
+/*
+ * basic: kind, name, icon, maxStack, displayName, description
+ * currency: price, value
+ * hero: feed
+ * buff: buffId, duration
+ * box: contains
+ */
+
 module.exports = {
   0: {
     kind: 'jewel',
@@ -342,7 +350,18 @@ module.exports = {
     icon: ':gift:',
     maxStack: 1,
     displayName: 'GM的禮物-除錯獎金',
-    description: 'GM 感謝你幫忙找到 Power87 任何一項錯誤！',
+    description: '感謝你幫忙找到 Power87 中任何一項錯誤！',
     value: 500
+  },
+  34: {
+    kind: 'box',
+    name: 'bait-box',
+    icon: ':package:',
+    maxStack: 1,
+    displayName: '魚餌箱子',
+    description: '打開後可以獲得 10 個 :bug:**魚餌**',
+    price: 170,
+    value: 17,
+    content: '18.10'
   }
 }

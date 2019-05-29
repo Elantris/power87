@@ -4,7 +4,8 @@ const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const usableKinds = {
-  buff: true
+  buff: true,
+  box: true
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
@@ -85,6 +86,18 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     userInventory.buffs[buffId] = userInventory.buffs[buffId] + items[target.id].duration * target.amount
 
     description = `:arrow_double_up: ${message.member.displayName} 使用了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}`
+  } else if (target.kind === 'box') { // open box and get items
+    description = `:arrow_double_up: ${message.member.displayName} 打開了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，獲得物品：\n\n`
+
+    items[target.id].content.split(',').forEach(v => {
+      let content = v.split('.')
+      if (!userInventory.items[content[0]]) {
+        userInventory.items[content[0]] = 0
+      }
+      let amount = parseInt(content[1] || 1) * target.amount
+      userInventory.items[content[0]] += amount
+      description += `${items[content[0]].icon}**${items[content[0]].displayName}**x${amount} `
+    })
   }
 
   // update database
