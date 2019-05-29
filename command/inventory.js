@@ -1,7 +1,7 @@
 const inventorySystem = require('../util/inventorySystem')
 const tools = require('../util/tools')
-const buffs = require('../util/buffs')
 const items = require('../util/items')
+const buffs = require('../util/buffs')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const userStatusMapping = {
@@ -26,17 +26,17 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       let buffTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
       let buffTimeHour = Math.floor(buffTime / 60).toString().padStart(2, '0')
       let buffTimeMinute = Math.floor(buffTime % 60).toString().padStart(2, '0')
-      inventoryDisplay += `${items[buffs[id].itemId].icon}${buffTimeHour}:${buffTimeMinute}`
+      inventoryDisplay += `${items[buffs[id]].icon}${buffTimeHour}:${buffTimeMinute}`
     }
   }
 
   inventoryDisplay += `\n\n背包物品：[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]`
   let slotContents = []
   kindOrders.forEach(kind => {
-    for (let itemId in userInventory.items) {
-      if (items[itemId].kind === kind) {
-        for (let i = 0; i < Math.ceil(userInventory.items[itemId] / items[itemId].maxStack); i++) {
-          slotContents.push(items[itemId].icon)
+    for (let id in userInventory.items) {
+      if (items[id].kind === kind) {
+        for (let i = 0; i < Math.ceil(userInventory.items[id] / items[id].maxStack); i++) {
+          slotContents.push(items[id].icon)
         }
       }
     }

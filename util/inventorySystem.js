@@ -1,4 +1,6 @@
+const tools = require('./tools')
 const items = require('./items')
+const buffs = require('./buffs')
 const fishingSystem = require('./fishingSystem')
 
 const read = async (database, guildId, userId, timenow = Date.now()) => {
@@ -61,19 +63,22 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 
 const write = (database, guildId, userId, userInventory, timenow = Date.now()) => {
   let inventoryData = []
-  for (let toolId in userInventory.tools) {
-    inventoryData.push(`${toolId}+${userInventory.tools[toolId]}`)
+
+  for (let id in tools) {
+    if (userInventory.tools[id]) {
+      inventoryData.push(`${id}+${userInventory.tools[id]}`)
+    }
   }
 
-  for (let id in userInventory.buffs) {
-    if (userInventory.buffs[id] > timenow) {
+  for (let id in buffs) {
+    if (userInventory.buffs[id] && userInventory.buffs[id] > timenow) {
       inventoryData.push(`${id}:${userInventory.buffs[id]}`)
     }
   }
 
-  for (let itemId in items) {
-    if (userInventory.items[itemId]) {
-      inventoryData.push(`${itemId}.${userInventory.items[itemId]}`)
+  for (let id in items) {
+    if (userInventory.items[id]) {
+      inventoryData.push(`${id}.${userInventory.items[id]}`)
     }
   }
 

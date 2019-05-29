@@ -1,14 +1,19 @@
-const emoji = require('node-emoji')
-
 const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
 const items = require('../util/items')
+const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args.length < 2) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
+  }
+
+  let results = findTargets(args[1].toLowerCase())
+  if (results.length === 0) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
+    return 0
   }
 
   // inventory system
@@ -19,26 +24,26 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return
   }
 
-  let search = args[1].toLowerCase()
-
   let soldItems = {}
   let soldItemsNumber = 0
   let gainEnergy = 0
 
-  for (let itemId in userInventory.items) {
-    if (search === 'all' || search === items[itemId].kind || search === items[itemId].name || search === emoji.emojify(items[itemId].icon) || emoji.unemojify(search) === items[itemId].icon || search === items[itemId].displayName) {
-      if (!soldItems[itemId]) {
-        soldItems[itemId] = 0
-      }
-      soldItems[itemId] += userInventory.items[itemId]
-      soldItemsNumber += userInventory.items[itemId]
-      gainEnergy += userInventory.items[itemId] * items[itemId].value
-
-      userInventory.items[itemId] = 0
+  results.forEach(result => {
+    if (!userInventory.items[result.id]) {
+      return
     }
-  }
 
-  if (soldItems === 0) {
+    if (!soldItems[result.id]) {
+      soldItems[result.id] = 0
+    }
+
+    soldItems[result.id] += userInventory.items[result.id]
+    soldItemsNumber += userInventory.items[result.id]
+    gainEnergy += userInventory.items[result.id] * items[result.id].value
+    userInventory.items[result.id] = 0
+  })
+
+  if (soldItemsNumber === 0) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
     return
   }
@@ -57,8 +62,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // response
   let soldItemsDisplay = ``
-  for (let itemId in soldItems) {
-    soldItemsDisplay += `${items[itemId].icon}**${items[itemId].displayName}**x${soldItems[itemId]} `
+  for (let id in soldItems) {
+    soldItemsDisplay += `${items[id].icon}**${items[id].displayName}**x${soldItems[id]} `
   }
 
   sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })

@@ -12,6 +12,8 @@ module.exports = async ({ database, message, guildId, userId }) => {
     userAction = '結束釣魚'
 
     database.ref(`/fishing/${guildId}/${userId}`).remove()
+  } else if (userInventory.status === 'return') {
+    userAction = '從大洋歸來'
   } else {
     if (!userInventory.tools.$0 || !userInventory.tools.$1) {
       sendResponseMessage({ message, errorCode: 'ERROR_NO_TOOL' })
