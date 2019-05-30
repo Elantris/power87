@@ -47,7 +47,7 @@ module.exports = async ({ database, message, guildId, userId }) => {
   let dailyData = dailyRaw.split(',')
 
   if (dailyData[0] === todayDisplay) {
-    sendResponseMessage({ message, description: `:calendar: ${message.member.displayName} 連續簽到 ${dailyData[1]} 天；本月累計簽到 ${dailyData[2]} 天` })
+    sendResponseMessage({ message, description: `:calendar: ${message.member.displayName} 連續簽到 ${dailyData[1]} 天；本月累計簽到 ${dailyData[2] || 0} 天` })
     return
   }
 

@@ -90,13 +90,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:arrow_double_up: ${message.member.displayName} 打開了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，獲得物品：\n\n`
 
     items[target.id].content.split(',').forEach(v => {
-      let content = v.split('.')
-      if (!userInventory.items[content[0]]) {
-        userInventory.items[content[0]] = 0
+      let itemData = v.split('.')
+      if (!userInventory.items[itemData[0]]) {
+        userInventory.items[itemData[0]] = 0
       }
-      let amount = parseInt(content[1] || 1) * target.amount
-      userInventory.items[content[0]] += amount
-      description += `${items[content[0]].icon}**${items[content[0]].displayName}**x${amount} `
+      let amount = parseInt(itemData[1] || 1) * target.amount
+      userInventory.items[itemData[0]] += amount
+      description += `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${amount} `
     })
   }
 

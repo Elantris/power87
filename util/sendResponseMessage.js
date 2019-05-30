@@ -42,7 +42,7 @@ module.exports = ({ message, content, description = '', errorCode }) => {
   if (errorCode) {
     embed = {
       color: 0xffa8a8,
-      description: `:no_entry_sign: ${errors[errorCode] || '未知的錯誤'}`
+      description: `:no_entry_sign: ${message.member.displayName}，${errors[errorCode] || '未知的錯誤'}`
     }
   } else {
     embed = {

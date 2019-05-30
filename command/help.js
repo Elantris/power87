@@ -62,6 +62,13 @@ module.exports = ({ args, message }) => {
       if (items[result.id].feed) {
         description += `\n> 恢復飽食度：**+${items[result.id].feed}**，\`87!feed ${items[result.id].name}\``
       }
+      if (items[result.id].content) {
+        let content = items[result.id].content.split(',').map(v => {
+          let itemData = v.split('.')
+          return `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${parseInt(itemData[1] || 1)}`
+        }).join('、')
+        description += `\n> 內容物：${content}，\`87!use ${items[result.id].name}\``
+      }
     }
   })
 

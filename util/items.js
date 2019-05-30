@@ -14,7 +14,6 @@ module.exports = {
     maxStack: 1,
     displayName: '鑽石',
     description: '非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫耀自己的財富。',
-    price: 10000,
     value: 1000
   },
   1: {
@@ -261,7 +260,7 @@ module.exports = {
     icon: ':cookie:',
     maxStack: 1,
     displayName: '營養口糧',
-    description: '《營養食品》生產能夠方便攜帶的餅乾，恢復英雄飽食度 +25。',
+    description: '《營養食品》生產能夠方便攜帶的餅乾。',
     value: 5,
     price: 50,
     feed: 25
@@ -272,7 +271,7 @@ module.exports = {
     icon: ':rice_ball:',
     maxStack: 1,
     displayName: '營養飯糰',
-    description: '《營養食品》製造可以迅速補足英雄體力的飯糰，恢復英雄飽食度 +50。',
+    description: '《營養食品》製造可以迅速補足英雄體力的飯糰。',
     value: 11,
     price: 110,
     feed: 50
@@ -283,7 +282,7 @@ module.exports = {
     icon: ':sushi:',
     maxStack: 1,
     displayName: '營養壽司',
-    description: '《營養食品》推出能夠滿足英雄的口腹之慾的特等壽司，恢復英雄飽食度 +100。',
+    description: '《營養食品》推出能夠滿足英雄的口腹之慾的特等壽司。',
     value: 24,
     price: 240,
     feed: 100
@@ -310,12 +309,12 @@ module.exports = {
   },
   29: {
     kind: 'mark',
-    name: 'stamp-',
+    name: 'stamp-adventure',
     icon: ':yellow_heart:',
     maxStack: 1000,
-    displayName: '閃亮的印章-',
+    displayName: '閃亮的印章-英雄冒險',
     description: '',
-    value: 0
+    value: 50
   },
   30: {
     kind: 'mark',
@@ -359,9 +358,20 @@ module.exports = {
     icon: ':package:',
     maxStack: 1,
     displayName: '魚餌箱子',
-    description: '打開後可以獲得 10 個 :bug:**魚餌**',
+    description: '一次購買十個魚餌享 85 折優惠！',
     price: 170,
     value: 17,
     content: '18.10'
+  },
+  35: {
+    kind: 'box',
+    name: 'candy-box',
+    icon: ':package:',
+    maxStack: 1,
+    displayName: '糖果箱子',
+    description: '《好棒食品》推出糖果禮包，讓賭客可以用優惠的價格買到更多好運。',
+    price: 79,
+    value: 7,
+    content: '19.10'
   }
 }
