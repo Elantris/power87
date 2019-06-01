@@ -112,11 +112,11 @@ module.exports = async ({ database, message, guildId, userId }) => {
     }
 
     if (i <= dailyData[2]) {
-      description += ':o:'
+      description += ':sunny:'
     } else if (monthlyReward.items[i] && monthlyReward.items[i] !== '-') {
       description += items[monthlyReward.items[i].split('.')[0]].icon
     } else {
-      description += ':battery:'
+      description += ':white_small_square:'
     }
   }
 

@@ -4,7 +4,7 @@ const expRange = [0, 100, 210, 331, 464, 610, 770, 946, 1139, 1351, 1584, 1840, 
 
 // 0 name ; 1 species ; 2 rarity ; 3 exp ; 4 feed ; 5 timeGap:status
 // MyPet ; snowman ; 4 ; 200 ; 100 ; 432800:stay
-// MyPet ; snoman ; 5 ; 3000 ; 100 ; 155853683:work
+// MyPet ; snowman ; 5 ; 3000 ; 100 ; 155853683:work
 
 const read = async (database, guildId, userId, timenow = Date.now()) => {
   let heroRaw = await database.ref(`/hero/${guildId}/${userId}`).once('value')

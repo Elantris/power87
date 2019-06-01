@@ -44,7 +44,9 @@ module.exports = ({ args, message }) => {
     if (result.type === 'tool') {
       description += `\n\n${tools[result.id].icon}**${tools[result.id].displayName}**，\`${tools[result.id].name}\`` +
         `\n> 說明：${tools[result.id].description}` +
-        `\n> 初始購買價格：:battery: **${tools[result.id].prices[0]}**，\`87!buy ${tools[result.id].name}\``
+        `\n> 購買價格：` +
+        tools[result.id].prices.map((price, index) => `\`+${index}\`: **${price}**`).join('、') +
+        `，\`87!buy ${tools[result.id].name}\``
     } else if (result.type === 'item') {
       description += `\n\n${items[result.id].icon}**${items[result.id].displayName}**，\`${items[result.id].kind}/${items[result.id].name}\`` +
         `\n> 說明：${items[result.id].description}` +

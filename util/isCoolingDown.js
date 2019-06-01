@@ -4,7 +4,7 @@ const commandCooldown = {
   list: 5,
 
   energy: 3,
-  daily: 30,
+  daily: 15,
   give: 3,
   rank: 30,
   slot: 15,
@@ -22,10 +22,11 @@ const commandCooldown = {
   rarityup: 5,
   changelooks: 10,
   feed: 3,
+  adventure: 5,
 
   help: 2,
-  clean: 30,
-  about: 30,
+  clean: 15,
+  about: 15,
   hint: 2,
 
   res: 2,

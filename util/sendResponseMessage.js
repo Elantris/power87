@@ -31,7 +31,10 @@ const errors = {
   ERROR_HERO_NAME: '請輸入英雄的名字',
   ERROR_MAX_RARITY: '已達最高星數',
   ERROR_NO_SPECIES: '不存在的外觀',
-  ERROR_NO_FEED: '飽食度不足，你的英雄現在很餓'
+  ERROR_NO_FEED: '飽食度不足，你的英雄現在很餓',
+
+  // other
+  ERROR_IS_CLEANING: '正在清除訊息中'
 }
 
 // command history
