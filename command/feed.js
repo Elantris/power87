@@ -118,7 +118,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   let stampAmount = 0
   for (let i = 0; i < feedGain; i++) {
-    if (Math.random() < 0.01) {
+    if (Math.random() < 0.05) {
       stampAmount++
     }
   }

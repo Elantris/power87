@@ -302,10 +302,10 @@ module.exports = {
     kind: 'mark',
     name: 'stamp-feed',
     icon: ':heart:',
-    maxStack: 1000,
+    maxStack: 10000,
     displayName: '閃亮的印章-英雄飼養',
     description: '當英雄飽食度恢復時有機率獲得的印章，似乎可以賣個好價錢。',
-    value: 50
+    value: 20
   },
   29: {
     kind: 'mark',
