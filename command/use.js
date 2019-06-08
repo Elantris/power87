@@ -27,7 +27,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     if (results.length > 1) {
       description = `:arrow_double_up: 指定其中一種道具/物品：\n`
-      results.forEach(result => {
+      results.filter(result => usableKinds[items[result.id].kind]).forEach(result => {
         let item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`，\`87!use ${item.name}\``
       })

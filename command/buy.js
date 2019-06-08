@@ -23,7 +23,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     if (results.length !== 1) {
       description = `:shopping_cart: 指定其中一種道具/物品：\n`
-      results.forEach(result => {
+      results.filter(result => items[result.id].price).forEach(result => {
         let item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`，\`87!buy ${item.name}\``
       })
@@ -96,6 +96,11 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     if (target.amount > target.maxBuy) {
       target.amount = target.maxBuy
+    }
+
+    if (target.amount === 0) {
+      sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
+      return
     }
   }
 

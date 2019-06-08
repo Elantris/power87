@@ -19,7 +19,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let description = ''
   let target = {}
   if (args[1]) {
-    // let search = args[1].toLowerCase()
     let results = findTargets(args[1].toLowerCase())
 
     if (results.length === 0) {
@@ -29,7 +28,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     if (results.length > 1) {
       description = `:arrow_double_up: 指定其中一種道具/物品：\n`
-      results.forEach(result => {
+      results.filter(result => items[result.id].feed).forEach(result => {
         let item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`，\`87!feed ${item.name}\``
       })
