@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/Elantris/power87#readme",
   "dependencies": {
-    "discord.js": "^11.5.0",
-    "firebase": "^5.11.1",
+    "discord.js": "^11.5.1",
+    "firebase": "^6.1.1",
     "moment": "^2.24.0",
     "node-emoji": "^1.10.0"
   }
