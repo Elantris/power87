@@ -20,13 +20,13 @@ module.exports = async ({ args, client, message, guildId }) => {
     }
   }
 
+  // read messages
   await message.channel.send({
     embed: {
       color: 0xffe066,
       description: `:recycle: 讀取訊息中...`
     }
   })
-
   let messageCollections = []
   let before
   let countTotal = 0
@@ -39,18 +39,17 @@ module.exports = async ({ args, client, message, guildId }) => {
     }
 
     let messages = await message.channel.fetchMessages({ limit, before })
-
+    messages = messages.filter(m => m.deletable).filter(m => m.author.id === client.user.id || m.content.startsWith('87'))
     if (messages.size === 0) {
       break
     }
-
-    messages = messages.filter(m => m.deletable).filter(m => m.author.id === client.user.id || m.content.startsWith('87'))
 
     messageCollections.push(messages)
     countTotal += messages.size
     before = messages.last().id
   }
 
+  // clean messages
   let cleaningMessage = await message.channel.send({
     embed: {
       color: 0xffe066,
@@ -69,6 +68,10 @@ module.exports = async ({ args, client, message, guildId }) => {
             color: 0xffe066,
             description: `:recycle: 成功刪除 ${countDeleted} 則訊息`
           }
+        }).then(m => {
+          setTimeout(() => {
+            m.delete()
+          }, 10000)
         })
         delete isCleaning[guildId]
       }
