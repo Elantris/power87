@@ -207,7 +207,7 @@ module.exports = {
     value: 1,
     price: 10,
     buffId: '%1',
-    duration: 600000 // 10min
+    duration: 900000 // 15min
   },
   20: {
     kind: 'buff',
@@ -219,7 +219,7 @@ module.exports = {
     value: 5,
     price: 50,
     buffId: '%2',
-    duration: 600000
+    duration: 900000
   },
   21: {
     kind: 'buff',
@@ -231,7 +231,7 @@ module.exports = {
     value: 25,
     price: 250,
     buffId: '%3',
-    duration: 600000
+    duration: 900000
   },
   22: {
     kind: 'buff',
@@ -243,7 +243,7 @@ module.exports = {
     value: 125,
     price: 1250,
     buffId: '%4',
-    duration: 600000
+    duration: 900000
   },
   23: {
     kind: 'event',
