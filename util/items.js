@@ -373,5 +373,14 @@ module.exports = {
     price: 79,
     value: 7,
     content: '19.10'
+  },
+  36: {
+    kind: 'event',
+    name: 'lakiaro-celebration',
+    icon: ':gift:',
+    maxStack: 1,
+    displayName: '拉奇亞洛慶祝禮包',
+    description: '慶祝 2019/6/11 開發者成功挖出野生五階的拉奇亞洛ヽ(✿ﾟ▽ﾟ)ノ',
+    value: 11000
   }
 }
