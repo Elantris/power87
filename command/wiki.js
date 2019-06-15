@@ -4,6 +4,11 @@ const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
+  if (!args[1]) {
+    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
+    return
+  }
+
   let results = findTargets(args[1].toLowerCase())
 
   if (results.length === 0) {
