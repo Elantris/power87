@@ -41,22 +41,6 @@ client.on('message', message => {
     database.ref(`/banlist/${userId}`).remove()
   }
 
-  if (message.channel.type === 'dm') {
-    message.reply({
-      embed: {
-        color: 0xffe066,
-        description: ':warning: Power87 目前沒有提供私訊服務\n\n:loudspeaker: 公告頁面：<https://hackmd.io/s/VkLSj2pOJW>\n:envelope: 意見調查：<https://forms.gle/9iYELzNoQ2JRDKeR7>'
-      }
-    })
-
-    for (let adminId in config.admins) {
-      client.fetchUser(adminId).then(user => {
-        user.send(`**${message.author.username}**: ${message.content}`)
-      })
-    }
-    return
-  }
-
   if (!message.content.startsWith('87')) {
     if (!isCoolingDown({ userCmd: 'gainFromMessage', message, userId })) {
       energySystem.gainFromTextChannel({ database, guildId, userId })

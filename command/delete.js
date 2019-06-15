@@ -3,7 +3,7 @@ const sendResponseMessage = require('../util/sendResponseMessage')
 
 const energyCost = 15
 
-module.exports = async ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   // check command format
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })

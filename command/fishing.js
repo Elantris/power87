@@ -2,7 +2,7 @@ const inventorySystem = require('../util/inventorySystem')
 const hints = require('../util/hints')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = async ({ database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userAction = ''
   let hint = ''
 

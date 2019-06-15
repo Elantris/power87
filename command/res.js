@@ -1,6 +1,6 @@
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, database, message, guildId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args.length === 1) {
     return
   }

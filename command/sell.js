@@ -4,7 +4,7 @@ const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = async ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args.length < 2) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return

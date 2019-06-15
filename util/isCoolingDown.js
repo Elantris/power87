@@ -1,7 +1,7 @@
 const commandCooldown = {
-  add: 2,
-  delete: 2,
-  list: 5,
+  add: 3,
+  delete: 3,
+  list: 15,
 
   energy: 3,
   daily: 15,
@@ -17,19 +17,16 @@ const commandCooldown = {
   use: 3,
 
   hero: 5,
-  summon: 5,
   free: 5,
-  rarityup: 5,
-  changelooks: 10,
   feed: 3,
-  adventure: 5,
 
-  help: 2,
+  help: 3,
+  wiki: 3,
+  hint: 3,
   clean: 15,
   about: 15,
-  hint: 2,
 
-  res: 2,
+  res: 3,
   gainFromMessage: 120
 }
 

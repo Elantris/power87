@@ -16,7 +16,7 @@ const statusDisplay = (status) => {
   return statusMapping[status][Math.floor(Math.random() * statusMapping[status].length)]
 }
 
-module.exports = async ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })

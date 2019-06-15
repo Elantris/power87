@@ -12,7 +12,7 @@ const userStatusMapping = {
 
 const kindOrders = ['event', 'mark', 'box', 'hero', 'buff', 'petfood', 'jewel', 'fishing']
 
-module.exports = async ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let inventoryDisplay = `\n裝備道具：`

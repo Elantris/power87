@@ -1,7 +1,7 @@
 const sendResponseMessage = require('../util/sendResponseMessage')
 let isCleaning = {}
 
-module.exports = async ({ args, client, message, guildId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (isCleaning[guildId]) {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_CLEANING' })
     return

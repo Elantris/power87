@@ -159,6 +159,5 @@ module.exports = {
   // items
   summon,
   changeName,
-  changeLooks,
-  enhance
+  changeLooks
 }

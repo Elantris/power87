@@ -1,7 +1,7 @@
 const heroSystem = require('../util/heroSystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = async ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })

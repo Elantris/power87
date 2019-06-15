@@ -12,7 +12,7 @@ fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach
   manuals[cmd] = fs.readFileSync(`./manual/${cmd}.md`, { encoding })
 })
 
-module.exports = ({ args, message }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args.length === 1) {
     sendResponseMessage({ message, description: manuals.default })
     return

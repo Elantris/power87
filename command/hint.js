@@ -1,7 +1,7 @@
 const hints = require('../util/hints')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, message }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let hint = ''
   if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {
     hint = hints(args[1])

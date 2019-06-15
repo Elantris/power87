@@ -3,7 +3,7 @@ const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = ({ args, message }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let results = findTargets(args[1].toLowerCase())
 
   if (results.length === 0) {

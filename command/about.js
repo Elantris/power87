@@ -1,4 +1,4 @@
-module.exports = ({ message }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   message.channel.send({
     embed: {
       title: 'Power87',

@@ -4,7 +4,7 @@ const sendResponseMessage = require('../util/sendResponseMessage')
 const maxResNum = 50
 const energyCost = 10
 
-module.exports = async ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   // check command format
   if (args.length < 3 || args[1].startsWith('_') || Number.isSafeInteger(parseInt(args[1]))) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })

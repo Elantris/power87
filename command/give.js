@@ -1,7 +1,7 @@
 const energySystem = require('../util/energySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = async ({ args, database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args.length < 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return

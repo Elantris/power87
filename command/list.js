@@ -1,6 +1,6 @@
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-module.exports = async ({ args, database, message, guildId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let output = ':bookmark_tabs: '
 
   if (args.length === 1) {

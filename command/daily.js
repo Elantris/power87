@@ -12,7 +12,7 @@ let monthlyReward = {
   items: []
 }
 
-module.exports = async ({ database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let now = moment(message.createdAt)
   let todayDisplay = now.format('YYYYMMDD')
   let yesterdayDisplay = now.subtract(1, 'd').format('YYYYMMDD')

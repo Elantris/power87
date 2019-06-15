@@ -14,7 +14,7 @@ function makeOutput ({ message, rank }) {
   sendResponseMessage({ message, description: rankDisplay })
 }
 
-module.exports = async ({ database, message, guildId, userId }) => {
+module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let rank = await database.ref(`/lastUsed/rank/${guildId}`).once('value')
   if (rank.exists()) {
     rank = rank.val()
