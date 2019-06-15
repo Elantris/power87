@@ -19,6 +19,7 @@ const commandCooldown = {
   hero: 5,
   free: 5,
   feed: 3,
+  enhance: 5,
 
   help: 3,
   wiki: 3,

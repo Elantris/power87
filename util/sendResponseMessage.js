@@ -23,6 +23,7 @@ const errors = {
   ERROR_NO_ITEM: '沒有物品',
   ERROR_BAG_FULL: '背包沒有足夠空間',
   ERROR_NOT_USABLE: '不可使用的物品',
+  ERROR_NOT_ENOUGH: '物品數量不夠',
 
   // hero
   ERROR_NO_HERO: '沒有召喚的英雄',

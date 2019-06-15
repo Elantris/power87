@@ -412,5 +412,15 @@ module.exports = {
     description: '這隻英雄長得好奇怪，把他換成指定的外型好了。使用時請輸入 emoji 的名稱，例如 :rhino: -> `87!use change-looks rhino`，用 `87!help hero` 查看所有英雄的種族。',
     price: 3000,
     value: 300
+  },
+  40: {
+    kind: 'enhance',
+    name: 'enhance-rarity',
+    icon: ':star:',
+    maxStack: 32,
+    displayName: '英雄強化石',
+    description: '能夠提升英雄稀有度的石頭，強化 1~4 星所需的數量分別為 4、8、16、32 顆，成功機率分別是 81%、27%、9%、3%。',
+    price: 100,
+    value: 10
   }
 }
