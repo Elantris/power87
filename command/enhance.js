@@ -44,7 +44,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     userInventory.items['40'] -= rarityUp.costs[userHero.rarity]
 
     let luck = Math.random()
-    if (luck < rarityUp.chances[userHero.rarity]) {
+    if (luck < rarityUp.chances[userHero.rarity] * (1 + 0.01 * userHero.level)) {
       userHero.rarity += 1
       description += `強化星數成功！英雄稀有度提升一階，:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}`
     } else {

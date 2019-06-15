@@ -418,8 +418,8 @@ module.exports = {
     name: 'enhance-rarity',
     icon: ':star:',
     maxStack: 32,
-    displayName: '英雄強化石',
-    description: '能夠提升英雄稀有度的石頭，強化 1~4 星所需的數量分別為 4、8、16、32 顆，成功機率分別是 81%、27%、9%、3%。',
+    displayName: '英雄星數強化石',
+    description: '提升英雄星數所需要的石頭。',
     price: 100,
     value: 10
   }
