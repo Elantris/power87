@@ -305,7 +305,7 @@ module.exports = {
     maxStack: 10000,
     displayName: '閃亮的印章-英雄飼養',
     description: '當英雄飽食度恢復時有機率獲得的印章，似乎可以賣個好價錢。',
-    value: 20
+    value: 10
   },
   29: {
     kind: 'mark',
@@ -382,5 +382,35 @@ module.exports = {
     displayName: '野生拉奇亞洛慶祝禮包',
     description: '慶祝 2019/6/11 開發者成功挖出原始的野生拉奇亞洛ヽ(✿ﾟ▽ﾟ)ノ',
     value: 11000
+  },
+  37: {
+    kind: 'hero',
+    name: 'summon-scroll',
+    icon: ':scroll:',
+    maxStack: 1,
+    displayName: '英雄召喚捲軸',
+    description: '蘊含神秘力量的卷軸，使用後會透過魔法陣從異世界隨機召喚一隻與你訂下契約的英雄。',
+    price: 100,
+    value: 10
+  },
+  38: {
+    kind: 'hero',
+    name: 'change-name',
+    icon: ':label:',
+    maxStack: 1,
+    displayName: '英雄名稱變更券',
+    description: '偶爾幫英雄換個稱呼或許會比較聽話。',
+    price: 50,
+    value: 5
+  },
+  39: {
+    kind: 'hero',
+    name: 'change-looks',
+    icon: ':label:',
+    maxStack: 1,
+    displayName: '英雄外型變更券',
+    description: '這隻英雄長得好奇怪，把他換成指定的外型好了。使用時請輸入 emoji 的名稱，例如 :rhino: -> `87!use change-looks rhino`，用 `87!help hero` 查看所有英雄的種族。',
+    price: 3000,
+    value: 300
   }
 }

@@ -82,10 +82,12 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   // user target
   if (target.type === 'tool' && userInventory.tools[target.id]) {
     target.level = parseInt(userInventory.tools[target.id]) + 1
+
     if (target.level > tools[target.id].maxLevel) {
       sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
       return
     }
+
     target.price = tools[target.id].prices[target.level]
   } else if (target.type === 'item') {
     target.maxBuy = items[target.id].maxStack * userInventory.emptySlots
@@ -98,7 +100,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       target.amount = target.maxBuy
     }
 
-    if (target.amount === 0) {
+    if (target.amount <= 0) {
       sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
       return
     }
@@ -120,7 +122,6 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // update database
-
   if (target.type === 'tool') {
     userInventory.tools[target.id] = target.level.toString()
   } else if (target.type === 'item') {

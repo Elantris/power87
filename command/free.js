@@ -3,7 +3,7 @@ const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
-  if (!userHero) {
+  if (!userHero.name) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
     return
   }

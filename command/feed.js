@@ -4,7 +4,7 @@ const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const usableKinds = {
+const availableKinds = {
   fishing: true,
   petfood: true
 }
@@ -40,7 +40,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     target.kind = items[target.id].kind
     target.amount = parseInt(args[2] || 1)
 
-    if (!usableKinds[target.kind]) {
+    if (!availableKinds[target.kind]) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_USABLE' })
       return
     }
@@ -49,21 +49,21 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
+  if (userInventory.status === 'fishing') {
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+    return
+  }
+
   if (args.length === 1) { // list all usable items
     description = `:arrow_double_up: ${message.member.displayName} 背包內可以餵食英雄的物品：\n`
 
     for (let id in userInventory.items) {
-      if (usableKinds[items[id].kind]) {
+      if (availableKinds[items[id].kind]) {
         description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，**+${items[id].feed}**，\`87!feed ${items[id].name}\``
       }
     }
 
     sendResponseMessage({ message, description })
-    return
-  }
-
-  if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
 
@@ -78,7 +78,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // hero system
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
-  if (!userHero) {
+  if (!userHero.name) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
     return
   }

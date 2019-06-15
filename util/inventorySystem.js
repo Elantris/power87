@@ -36,7 +36,9 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
       }
     } else { // item, id.amount
       let tmp = item.split('.')
-      userInventory.items[tmp[0]] = userInventory.items[tmp[0]] || 0
+      if (!userInventory.items[tmp[0]]) {
+        userInventory.items[tmp[0]] = 0
+      }
       userInventory.items[tmp[0]] += parseInt(tmp[1] || 1)
       userInventory.emptySlots -= Math.ceil(parseInt(tmp[1] || 1) / items[tmp[0]].maxStack)
     }

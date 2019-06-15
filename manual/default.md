@@ -9,5 +9,5 @@
 筆記：`add` / `delete` / `list`
 能量：`energy` / `daily` / `give` / `rank` / `slot` / `roll`
 道具：`inventory` / `buy` / `sell` / `fishing` / `use`
-英雄：`hero` / `summon` / `free` / `rarityup` / `changelooks` / `feed`
-其他：`help` / `hint` / `clean` / `about`
+英雄：`hero` / `free` / `feed`
+其他：`help` / `wiki` / `hint` / `clean` / `about`
