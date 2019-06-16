@@ -82,7 +82,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   if (target.kind === 'buff') { // extend duration of buff
-    description = `:arrow_double_up: ${message.member.displayName} 使用了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}`
+    let durationGain = items[target.id].duration * target.amount
+    description = `:arrow_double_up: ${message.member.displayName} 獲得了 ${durationGain / 60000} 分鐘 ${items[target.id].icon}**${items[target.id].displayName}** 的效果`
 
     let buffId = items[target.id].buffId
 
@@ -90,7 +91,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       userInventory.buffs[buffId] = message.createdTimestamp
     }
 
-    userInventory.buffs[buffId] = userInventory.buffs[buffId] + items[target.id].duration * target.amount
+    userInventory.buffs[buffId] = userInventory.buffs[buffId] + durationGain
   } else if (target.kind === 'box') { // open box and get items
     description = `:arrow_double_up: ${message.member.displayName} 打開了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，獲得物品：\n\n`
 

@@ -41,19 +41,19 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       `\n> 說明：${items[result.id].description}` +
       `\n> 最大堆疊數量：**${items[result.id].maxStack}**`
 
-    if (items[result.id].price) {
+    if ('price' in items[result.id]) {
       description += `\n> 購買價格：:battery: **${items[result.id].price}**，\`87!buy ${items[result.id].name}\``
     }
-    if (items[result.id].value) {
+    if ('value' in items[result.id]) {
       description += `\n> 販賣價格：:battery: **${items[result.id].value || 0}**，\`87!sell ${items[result.id].name}\``
     }
-    if (items[result.id].duration) {
+    if ('duration' in items[result.id]) {
       description += `\n> 持續時間：**${items[result.id].duration / 60000}** 分鐘，\`87!use ${items[result.id].name}\``
     }
-    if (items[result.id].feed) {
+    if ('feed' in items[result.id]) {
       description += `\n> 恢復飽食度：**+${items[result.id].feed}**，\`87!feed ${items[result.id].name}\``
     }
-    if (items[result.id].content) {
+    if ('content' in items[result.id]) {
       let content = items[result.id].content.split(',').map(v => {
         let itemData = v.split('.')
         return `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${parseInt(itemData[1] || 1)}`

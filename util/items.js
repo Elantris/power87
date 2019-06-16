@@ -422,5 +422,17 @@ module.exports = {
     description: '提升英雄星數所需要的石頭。',
     price: 100,
     value: 10
+  },
+  41: {
+    kind: 'buff',
+    name: 'ice',
+    icon: ':gem:',
+    maxStack: 10,
+    displayName: '冰塊',
+    description: '雕刻成鑽石造型的冰塊，使用後可以暫時獲得冰涼的效果，適合在夏天享受短暫的愉悅。',
+    price: 5,
+    value: 0,
+    buffId: '%5',
+    duration: 60000
   }
 }
