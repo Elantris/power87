@@ -9,14 +9,14 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   isCleaning[guildId] = true
 
-  let amount = 100
+  let targetAmount = 100
 
-  if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {
-    amount = parseInt(args[1])
-    if (amount > 1000) {
-      amount = 1000
-    } else if (amount < 10) {
-      amount = 10
+  if (args[1] && Number.isSafeInteger(parseInt(args[1]))) {
+    targetAmount = parseInt(args[1])
+    if (targetAmount > 1000) {
+      targetAmount = 1000
+    } else if (targetAmount < 2) {
+      targetAmount = 2
     }
   }
 
@@ -27,13 +27,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       description: `:recycle: 讀取訊息中...`
     }
   })
+
   let messageCollections = []
   let before
-  let countTotal = 0
-  let countDeleted = 0
+  let fetchAmount = 0
 
-  while (countTotal < amount) {
-    let limit = amount - countTotal
+  while (fetchAmount < targetAmount) {
+    let limit = targetAmount - fetchAmount
     if (limit > 100) {
       limit = 100
     }
@@ -43,38 +43,31 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     if (messages.size === 0) {
       break
     }
-
     messageCollections.push(messages)
-    countTotal += messages.size
     before = messages.last().id
+    fetchAmount += messages.size
   }
 
-  // clean messages
+  // delete messages
   let cleaningMessage = await message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:recycle: 清理訊息中... (${countTotal})`
+      description: `:recycle: 清理 ${fetchAmount} 則訊息中...`
     }
   })
 
-  messageCollections.forEach(messages => {
-    messages.tap(async m => {
-      await m.delete()
-      countDeleted++
-
-      if (countDeleted === countTotal) {
-        cleaningMessage.edit({
-          embed: {
-            color: 0xffe066,
-            description: `:recycle: 成功刪除 ${countDeleted} 則訊息`
-          }
-        }).then(m => {
-          setTimeout(() => {
-            m.delete()
-          }, 10000)
-        })
-        delete isCleaning[guildId]
-      }
-    })
+  messageCollections.forEach(async messages => {
+    await message.channel.bulkDelete(messages, true)
   })
+
+  await cleaningMessage.edit({
+    embed: {
+      color: 0xffe066,
+      description: `:recycle: 已清除 ${fetchAmount} 則訊息`
+    }
+  })
+  setTimeout(() => {
+    cleaningMessage.delete()
+    delete isCleaning[guildId]
+  }, 5000)
 }

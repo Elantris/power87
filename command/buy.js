@@ -48,6 +48,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
+  if (userInventory.status === 'fishing') {
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+    return
+  }
+
   // no arguments
   if (args.length === 1) {
     description = `:shopping_cart: ${message.member.displayName} 可購買的商品：\n\n__裝備道具__：`
@@ -71,11 +76,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     sendResponseMessage({ message, description })
-    return
-  }
-
-  if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
 
