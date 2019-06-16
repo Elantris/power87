@@ -3,9 +3,9 @@
 
 語法：
 ```
-87!use [buff] [amount]
+87!use [item] [amount]
 ```
-`buff` 中間不含空格的字串
+`item` 中間不含空格的字串
 `amount` 大於 1 的整數數字
 
 範例：
