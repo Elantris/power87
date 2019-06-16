@@ -107,6 +107,7 @@ const summon = (userHero, heroName) => {
       userHero.rarity = parseInt(index) + 1
       return true
     }
+    luck -= chance
     return false
   })
 
