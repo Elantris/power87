@@ -3,31 +3,54 @@ const items = require('./items')
 
 const hints = [
   // project, system
-  '公告頁面的連結，這裡可以看到更新資訊！ <https://hackmd.io/s/VkLSj2pOJW>',
-  '意見調查的表單，有什麼話想對開發者說？ <https://forms.gle/9iYELzNoQ2JRDKeR7>',
-  '`87!help` 除了指令以外現在還可以用道具或物品的圖示、名稱查詢詳細說明，例如 `87!help :candy:`',
-  '遇到不知道用處的物品可以用 `87!help` 查看詳細說明',
-  '`87!help` 是個很棒的指令，真希望每個人下指令前都先用一次',
-  '`87!hint` 可能會有一些攻略提示或是開發者的喃喃自語',
+  '公告頁面的連結，這裡可以看到更新資訊！\n<https://hackmd.io/s/VkLSj2pOJW>',
+  '意見調查的表單，有什麼話想對開發者說？\n<https://forms.gle/9iYELzNoQ2JRDKeR7>',
+  '更新了「入門指南」，歡迎大家一起遊玩 Power87！\n<https://hackmd.io/@eelayntris/power87#入門指南>',
 
-  // game
+  // note
+  '`87!add` 新增筆記的關鍵字與回應內容，之後使用 `87 關鍵字` 查看筆記內容，可以放攻略或是當備忘錄',
   '`87!help list` 有人還記得這個機器人最一開始只是一個筆記機器人嗎？',
-  '`87!daily` 每日簽到可以獲得固定點數，累計連續簽到的話還可以獲得額外的獎勵點數',
+
+  // energy
+  '`87!daily` 每日簽到可以獲得固定點數，累積連續簽到達一定天數還可以獲得額外的獎勵點數',
+  '`87!daily` 每個月都有累計的簽到獎勵',
   '`87!slot` 來試試手氣吧！',
-  '`87!buy` 釣魚前記得購買 {{bag}} 與 {{fishingpole}}',
+  '`87!slot` 最高的獎勵是三顆鑽石 100 倍的八七能量',
+  '`87!roll` 賭場裡多了骰子遊戲，贏錢的機率很高呢',
+  '`87!give` 的交易手續費是 30%',
+  '`87!rank` 每十分鐘更新一次能量排行榜',
+
+  // inventory
+  '`87!buy` 釣魚前需要先購買 {{bag}} 與 {{fishingpole}}',
   '`87!buy` 購買的增益道具會放進背包裡，記得使用 `87!use` 來獲得特殊效果',
-  '為了避免賣掉不該賣的東西，`87!sell` 可以只賣掉特定分類的物品，例如 `87!sell fish`',
+  '為了避免賣掉不該賣的東西，`87!sell` 可以只賣掉特定分類的物品，例如 `87!sell fishing`',
   '{{fishingpole}} 等級越高越容易釣到魚',
   '提升 {{sailboat}} 等級可以解鎖更多種類的魚獲，說不定還可以看到 {{penguin}}',
   '道具屋上架了 {{buoy}}，提升等級可以增加稀有魚種獲得的機率',
   '有非常低的機率可以釣到 {{gem}} 是很值錢的東西！',
   '{{bait}} 購買後會放進背包裡，記得使用 `87!use` 指令獲得增益效果',
   '你是不是把 {{bait}} 放在身上當護身符啊？',
-  '有空提醒旁邊的人背包滿了，趕快回來賣魚吧。',
-  '接聽語音頻道可以獲得能量點數，進入釣魚模式有較高的機率釣到魚，但拒聽（關閉耳機圖示）視同未接聽語音頻道！',
   '「好運食品」對於點心的堅持一再推陳出新，據說賭客們吃了 {{lollipop}} 之後拉霸都拿一百倍。',
+  '每個物品都有最大堆疊數量的限制，持有的物品過多會佔用更多的背包欄位',
+  '箱子類型的物品使用後會獲得內容物，通常價格會有些折扣',
+
+  // hero
+  '從商店購買 {{summon-scroll}} 之後，`87!use summon-sroll 英雄名字` 就可以召喚出一隻英雄！',
+  '`87!free` 如果不滿意自己的英雄可以考慮讓他回歸自由',
+  '`87!feed` 查看背包內可以餵食英雄的食物，如果沒有在釣魚的話可以從商店買些吃的立即恢復營養',
+  '商店裡有販售 {{change-name}}，使用後可以更換英雄的名字',
+  '商店裡有販售 {{change-looks}}，使用後可以將英雄的外觀指定成喜歡的模樣，`87!help hero` 可以查看所有外觀',
+  '英雄的稀有度每一顆星星會提升等級上限 10 等',
+
+  // other
+  '接聽語音頻道可以獲得能量點數，進入釣魚模式有較高的機率釣到魚，但拒聽（關閉耳機圖示）視同未接聽語音頻道！',
+  '遇到不知道用處的物品可以用 `87!help` 查看詳細說明',
+  '`87!help` 是個很棒的指令，真希望每個人下指令前都先用一次',
+  '`87!wiki` 查詢 Power87 內出現過的道具和物品，可以用道具的圖示、種類、名稱、顯示名稱來查詢基本數值設定與功能詳細說明',
+  '`87!hint` 可能會有一些攻略提示或是開發者的喃喃自語',
 
   // murmur
+  '有空提醒旁邊的人背包滿了，趕快回來賣魚吧。',
   '釣到的垃圾會直接丟到旁邊的垃圾桶，地球感謝你讓海洋更乾淨了一點。',
   '不看更新公告，還說你想玩遊戲？',
   '機率遊戲最討厭抽不到想要的，更討厭這遊戲明明是自己寫的運氣卻爛到不行 ╮(′～‵〞)╭',
@@ -69,21 +92,21 @@ const mapping = item => {
 }
 
 module.exports = (luck) => {
-  if (luck && !hints[luck]) {
+  if (luck && !hints[luck - 1]) {
     return -1
   }
 
   if (!luck) {
-    luck = Math.floor(Math.random() * hints.length)
+    luck = Math.floor(Math.random() * hints.length) + 1
   }
 
-  let hint = hints[luck]
-  let itemsNotation = hint.match(/\{\{[a-z]*\}\}/g)
+  let hint = hints[luck - 1]
+  let itemsNotation = hint.match(/\{\{[a-z\\-]*\}\}/g)
   if (itemsNotation) {
     itemsNotation.forEach(item => {
       hint = hint.replace(item, mapping(item.slice(2, -2)))
     })
   }
 
-  return hint
+  return `[**Hint** \`${luck}/${hints.length}\`]\n` + hint
 }

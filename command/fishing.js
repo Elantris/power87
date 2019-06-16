@@ -1,5 +1,5 @@
 const inventorySystem = require('../util/inventorySystem')
-const hints = require('../util/hints')
+const hintSystem = require('../util/hintSystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
@@ -25,7 +25,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     userAction = '開始釣魚'
-    hint = hints()
+    hint = hintSystem()
 
     database.ref(`/fishing/${guildId}/${userId}`).set(`0,0;${userInventory.buffs['%0'] || ''}`)
   }
