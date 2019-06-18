@@ -97,5 +97,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     soldItemsDisplay += `${items[id].icon}**${items[id].displayName}**x${soldItems[id]} `
   }
 
-  sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsCount} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })
+  sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣 ${soldItemsCount} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })
 }

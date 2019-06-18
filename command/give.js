@@ -48,5 +48,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   database.ref(`/energy/${guildId}/${targetId}`).set(targetEnergy + energyGain)
 
   // response
-  sendResponseMessage({ message, description: `:money_mouth: ${sayMessage}${message.member.displayName} 消耗了 ${energyCost} 點八七能量，<@${targetId}> 獲得了 ${energyGain} 點八七能量` })
+  sendResponseMessage({ message, description: `:money_mouth: ${sayMessage}${message.member.displayName} 消耗 ${energyCost} 點八七能量，<@${targetId}> 獲得了 ${energyGain} 點八七能量` })
 }

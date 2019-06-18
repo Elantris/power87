@@ -122,5 +122,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     resultMessage = `<@${message.author.id}> 或成最大贏家，獲得了 ${energyGain} 點八七能量`
   }
 
-  sendResponseMessage({ message, content, description: `:slot_machine: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${sayMessage}投注了 ${energyCost} 點八七能量，${resultMessage}` })
+  sendResponseMessage({ message, content, description: `:slot_machine: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${sayMessage}投注 ${energyCost} 點八七能量，${resultMessage}` })
 }

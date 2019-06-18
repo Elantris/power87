@@ -54,16 +54,16 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       return
     }
 
-    description = `:arrow_double_up: ${message.member.displayName} 消耗了 :star:**英雄星數強化石**x${enhanceRarity.costs[userHero.rarity]}\n\n`
+    description = `:arrow_double_up: ${message.member.displayName} 消耗 :star:**英雄星數強化石**x${enhanceRarity.costs[userHero.rarity]} 試圖強化英雄\n\n`
 
     userInventory.items['40'] -= enhanceRarity.costs[userHero.rarity]
 
     let luck = Math.random()
     if (luck < enhanceRarity.chances[userHero.rarity] * (1 + 0.01 * userHero.level)) {
       userHero.rarity += 1
-      description += `強化星數成功！英雄稀有度提升一階，:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}`
+      description += `強化成功！英雄稀有度提升一階，:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}`
     } else {
-      description += '強化星數失敗，維持原貌，'
+      description += '強化失敗，維持原狀，'
     }
   } else if (args[1] in abilities) {
     let amount = parseInt(args[2] || 1)
@@ -86,7 +86,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     userInventory.items['42'] -= amount
     userHero[args[1]] += amount
 
-    description = `:arrow_double_up: ${message.member.displayName} 消耗了 :sparkles:**英雄體質強化粉末**x${amount}\n\n:${userHero.species}: **${userHero.name}** 的 **${abilities[args[1]]}** 提升了 ${amount}，\`${args[1].toUpperCase()}\`: ${userHero[args[1]]}`
+    description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄體質強化粉末**x${amount}\n\n` +
+      `:${userHero.species}: **${userHero.name}** 的 **${abilities[args[1]]}** 提升 ${amount} 點，\`${args[1].toUpperCase()}\`: ${userHero[args[1]]}`
   } else {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return

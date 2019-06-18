@@ -144,6 +144,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
 
   // response
-  description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 吃了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，恢復 ${feedGain} 點飽食度、獲得 ${expGain} 點經驗值，獲得 ${items[28].icon}**${items[28].displayName}**x${stampAmount}`
+  description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 吃了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，恢復 ${feedGain} 點飽食度，獲得 ${expGain} 點經驗值，獲得 ${items[28].icon}**${items[28].displayName}**x${stampAmount}`
   sendResponseMessage({ message, description })
 }

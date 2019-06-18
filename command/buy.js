@@ -142,7 +142,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
-  description = `:shopping_cart: ${message.member.displayName} 消耗了 ${energyCost} 點八七能量，購買了 `
+  description = `:shopping_cart: ${message.member.displayName} 消耗 ${energyCost} 點八七能量，購買了 `
   if (target.type === 'tool') {
     description += `${tools[target.id].icon}**${tools[target.id].displayName}**+${target.level}`
   } else if (target.type === 'item') {

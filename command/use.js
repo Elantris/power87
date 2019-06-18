@@ -83,7 +83,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   if (target.kind === 'buff') { // extend duration of buff
     let durationGain = items[target.id].duration * target.amount
-    description = `:arrow_double_up: ${message.member.displayName} 獲得了 ${durationGain / 60000} 分鐘 ${items[target.id].icon}**${items[target.id].displayName}** 的效果`
+    description = `:arrow_double_up: ${message.member.displayName} 獲得 ${durationGain / 60000} 分鐘 ${items[target.id].icon}**${items[target.id].displayName}** 的效果`
 
     let buffId = items[target.id].buffId
 
@@ -93,7 +93,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     userInventory.buffs[buffId] = userInventory.buffs[buffId] + durationGain
   } else if (target.kind === 'box') { // open box and get items
-    description = `:arrow_double_up: ${message.member.displayName} 打開了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，獲得物品：\n\n`
+    description = `:arrow_double_up: ${message.member.displayName} 打開 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，獲得物品：\n\n`
 
     items[target.id].content.split(',').forEach(v => {
       let itemData = v.split('.')
@@ -108,7 +108,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
 
     target.amount = 1
-    description = `:scroll: ${message.member.displayName} 消耗了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}\n\n`
+    description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}\n\n`
 
     let errorCode
 
