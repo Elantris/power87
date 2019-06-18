@@ -250,7 +250,7 @@ module.exports = {
     name: 'birthdaycake',
     icon: ':birthday:',
     maxStack: 1,
-    displayName: '生日蛋糕',
+    displayName: '[活動]生日蛋糕',
     description: '5/4 是開發者的生日 ヽ( ° ▽°)ノ',
     value: 1000
   },
@@ -348,7 +348,7 @@ module.exports = {
     name: 'bug-bounty',
     icon: ':gift:',
     maxStack: 1,
-    displayName: 'GM的禮物-除錯獎金',
+    displayName: '[活動]GM的禮物-除錯獎金',
     description: '感謝你幫忙找到 Power87 中任何一項錯誤！',
     value: 500
   },
@@ -379,7 +379,7 @@ module.exports = {
     name: 'lakiaro-celebration',
     icon: ':gift:',
     maxStack: 1,
-    displayName: '野生拉奇亞洛慶祝禮包',
+    displayName: '[紀念]野生拉奇亞洛慶祝禮包',
     description: '慶祝 2019/6/11 開發者成功挖出原始的野生拉奇亞洛ヽ(✿ﾟ▽ﾟ)ノ',
     value: 11000
   },
@@ -441,7 +441,7 @@ module.exports = {
     icon: ':sparkles:',
     maxStack: 10,
     displayName: '英雄體質強化粉末',
-    description: '具有神秘力量的不可思議粉末，能夠提升英雄各項體質。某些裝備限制英雄的體質必須超過一定數值才能使用。',
+    description: '具有神秘力量的不可思議粉末，能夠提升英雄各項體質，各項體質總和不能超過英雄等級',
     price: 10,
     value: 1
   },

@@ -14,14 +14,15 @@
 說明：
 消耗背包內特定道具強化英雄的素質。
 
-提升英雄稀有度，`87!enhance rarity`
+__英雄稀有度__：`87!enhance rarity`
+消耗 :star:**英雄星數強化石** 有機率地提升英雄稀有度，每提升一階稀有度英雄的等級上限增加 10 等
 :star: `1`：:star:**英雄星數強化石**x4，81%
 :star: `2`：:star:**英雄星數強化石**x8，27%
 :star: `3`：:star:**英雄星數強化石**x16，9%
 :star: `4`：:star:**英雄星數強化石**x32，3%
 
-提升英雄的體質，`87!enhance str/vit/int/agi/luk [amount]`
-:sparkles:英雄體質強化粉末x1，`87!buy enhance-ability`
+__英雄體質__：`87!enhance str/vit/int/agi/luk [amount]`
+消耗 :sparkles:**英雄體質強化粉末** 提升英雄各項體質，各項體質總和不能超過英雄等級，影響英雄在戰鬥中的表現，某些裝備限制各項體質的最低需求
 `STR` 力量：增加英雄造成的傷害
 `VIT` 體能：減少英雄受到的傷害
 `INT` 智慧：提升英雄的命中率

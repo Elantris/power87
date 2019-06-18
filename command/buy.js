@@ -23,7 +23,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let description = ''
   let target = {}
   if (args[1]) {
-    let results = findTargets(args[1].toLowerCase()).filter(result => 'price' in items[result.id])
+    let results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'tool' || 'price' in items[result.id])
 
     if (results.length === 0) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
