@@ -23,6 +23,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
       return
     }
+  } else {
+    amount = 10000
   }
 
   // inventory system
