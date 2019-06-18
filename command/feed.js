@@ -10,14 +10,10 @@ const availableKinds = {
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
-  }
-
-  // check target exists
   let description = ''
   let target = {}
+
+  // target
   if (args[1]) {
     let results = findTargets(args[1].toLowerCase()).filter(result => 'feed' in items[result.id])
 
@@ -38,12 +34,22 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     target = results[0]
     target.kind = items[target.id].kind
-    target.amount = parseInt(args[2] || 1)
+    target.amount = 1
 
     if (!availableKinds[target.kind]) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_USABLE' })
       return
     }
+  }
+
+  // amount
+  if (args[2]) {
+    if (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1) {
+      sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
+      return
+    }
+
+    target.amount = parseInt(args[2])
   }
 
   // inventory system
@@ -59,7 +65,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     for (let id in userInventory.items) {
       if (availableKinds[items[id].kind]) {
-        description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，**+${items[id].feed}**，\`87!feed ${items[id].name}\``
+        description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，**+${items[id].feed}**，\`87!feed ${items[id].name} ${userInventory.items[id]}\``
       }
     }
 
@@ -111,9 +117,14 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     userHero.feed = userHero.maxFeed
   }
 
-  userHero.exp += Math.floor(Math.random() * (feedGain - target.amount) + target.amount)
-
-  userInventory.items[target.id] -= target.amount
+  let expGain = 0
+  for (let i = 0; i < target.amount; i++) {
+    expGain += Math.floor(Math.random() * items[target.id].feed) + 1
+  }
+  if (expGain > feedGain) {
+    expGain = feedGain
+  }
+  userHero.exp += expGain
 
   let stampAmount = 0
   for (let i = 0; i < feedGain; i++) {
@@ -126,12 +137,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     userInventory.items[28] = 0
   }
   userInventory.items[28] += stampAmount
+  userInventory.items[target.id] -= target.amount
 
   // update database
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
   heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
 
   // response
-  description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 吃了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，恢復 ${feedGain} 點飽食度`
+  description = `:scroll: ${message.member.displayName} 召喚的英雄 :${userHero.species}:** ${userHero.name}** 吃了 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，恢復 ${feedGain} 點飽食度、獲得 ${expGain} 點經驗值，獲得 ${items[28].icon}**${items[28].displayName}**x${stampAmount}`
   sendResponseMessage({ message, description })
 }

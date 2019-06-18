@@ -5,15 +5,24 @@ const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  if (args.length < 2) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
+  let results = []
+  let amount = 1
+  let description = ''
+
+  if (args[1]) {
+    results = findTargets(args[1].toLowerCase())
+    if (results.length === 0) {
+      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
+      return 0
+    }
   }
 
-  let results = findTargets(args[1].toLowerCase())
-  if (results.length === 0) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-    return 0
+  if (args[2]) {
+    amount = parseInt(args[2])
+    if (!Number.isSafeInteger(amount) || amount < 1) {
+      sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
+      return
+    }
   }
 
   // inventory system
@@ -24,8 +33,23 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
 
+  if (args.length === 1) { // no arguments
+    description = `:moneybag: ${message.member.displayName} 背包內可以販賣的物品：\n`
+
+    inventorySystem.kindOrder.forEach(kind => {
+      for (let id in userInventory.items) {
+        if (items[id].kind === kind) {
+          description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，\`87!sell ${items[id].name} ${userInventory.items[id]}\``
+        }
+      }
+    })
+
+    sendResponseMessage({ message, description })
+    return
+  }
+
   let soldItems = {}
-  let soldItemsNumber = 0
+  let soldItemsCount = 0
   let gainEnergy = 0
 
   results.forEach(result => {
@@ -37,13 +61,18 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       soldItems[result.id] = 0
     }
 
-    soldItems[result.id] += userInventory.items[result.id]
-    soldItemsNumber += userInventory.items[result.id]
-    gainEnergy += userInventory.items[result.id] * items[result.id].value
-    userInventory.items[result.id] = 0
+    let tmpAmount = amount
+    if (tmpAmount > userInventory.items[result.id]) {
+      tmpAmount = userInventory.items[result.id]
+    }
+
+    soldItems[result.id] += tmpAmount
+    soldItemsCount += tmpAmount
+    gainEnergy += tmpAmount * items[result.id].value
+    userInventory.items[result.id] -= tmpAmount
   })
 
-  if (soldItemsNumber === 0) {
+  if (soldItemsCount === 0) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
     return
   }
@@ -66,5 +95,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     soldItemsDisplay += `${items[id].icon}**${items[id].displayName}**x${soldItems[id]} `
   }
 
-  sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsNumber} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })
+  sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣了 ${soldItemsCount} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })
 }

@@ -10,8 +10,6 @@ const userStatusMapping = {
   return: '從大洋歸來'
 }
 
-const kindOrders = ['event', 'hero', 'enhance', 'mark', 'jewel', 'box', 'buff', 'petfood', 'fishing']
-
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
@@ -32,7 +30,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   inventoryDisplay += `\n\n背包物品：[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]`
   let slotContents = []
-  kindOrders.forEach(kind => {
+  inventorySystem.kindOrder.forEach(kind => {
     for (let id in userInventory.items) {
       if (items[id].kind === kind) {
         for (let i = 0; i < Math.ceil(userInventory.items[id] / items[id].maxStack); i++) {
@@ -41,6 +39,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       }
     }
   })
+
   slotContents.forEach((icon, index) => {
     if (index % 8 === 0) {
       inventoryDisplay += '\n'

@@ -64,7 +64,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     for (let id in userInventory.items) {
       if (availableKinds[items[id].kind]) {
-        description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，\`87!use ${items[id].name}\``
+        description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，\`87!use ${items[id].name} ${userInventory.items[id]}\``
       }
     }
 

@@ -3,6 +3,8 @@ const items = require('./items')
 const buffs = require('./buffs')
 const fishingSystem = require('./fishingSystem')
 
+const kindOrder = ['event', 'hero', 'enhance', 'mark', 'jewel', 'box', 'buff', 'petfood', 'fishing']
+
 const read = async (database, guildId, userId, timenow = Date.now()) => {
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
 
@@ -88,6 +90,7 @@ const write = (database, guildId, userId, userInventory, timenow = Date.now()) =
 }
 
 module.exports = {
+  kindOrder,
   read,
   write
 }

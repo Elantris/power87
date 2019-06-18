@@ -302,7 +302,7 @@ module.exports = {
     kind: 'mark',
     name: 'stamp-feed',
     icon: ':heart:',
-    maxStack: 10000,
+    maxStack: 1000,
     displayName: '閃亮的印章-英雄飼養',
     description: '當英雄飽食度恢復時有機率獲得的印章，似乎可以賣個好價錢。',
     value: 10
@@ -314,7 +314,7 @@ module.exports = {
     maxStack: 1000,
     displayName: '閃亮的印章-英雄冒險',
     description: '',
-    value: 50
+    value: 10
   },
   30: {
     kind: 'mark',
@@ -323,7 +323,7 @@ module.exports = {
     maxStack: 1000,
     displayName: '閃亮的印章-',
     description: '',
-    value: 0
+    value: 10
   },
   31: {
     kind: 'mark',
@@ -332,7 +332,7 @@ module.exports = {
     maxStack: 1000,
     displayName: '閃亮的印章-',
     description: '',
-    value: 0
+    value: 10
   },
   32: {
     kind: 'mark',
@@ -341,7 +341,7 @@ module.exports = {
     maxStack: 1000,
     displayName: '閃亮的印章-',
     description: '',
-    value: 0
+    value: 10
   },
   33: {
     kind: 'event',
