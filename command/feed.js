@@ -19,7 +19,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let description = ''
   let target = {}
   if (args[1]) {
-    let results = findTargets(args[1].toLowerCase())
+    let results = findTargets(args[1].toLowerCase()).filter(result => 'feed' in items[result.id])
 
     if (results.length === 0) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
@@ -28,9 +28,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     if (results.length > 1) {
       description = `:arrow_double_up: 指定其中一種道具/物品：\n`
-      results.filter(result => items[result.id].feed).forEach(result => {
+      results.forEach(result => {
         let item = items[result.id]
-        description += `\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`，\`87!feed ${item.name}\``
+        description += `\n${item.icon}**${item.displayName}**，\`87!feed ${item.name}\``
       })
       sendResponseMessage({ message, description })
       return

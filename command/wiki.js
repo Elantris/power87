@@ -21,7 +21,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   if (results.length > 1) {
     description = `:diamond_shape_with_a_dot_inside: 指定其中一種道具/物品：\n`
     results.forEach(result => {
-      description += `\n${items[result.id].icon}**${items[result.id].displayName}**，\`${items[result.id].kind}/${items[result.id].name}\`，\`87!wiki ${items[result.id].name}\``
+      description += `\n${items[result.id].icon}**${items[result.id].displayName}**，\`87!wiki ${items[result.id].name}\``
     })
     sendResponseMessage({ message, description })
     return

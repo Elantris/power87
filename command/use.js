@@ -16,7 +16,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // check args format
   if (args[1]) {
-    let results = findTargets(args[1].toLowerCase())
+    let results = findTargets(args[1].toLowerCase()).filter(result => items[result.id].kind in availableKinds)
 
     if (results.length === 0) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
@@ -25,9 +25,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     if (results.length > 1) {
       description = `:arrow_double_up: 指定其中一種道具/物品：\n`
-      results.filter(result => availableKinds[items[result.id].kind]).forEach(result => {
+      results.forEach(result => {
         let item = items[result.id]
-        description += `\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`，\`87!use ${item.name}\``
+        description += `\n${item.icon}**${item.displayName}**，\`87!use ${item.name}\``
       })
       sendResponseMessage({ message, description })
       return
@@ -105,11 +105,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       description += `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${amount} `
     })
   } else if (target.kind === 'hero') { // hero kind
-    if (!args[2]) {
-      sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-      return
-    }
-
     let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
 
     target.amount = 1

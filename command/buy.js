@@ -5,6 +5,14 @@ const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
+const availableKinds = {
+  buff: '增益道具',
+  petfood: '英雄食品',
+  box: '箱子',
+  hero: '英雄用品',
+  enhance: '強化素材'
+}
+
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
@@ -15,17 +23,18 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let description = ''
   let target = {}
   if (args[1]) {
-    let results = findTargets(args[1].toLowerCase())
+    let results = findTargets(args[1].toLowerCase()).filter(result => 'price' in items[result.id])
+
     if (results.length === 0) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return
     }
 
-    if (results.length !== 1) {
+    if (results.length > 1) {
       description = `:shopping_cart: 指定其中一種道具/物品：\n`
-      results.filter(result => items[result.id].price).forEach(result => {
+      results.forEach(result => {
         let item = items[result.id]
-        description += `\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`，\`87!buy ${item.name}\``
+        description += `\n${item.icon}**${item.displayName}**，\`87!buy ${item.name}\``
       })
       sendResponseMessage({ message, description })
       return
@@ -68,11 +77,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
     }
 
-    description += `\n\n__特色商品__：\`87!buy :emoji:\`\n`
-    for (let id in items) {
-      if (items[id].price) {
-        description += `${items[id].icon} `
-      }
+    description += `\n\n__特色商品__：`
+    for (let kind in availableKinds) {
+      description += `\n**${availableKinds[kind]}**，\`87!buy ${kind}\``
     }
 
     sendResponseMessage({ message, description })
