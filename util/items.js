@@ -419,7 +419,7 @@ module.exports = {
     icon: ':star:',
     maxStack: 32,
     displayName: '英雄星數強化石',
-    description: '提升英雄星數所需要的石頭。',
+    description: '提升英雄星數所需要的特殊石頭。',
     price: 100,
     value: 10
   },
@@ -434,5 +434,25 @@ module.exports = {
     value: 0,
     buffId: '%5',
     duration: 60000
+  },
+  42: {
+    kind: 'enhance',
+    name: 'enhance-ability',
+    icon: ':sparkles:',
+    maxStack: 10,
+    displayName: '英雄體質強化粉末',
+    description: '具有神秘力量的不可思議粉末，能夠提升英雄各項體質。某些裝備限制英雄的體質必須超過一定數值才能使用。',
+    price: 10,
+    value: 1
+  },
+  43: {
+    kind: 'hero',
+    name: 'reset-ability',
+    icon: ':pill:',
+    maxStack: 1,
+    displayName: '英雄體質重置藥丸',
+    description: '使用後會將英雄的各項體質數值歸零。',
+    price: 50,
+    value: 5
   }
 }

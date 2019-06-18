@@ -33,7 +33,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     `:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}\n\n` +
     `成長：**Lv.${userHero.level}** (${userHero.expPercent}%)\n` +
     `飽食度：${userHero.feed < 0 ? 0 : userHero.feed}/${userHero.maxFeed} (${userHero.feedPercent}%)\n` +
-    `狀態：${statusDisplay(userHero.status)}\n`
+    `體質：\`STR:\` ${userHero.str} / \`VIT:\` ${userHero.vit} / \`INT:\` ${userHero.int} / \`AGI:\` ${userHero.agi} / \`LUK:\` ${userHero.luk}\n` +
+    `狀態：${statusDisplay(userHero.status)}`
 
   sendResponseMessage({ message, description: description })
 

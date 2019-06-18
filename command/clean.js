@@ -57,7 +57,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   })
 
   messageCollections.forEach(async messages => {
-    await message.channel.bulkDelete(messages)
+    await message.channel.bulkDelete(messages, true)
   })
 
   await cleaningMessage.edit({

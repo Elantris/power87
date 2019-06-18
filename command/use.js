@@ -124,8 +124,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       errorCode = heroSystem.changeName(userHero, args[2])
       description += `將召喚的英雄更名為 :${userHero.species}: **${userHero.name}**`
     } else if (items[target.id].name === 'change-looks') {
-      errorCode = heroSystem.changeLooks(userHero, args[2].toLowerCase())
+      errorCode = heroSystem.changeLooks(userHero, args[2])
       description += `變更了英雄的外型 :${userHero.species}: **${userHero.name}**`
+    } else if (items[target.id].name === 'reset-ability') {
+      errorCode = heroSystem.resetAbility(userHero)
+      description += `重置了 :${userHero.species}: **${userHero.name}** 的各項體質`
     }
 
     if (errorCode) {

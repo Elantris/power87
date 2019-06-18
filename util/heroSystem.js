@@ -17,31 +17,44 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 
   let timeGap = Math.floor(timenow / config.tick)
   let userHero = {
+    lastUpdate: 0,
+
     // basic
     name: '',
     species: '',
     rarity: '',
     exp: 0,
     feed: 100,
-    lastUpdate: 0,
+    str: 0,
+    vit: 0,
+    int: 0,
+    agi: 0,
+    luk: 0,
 
     // calculated
     level: 0,
     expPercent: 0,
     maxFeed: 100,
     feedPercent: 0,
-    status: '',
-    statusDisplay: ''
+    status: ''
   }
 
   let heroData = heroRaw.val().split(';')
-  userHero.name = heroData[0]
-  userHero.species = heroData[1]
-  userHero.rarity = parseInt(heroData[2])
-  userHero.exp = parseInt(heroData[3])
-  userHero.feed = parseInt(heroData[4])
-  userHero.lastUpdate = parseInt(heroData[5])
-  userHero.status = heroData[5].split(':')[1] || ''
+  userHero.lastUpdate = parseInt(heroData[0])
+  userHero.name = heroData[1]
+  userHero.species = heroData[2]
+  userHero.rarity = parseInt(heroData[3])
+  userHero.exp = parseInt(heroData[4])
+  userHero.feed = parseInt(heroData[5])
+
+  let ability = heroData[6].split(',').map(v => parseInt(v))
+  userHero.str = ability[0]
+  userHero.vit = ability[1]
+  userHero.int = ability[2]
+  userHero.agi = ability[3]
+  userHero.luk = ability[4]
+
+  userHero.status = heroData[7]
 
   // level
   for (let level in expRange) {
@@ -79,8 +92,9 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 }
 
 const write = (database, guildId, userId, userHero, timenow = Date.now()) => {
-  userHero.lastUpdate = Math.floor(timenow / config.tick)
-  database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${userHero.lastUpdate}:${userHero.status}`)
+  userHero.lastUpdate = parseInt(timenow / config.tick)
+  let ability = `${userHero.str},${userHero.vit},${userHero.int},${userHero.agi},${userHero.luk}`
+  database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${userHero.status}`)
 }
 
 const rarityDisplay = (rarity) => ':star:'.repeat(parseInt(rarity))
@@ -101,6 +115,7 @@ const summon = (userHero, heroName) => {
   userHero.name = heroName
   userHero.species = species[Math.floor(Math.random() * species.length)]
 
+  // rarity
   let luck = Math.random()
   rarityChances.some((chance, index) => {
     if (luck < chance) {
@@ -111,8 +126,17 @@ const summon = (userHero, heroName) => {
     return false
   })
 
+  // leel
   userHero.exp = 0
   userHero.feed = 100
+
+  // ability
+  userHero.str = 0
+  userHero.vit = 0
+  userHero.int = 0
+  userHero.agi = 0
+  userHero.luk = 0
+
   userHero.status = 'stay'
 }
 
@@ -140,11 +164,19 @@ const changeLooks = (userHero, heroSpecies) => {
   if (userHero.status === 'dead') {
     return 'ERROR_HERO_DEAD'
   }
-  if (species.indexOf(heroSpecies) === -1) {
+  if (!heroSpecies || species.indexOf(heroSpecies.toLowerCase()) === -1) {
     return 'ERROR_NO_SPECIES'
   }
 
   userHero.species = heroSpecies
+}
+
+const resetAbility = (userHero) => {
+  userHero.str = 0
+  userHero.vit = 0
+  userHero.int = 0
+  userHero.agi = 0
+  userHero.luk = 0
 }
 
 module.exports = {
@@ -156,5 +188,6 @@ module.exports = {
   // item effects
   summon,
   changeName,
-  changeLooks
+  changeLooks,
+  resetAbility
 }

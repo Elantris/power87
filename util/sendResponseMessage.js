@@ -33,6 +33,7 @@ const errors = {
   ERROR_MAX_RARITY: '已達最高星數',
   ERROR_NO_SPECIES: '不存在的外觀',
   ERROR_NO_FEED: '飽食度不足，你的英雄現在很餓',
+  ERROR_MAX_ABILITY: '英雄體質總和超過自身等級',
 
   // other
   ERROR_IS_CLEANING: '正在清除訊息中'
