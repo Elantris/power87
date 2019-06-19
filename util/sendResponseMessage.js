@@ -8,6 +8,7 @@ const errors = {
   // general
   ERROR_FORMAT: '指令格式錯誤',
   ERROR_NOT_FOUND: '查詢錯誤',
+  ERROR_IS_COOLING: '指令冷卻中',
 
   // add
   ERROR_LENGTH_EXCEED: '字數過多',
@@ -42,7 +43,7 @@ const errors = {
 // command history
 let userCmdLogs = {}
 
-module.exports = ({ message, content, description = '', errorCode }) => {
+module.exports = async ({ message, content, description = '', errorCode, fade = false }) => {
   let embed = {}
   if (errorCode) {
     embed = {
@@ -56,11 +57,16 @@ module.exports = ({ message, content, description = '', errorCode }) => {
     }
   }
 
-  message.channel.send(content, { embed })
+  let responseMessage = await message.channel.send(content, { embed })
+  if (fade) {
+    setTimeout(() => {
+      responseMessage.delete()
+    }, 5000)
+  }
 
   // logger
   let userId = message.author.id
-  let past = message.createdTimestamp - 10 * 60 * 1000
+  let past = message.createdTimestamp - 10 * 60 * 1000 // 10 min
   let warning = ''
 
   if (!userCmdLogs[userId]) {

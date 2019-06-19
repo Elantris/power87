@@ -2,6 +2,7 @@ const fs = require('fs')
 
 const alias = require('./alias')
 const isCoolingDown = require('./isCoolingDown')
+let sendResponseMessage = require('./sendResponseMessage')
 
 // * load commands
 let commands = {}
@@ -26,7 +27,12 @@ module.exports = ({ client, database, message, guildId, userId }) => {
     userCmd = alias[userCmd] || userCmd
   }
 
-  if (!commands[userCmd] || isCoolingDown({ userCmd, message, guildId, userId })) {
+  if (!commands[userCmd]) {
+    return
+  }
+
+  if (isCoolingDown({ userCmd, message, userId })) {
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_COOLING', fade: true })
     return
   }
 

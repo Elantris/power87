@@ -1,4 +1,4 @@
-const commandCooldown = {
+const cooldownTime = {
   add: 3,
   delete: 3,
   list: 15,
@@ -31,20 +31,23 @@ const commandCooldown = {
   gainFromMessage: 120
 }
 
-for (let i in commandCooldown) {
-  commandCooldown[i] *= 1000 // trasform to minisecond
+for (let i in cooldownTime) {
+  cooldownTime[i] *= 1000 // trasform to minisecond
 }
 
 let userLastUsed = {}
 
 const isCoolingDown = ({ userCmd, message, userId }) => {
   // undefined detection
-  userLastUsed[userId] = userLastUsed[userId] || {}
-  userLastUsed[userId][userCmd] = userLastUsed[userId][userCmd] || 0
+  if (!userLastUsed[userId]) {
+    userLastUsed[userId] = {}
+  }
+  if (!userLastUsed[userId][userCmd]) {
+    userLastUsed[userId][userCmd] = 0
+  }
 
   // calculate cooldown time
-  let cooldownTime = commandCooldown[userCmd] || 5000
-  if (message.createdTimestamp - userLastUsed[userId][userCmd] < cooldownTime) {
+  if (message.createdTimestamp - userLastUsed[userId][userCmd] < (cooldownTime[userCmd] || 5000)) {
     return true
   }
 
