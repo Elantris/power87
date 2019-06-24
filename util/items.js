@@ -481,7 +481,7 @@ module.exports = {
     icon: ':sparkles:',
     displayName: '英雄裝備強化粉末',
     description: '具有神秘力量的不可思議粉末，能夠解放潛藏在裝備內的精靈之力，提高裝備的各項素質。',
-    maxStack: 1000,
+    maxStack: 50,
     price: 50,
     value: 5
   },

@@ -25,9 +25,10 @@ const read = async (database, guildId, userId) => {
 
   equipmentRaw.val().split(',').forEach(equipment => {
     let equipmentData = equipment.split('+')
+    let id = parseInt(equipmentData[0])
 
-    userEquipment[equipments[equipmentData[0]].kind].push({
-      id: equipmentData[0],
+    userEquipment[equipments[id].kind].push({
+      id,
       level: parseInt(equipmentData[1] || 0)
     })
   })
@@ -39,10 +40,10 @@ const write = async (database, guildId, userId, userEquipment) => {
   let equipmentData = []
 
   userEquipment.weapon.forEach(weapon => {
-    equipmentData.push(`${weapon.id}+${weapon.level}`)
+    equipmentData.push(`${weapon.id.toString().padStart(3, '0')}+${weapon.level}`)
   })
   userEquipment.armor.forEach(armor => {
-    equipmentData.push(`${armor.id}+${armor.level}`)
+    equipmentData.push(`${armor.id.toString().padStart(3, '0')}+${armor.level}`)
   })
 
   equipmentData.sort()
@@ -63,6 +64,8 @@ const getEquipment = (userEquipment, kind, quality) => {
   userEquipment._displayName = equipments[luck].displayName
 }
 
+const calculateAbility = (id, level) => equipments[id].blank.map((v, i) => v + equipments[id].levelUp[i] * level)
+
 module.exports = {
   // properties
   qualityDisplay,
@@ -71,5 +74,6 @@ module.exports = {
   // methods
   read,
   write,
-  getEquipment
+  getEquipment,
+  calculateAbility
 }

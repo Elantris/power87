@@ -1,5 +1,5 @@
 // * basic: kind, quality, name, icon, displayName, description
-// * ability: default, levelUp
+// * ability: blank, levelUp
 // * special ability
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '長劍',
     description: '',
-    default: [10, 5, 5],
+    blank: [10, 5, 5],
     levelUp: [2, 1, 1]
   },
   1: {
@@ -20,7 +20,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '大劍',
     description: '',
-    default: [13, 4, 4],
+    blank: [13, 4, 4],
     levelUp: [2, 1, 1]
   },
   2: {
@@ -30,7 +30,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '錘子',
     description: '',
-    default: [15, 2, 2],
+    blank: [15, 2, 2],
     levelUp: [2, 1, 1]
   },
   3: {
@@ -40,7 +40,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '弩弓',
     description: '',
-    default: [12, 3, 6],
+    blank: [12, 3, 6],
     levelUp: [2, 1, 1]
   },
   4: {
@@ -50,7 +50,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '弓',
     description: '',
-    default: [13, 1, 7],
+    blank: [13, 1, 7],
     levelUp: [2, 1, 1]
   },
   5: {
@@ -60,7 +60,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '吹箭',
     description: '',
-    default: [9, 6, 7],
+    blank: [9, 6, 7],
     levelUp: [2, 1, 1]
   },
   6: {
@@ -70,7 +70,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '彈弓',
     description: '',
-    default: [7, 2, 9],
+    blank: [7, 2, 9],
     levelUp: [2, 1, 1]
   },
   7: {
@@ -80,7 +80,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '彎刀',
     description: '',
-    default: [8, 6, 6],
+    blank: [8, 6, 6],
     levelUp: [2, 1, 1]
   },
   8: {
@@ -90,7 +90,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '匕首',
     description: '',
-    default: [6, 7, 7],
+    blank: [6, 7, 7],
     levelUp: [2, 1, 1]
   },
   9: {
@@ -100,7 +100,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '太刀',
     description: '',
-    default: [9, 7, 4],
+    blank: [9, 7, 4],
     levelUp: [2, 1, 1]
   },
   10: {
@@ -110,7 +110,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '軍刀',
     description: '',
-    default: [7, 9, 2],
+    blank: [7, 9, 2],
     levelUp: [2, 1, 1]
   },
   11: {
@@ -120,7 +120,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '棍棒',
     description: '',
-    default: [12, 6, 3],
+    blank: [12, 6, 3],
     levelUp: [2, 1, 1]
   },
   12: {
@@ -130,7 +130,7 @@ module.exports = {
     icon: ':crossed_swords: ',
     displayName: '長槍',
     description: '',
-    default: [13, 7, 1],
+    blank: [13, 7, 1],
     levelUp: [2, 1, 1]
   }
 }

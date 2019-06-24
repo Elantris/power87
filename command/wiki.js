@@ -71,13 +71,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description += `\n\n${equipment.icon}**${equipment.displayName}**，\`${equipment.kind}/${equipment.name}\`` +
       `\n> 說明：${equipment.description}` +
       `\n> 品質：${equipmentSystem.qualityDisplay[equipment.quality]}` +
-      `\n> 強化成功機率：${equipmentSystem.enhanceChances[equipment.quality].map(v => `\`${v * 100}%\``).join('、')}`
+      `\n> 強化成功機率：${equipmentSystem.enhanceChances[equipment.quality].map(v => `\`${v * 100}%\``).join(', ')}`
 
     if (equipment.kind === 'weapon') {
-      description += `\n> 基礎數值：\`ATK\`: ${equipment.default[0]} / \`HIT\`: ${equipment.default[1]} / \`SPD\`: ${equipment.default[2]}` +
+      description += `\n> 基礎數值：\`ATK\`: ${equipment.blank[0]} / \`HIT\`: ${equipment.blank[1]} / \`SPD\`: ${equipment.blank[2]}` +
         `\n> 強化提升：\`ATK\`: ${equipment.levelUp[0]} / \`HIT\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
     } else if (equipment.kind === 'armor') {
-      description += `\n> 基礎數值：\`DEF\`: ${equipment.default[0]} / \`EV\`: ${equipment.default[1]} / \`SPD\`: ${equipment.default[2]}` +
+      description += `\n> 基礎數值：\`DEF\`: ${equipment.blank[0]} / \`EV\`: ${equipment.blank[1]} / \`SPD\`: ${equipment.blank[2]}` +
         `\n> 強化提升：\`DEF\`: ${equipment.levelUp[0]} / \`EV\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
     }
   }

@@ -153,7 +153,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       return
     }
 
-    description += `獲得了 ${items[target.id].icon} ${userEquipment._displayName}`
+    description += `獲得了 ${items[target.id].icon} ${userEquipment._displayName}+0`
 
     equipmentSystem.write(database, guildId, userId, userEquipment)
   }
