@@ -68,10 +68,8 @@ module.exports = (userInventory, fishingRaw) => {
       count++
     }
   }
-  for (let i = 0; i < counts[1]; i++) { // buff
-    if (Math.random() < fishingPoleLevel * 0.05 + 0.5) {
-      count++
-    }
+  for (let i = 0; i < counts[1]; i++) { // buff effects
+    count += Math.floor(Math.random() * 2)
   }
 
   for (let i = 0; i < count && userInventory.emptySlots > 0; i++) {
