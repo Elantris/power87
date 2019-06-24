@@ -1,5 +1,6 @@
 const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
+const equipmentSystem = require('../util/equipmentSystem')
 const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
@@ -7,7 +8,8 @@ const sendResponseMessage = require('../util/sendResponseMessage')
 const availableKinds = {
   buff: true,
   box: true,
-  hero: true
+  hero: true,
+  equipment: true
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
@@ -16,7 +18,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // check args format
   if (args[1]) {
-    let results = findTargets(args[1].toLowerCase()).filter(result => items[result.id].kind in availableKinds)
+    let results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item' && items[result.id].kind in availableKinds)
 
     if (results.length === 0) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
@@ -108,7 +110,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
 
     target.amount = 1
-    description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}\n\n`
+    description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
 
     let errorCode
 
@@ -135,6 +137,25 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
+  } else if (target.kind === 'equipment') {
+    target.amount = 1
+    description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
+
+    let userEquipment = await equipmentSystem.read(database, guildId, userId)
+    let errorCode
+
+    if (items[target.id].name === 'base-weapon') {
+      errorCode = equipmentSystem.getEquipment(userEquipment, 'weapon', 'base')
+    }
+
+    if (errorCode) {
+      sendResponseMessage({ message, errorCode })
+      return
+    }
+
+    description += `獲得了 ${items[target.id].icon} ${userEquipment._displayName}`
+
+    equipmentSystem.write(database, guildId, userId, userEquipment)
   }
 
   // update database

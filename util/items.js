@@ -472,7 +472,7 @@ module.exports = {
     displayName: '初級英雄防具兌換券',
     description: '使用後可以隨機獲得一種初級英雄防具。',
     maxStack: 1,
-    price: 100,
+    // price: 100,
     value: 10
   },
   46: {

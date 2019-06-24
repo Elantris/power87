@@ -1,5 +1,7 @@
+const equipmentSystem = require('../util/equipmentSystem')
 const tools = require('../util/tools')
 const items = require('../util/items')
+const equipments = require('../util/equipments')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
@@ -21,7 +23,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   if (results.length > 1) {
     description = `:diamond_shape_with_a_dot_inside: 指定其中一種道具/物品：\n`
     results.forEach(result => {
-      description += `\n${items[result.id].icon}**${items[result.id].displayName}**，\`87!wiki ${items[result.id].name}\``
+      if (result.type === 'item') {
+        description += `\n${items[result.id].icon}**${items[result.id].displayName}**，\`87!wiki ${items[result.id].name}\``
+      } else if (result.type === 'equipment') {
+        description += `\n${equipments[result.id].icon}**${equipments[result.id].displayName}**，\`87!wiki ${equipments[result.id].name}\``
+      }
     })
     sendResponseMessage({ message, description })
     return
@@ -59,6 +65,20 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
         return `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${parseInt(itemData[1] || 1)}`
       }).join('、')
       description += `\n> 內容物：${content}，\`87!use ${items[result.id].name}\``
+    }
+  } else if (result.type === 'equipment') {
+    let equipment = equipments[result.id]
+    description += `\n\n${equipment.icon}**${equipment.displayName}**，\`${equipment.kind}/${equipment.name}\`` +
+      `\n> 說明：${equipment.description}` +
+      `\n> 品質：${equipmentSystem.qualityDisplay[equipment.quality]}` +
+      `\n> 強化成功機率：${equipmentSystem.enhanceChances[equipment.quality].map(v => `\`${v * 100}%\``).join('、')}`
+
+    if (equipment.kind === 'weapon') {
+      description += `\n> 基礎數值：\`ATK\`: ${equipment.default[0]} / \`HIT\`: ${equipment.default[1]} / \`SPD\`: ${equipment.default[2]}` +
+        `\n> 強化提升：\`ATK\`: ${equipment.levelUp[0]} / \`HIT\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
+    } else if (equipment.kind === 'armor') {
+      description += `\n> 基礎數值：\`DEF\`: ${equipment.default[0]} / \`EV\`: ${equipment.default[1]} / \`SPD\`: ${equipment.default[2]}` +
+        `\n> 強化提升：\`DEF\`: ${equipment.levelUp[0]} / \`EV\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
     }
   }
 
