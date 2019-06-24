@@ -13,7 +13,7 @@ const userStatusMapping = {
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
-  let inventoryDisplay = `\n裝備道具：`
+  let inventoryDisplay = `\n功能道具：`
   for (let id in userInventory.tools) {
     inventoryDisplay += `${tools[id].icon}+${userInventory.tools[id]} `
   }

@@ -10,7 +10,8 @@ const availableKinds = {
   petfood: '英雄食品',
   box: '箱子',
   hero: '英雄用品',
-  enhance: '強化素材'
+  enhance: '強化素材',
+  equipment: '英雄裝備'
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
@@ -34,7 +35,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       description = `:shopping_cart: 指定其中一種道具/物品：\n`
       results.forEach(result => {
         let item = items[result.id]
-        description += `\n${item.icon}**${item.displayName}**，\`87!buy ${item.name}\``
+        description += `\n${item.icon}**${item.displayName}**，:battery: **${item.price}**，\`87!buy ${item.name}\``
       })
       sendResponseMessage({ message, description })
       return
@@ -64,7 +65,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // no arguments
   if (args.length === 1) {
-    description = `:shopping_cart: ${message.member.displayName} 可購買的商品：\n\n__裝備道具__：`
+    description = `:shopping_cart: ${message.member.displayName} 可購買的商品：`
+
+    description += `\n\n__功能道具__：`
     for (let id in tools) {
       let toolLevel = 0
       if (userInventory.tools[id]) {
@@ -73,14 +76,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
           continue
         }
       }
-
       description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
     }
 
-    description += `\n\n__特色商品__：`
-    for (let kind in availableKinds) {
-      description += `\n**${availableKinds[kind]}**，\`87!buy ${kind}\``
-    }
+    description += `\n\n__特色商品__：\`87!buy [kind]\`\n`
+    description += Object.keys(availableKinds).map(kind => `\`${kind}\``).join(' / ')
 
     sendResponseMessage({ message, description })
     return

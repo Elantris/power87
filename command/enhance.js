@@ -2,17 +2,18 @@ const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-let enhanceRarity = {
-  costs: [0, 4, 8, 16, 32],
-  chances: [0, 0.81, 0.27, 0.09, 0.03]
-}
-
-let abilities = {
+const rarityCost = [0, 4, 8, 16, 32]
+const abilities = {
   str: '力量',
   vit: '體能',
   int: '智慧',
   agi: '敏捷',
   luk: '幸運'
+}
+
+const chances = {
+  rarity: [0, 0.81, 0.27, 0.09, 0.03],
+  default: [0.75, 0.67, 0.59, 0.51, 0.43, 0.35, 0.27, 0.19, 0.11, 0.03]
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
@@ -49,17 +50,17 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       return
     }
 
-    if (!userInventory.items['40'] || userInventory.items['40'] < enhanceRarity.costs[userHero.rarity]) {
+    if (!userInventory.items['40'] || userInventory.items['40'] < rarityCost[userHero.rarity]) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_ENOUGH' })
       return
     }
 
-    description = `:arrow_double_up: ${message.member.displayName} 消耗 :star:**英雄星數強化石**x${enhanceRarity.costs[userHero.rarity]} 試圖強化英雄\n\n`
+    description = `:arrow_double_up: ${message.member.displayName} 消耗 :star:**英雄星數強化石**x${rarityCost[userHero.rarity]} 試圖強化英雄\n\n`
 
-    userInventory.items['40'] -= enhanceRarity.costs[userHero.rarity]
+    userInventory.items['40'] -= rarityCost[userHero.rarity]
 
     let luck = Math.random()
-    if (luck < enhanceRarity.chances[userHero.rarity] * (1 + 0.01 * userHero.level)) {
+    if (luck < chances.rarity[userHero.rarity] * (1 + 0.01 * userHero.level)) {
       userHero.rarity += 1
       description += `強化成功！英雄稀有度提升一階，:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}`
     } else {
