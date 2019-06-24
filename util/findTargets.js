@@ -1,6 +1,7 @@
 const emoji = require('node-emoji')
 const tools = require('./tools')
 const items = require('./items')
+const equipments = require('./equipments')
 
 module.exports = search => {
   let results = []
@@ -28,6 +29,20 @@ module.exports = search => {
       results.push({
         id,
         type: 'item'
+      })
+    }
+  }
+
+  for (let id in equipments) {
+    if (search === equipments[id].kind ||
+      search === equipments[id].quality ||
+      search === emoji.emojify(equipments[id].icon) ||
+      emoji.unemojify(search) === equipments[id].icon ||
+      search === equipments[id].name ||
+      search === equipments[id].displayName) {
+      results.push({
+        id,
+        type: 'equipment'
       })
     }
   }

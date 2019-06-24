@@ -3,7 +3,7 @@ const items = require('./items')
 const buffs = require('./buffs')
 const fishingSystem = require('./fishingSystem')
 
-const kindOrder = ['event', 'hero', 'enhance', 'mark', 'jewel', 'box', 'buff', 'petfood', 'fishing']
+const kindOrder = ['event', 'mark', 'hero', 'equipment', 'enhance', 'box', 'buff', 'petfood', 'jewel', 'fishing']
 
 const read = async (database, guildId, userId, timenow = Date.now()) => {
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')

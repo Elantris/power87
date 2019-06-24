@@ -462,7 +462,7 @@ module.exports = {
     displayName: '初級英雄武器兌換券',
     description: '使用後可以隨機獲得一種初級英雄武器。',
     maxStack: 1,
-    // price: 100,
+    price: 100,
     value: 10
   },
   45: {
@@ -472,7 +472,7 @@ module.exports = {
     displayName: '初級英雄防具兌換券',
     description: '使用後可以隨機獲得一種初級英雄防具。',
     maxStack: 1,
-    // price: 100,
+    price: 100,
     value: 10
   },
   46: {
@@ -482,8 +482,8 @@ module.exports = {
     displayName: '英雄裝備強化粉末',
     description: '具有神秘力量的不可思議粉末，能夠解放潛藏在裝備內的精靈之力，提高裝備的各項素質。',
     maxStack: 1000,
-    // price: 10,
-    value: 1
+    price: 50,
+    value: 5
   },
   47: {
     kind: 'mark',
