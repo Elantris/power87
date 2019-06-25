@@ -32,14 +32,12 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     feed: 100,
     str: 0,
     vit: 0,
-    int: 0,
     agi: 0,
+    int: 0,
     luk: 0,
-    equipments: {
-      weapon: '',
-      armor: '',
-      accessory: ''
-    },
+    weapon: '',
+    armor: '',
+    accessory: '',
 
     // calculated
     level: 0,
@@ -60,8 +58,8 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   let ability = heroData[6].split(',').map(v => parseInt(v))
   userHero.str = ability[0]
   userHero.vit = ability[1]
-  userHero.int = ability[2]
-  userHero.agi = ability[3]
+  userHero.agi = ability[2]
+  userHero.int = ability[3]
   userHero.luk = ability[4]
 
   userHero.status = heroData[7]
@@ -103,7 +101,7 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 
 const write = (database, guildId, userId, userHero, timenow = Date.now()) => {
   userHero.lastUpdate = parseInt(timenow / config.tick)
-  let ability = `${userHero.str},${userHero.vit},${userHero.int},${userHero.agi},${userHero.luk}`
+  let ability = `${userHero.str},${userHero.vit},${userHero.agi},${userHero.int},${userHero.luk}`
   database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${userHero.status}`)
 }
 

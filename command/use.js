@@ -137,6 +137,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
   } else if (target.kind === 'equipment') {
+    if (userInventory.equipments.length >= 8) {
+      sendResponseMessage({ message, errorCode: 'ERROR_ITEM_EXCEED' })
+      return
+    }
+
     target.amount = 1
     description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
 
