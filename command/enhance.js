@@ -8,23 +8,20 @@ const rarityChances = [0, 0.81, 0.27, 0.09, 0.03]
 const abilities = {
   str: '力量',
   vit: '體能',
-  int: '智慧',
   agi: '敏捷',
+  int: '智慧',
   luk: '幸運'
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  if (!args[1]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
+  if (args[1]) {
+    args[1] = args[1].toLowerCase()
   }
 
   if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 0)) {
     sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
     return
   }
-
-  args[1] = args[1].toLowerCase()
 
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
@@ -39,20 +36,50 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
+  if (userInventory.status === 'fishing') {
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+    return
+  }
+
   let description
 
   // enhance type
-  if (args[1] === 'rarity') { // hero rarity
+  if (args.length === 1) {
+    description = `:arrow_double_up: ${message.member.displayName} 可以強化的項目：`
+
+    if (userHero.rarity < 5) {
+      description += `\n\n:star:**英雄星數強化石**x${rarityCost[userHero.rarity]}\n**稀有度**：\`87!enhance rarity\`，${Math.floor(rarityChances[userHero.rarity] * 100)}%`
+    }
+
+    let total = 0
+    for (let i in abilities) {
+      total += userHero[i]
+    }
+    if (total < userHero.level) {
+      description += `\n\n:sparkles:**英雄體質強化粉末**x1`
+      for (let i in abilities) {
+        description += `\n**${abilities[i]}**：\`87!enhance ${i} 1\``
+      }
+    }
+
+    description += '\n\n:sparkles:**英雄裝備強化粉末**x1'
+    userInventory.equipments.forEach(v => {
+      let equipment = equipments[v.id]
+      if (v.level === inventorySystem.enhanceChances[equipment.quality].length) {
+        return
+      }
+      let chance = inventorySystem.enhanceChances[equipment.quality][v.level]
+      description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，\`87!enhance ${equipment.name}+${v.level}\`，${Math.floor(chance * 100)}%`
+    })
+  } else if (args[1] === 'rarity') { // hero rarity
     if (userHero.rarity === 5) {
       sendResponseMessage({ message, errorCode: 'ERROR_MAX_RARITY' })
       return
     }
-
     if (!userInventory.items['40'] || userInventory.items['40'] < rarityCost[userHero.rarity]) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_ENOUGH' })
       return
     }
-
     userInventory.items['40'] -= rarityCost[userHero.rarity]
 
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :star:**英雄星數強化石**x${rarityCost[userHero.rarity]} 試圖強化英雄\n\n`
@@ -66,7 +93,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   } else if (args[1] in abilities) { // hero ability
     let amount = parseInt(args[2] || 1)
-
     if (!userInventory.items['42'] || userInventory.items['42'] < amount) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_ENOUGH' })
       return
@@ -76,7 +102,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     for (let i in abilities) {
       total += userHero[i]
     }
-
     if (total + amount > userHero.level) {
       sendResponseMessage({ message, errorCode: 'ERROR_MAX_ABILITY' })
       return
@@ -88,9 +113,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄體質強化粉末**x${amount}\n\n` +
       `:${userHero.species}: **${userHero.name}** 的 **${abilities[args[1]]}** 提升 ${amount} 點，\`${args[1].toUpperCase()}\`: ${userHero[args[1]]}`
   } else { // hero equipment
+    let tmp = args[1].split('+')
     let target = {
-      name: args[1].split('+')[0],
-      level: parseInt(args[1].split('+')[1] || 0),
+      name: tmp[0],
+      level: parseInt(tmp[1] || 0),
       index: -1,
       id: -1,
       quality: ''

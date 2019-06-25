@@ -60,7 +60,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     } else if (equipment.kind === 'armor') {
       inventoryDisplay += `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
-    inventoryDisplay += `，\`87!enhance ${equipment.name}+${v.level}\``
   })
 
   // response
