@@ -1,6 +1,5 @@
 const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
-const equipmentSystem = require('../util/equipmentSystem')
 const equipments = require('../util/equipments')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
@@ -92,10 +91,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     let target = {
       name: args[1].split('+')[0],
       level: parseInt(args[1].split('+')[1] || 0),
+      index: -1,
       id: -1,
-      kind: '',
-      quality: '',
-      index: -1
+      quality: ''
     }
 
     if (!Number.isSafeInteger(target.level)) {
@@ -103,30 +101,14 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       return
     }
 
-    let userEquipment = await equipmentSystem.read(database, guildId, userId)
-
-    target.index = userEquipment.weapon.findIndex((weapon, index) => {
-      if (target.name === equipments[weapon.id].name && target.level === weapon.level) {
-        target.id = weapon.id
-        target.kind = 'weapon'
-        target.quality = equipments[weapon.id].quality || 'base'
+    target.index = userInventory.equipments.findIndex((equipment, index) => {
+      if (target.name === equipments[equipment.id].name && target.level === equipment.level) {
+        target.id = equipment.id
+        target.quality = equipments[equipment.id].quality || 'base'
         return true
       }
       return false
     })
-
-    if (target.index === -1) {
-      target.index = userEquipment.armor.findIndex((armor, index) => {
-        if (target.name === equipments[armor.id].name && target.level === armor.level) {
-          target.id = armor.id
-          target.kind = 'armor'
-          target.quality = equipments[armor.id].quality || 'base'
-          return true
-        }
-        return false
-      })
-    }
-
     if (target.index === -1) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return
@@ -141,11 +123,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄裝備強化粉末**x1\n\n`
 
     let luck = Math.random()
-    if (luck < equipmentSystem.enhanceChances[target.quality][target.level]) {
-      userEquipment[target.kind][target.index].level += 1
-      description += `強化成功，獲得了 ${equipments[target.id].icon}**${equipments[target.id].displayName}**+${userEquipment[target.kind][target.index].level}`
-
-      equipmentSystem.write(database, guildId, userId, userEquipment)
+    if (luck < inventorySystem.enhanceChances[target.quality][target.level]) {
+      userInventory.equipments[target.index].level += 1
+      description += `強化成功，獲得了 ${equipments[target.id].icon}**${equipments[target.id].displayName}**+${target.level + 1}`
     } else {
       description += `強化失敗，裝備維持原本的模樣`
     }

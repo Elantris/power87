@@ -1,7 +1,7 @@
 const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
-const equipmentSystem = require('../util/equipmentSystem')
 const items = require('../util/items')
+const equipments = require('../util/equipments')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
@@ -113,7 +113,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
 
     let errorCode
-
     if (items[target.id].name === 'summon-scroll') {
       errorCode = heroSystem.summon(userHero, args[2])
       description += `從異世界召喚出 :${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}！`
@@ -141,11 +140,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     target.amount = 1
     description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
 
-    let userEquipment = await equipmentSystem.read(database, guildId, userId)
     let errorCode
-
     if (items[target.id].name === 'base-weapon') {
-      errorCode = equipmentSystem.getEquipment(userEquipment, 'weapon', 'base')
+      errorCode = inventorySystem.getEquipment(userInventory, 'weapon', 'base')
+    } else if (items[target.id].name === 'base-armor') {
+      errorCode = inventorySystem.getEquipment(userInventory, 'armor', 'base')
+    } else {
+      errorCode = 'ERROR_NOT_FOUND'
     }
 
     if (errorCode) {
@@ -153,9 +154,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       return
     }
 
-    description += `獲得了 ${items[target.id].icon} ${userEquipment._displayName}+0`
+    let newEquipment = userInventory.equipments.slice(-1)[0]
+    description += `獲得了 ${items[target.id].icon}**${equipments[newEquipment.id].displayName}**+0`
 
-    equipmentSystem.write(database, guildId, userId, userEquipment)
+    userInventory.equipments.sort((a, b) => a.id - b.id)
   }
 
   // update database

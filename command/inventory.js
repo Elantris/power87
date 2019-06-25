@@ -2,6 +2,7 @@ const inventorySystem = require('../util/inventorySystem')
 const tools = require('../util/tools')
 const items = require('../util/items')
 const buffs = require('../util/buffs')
+const equipments = require('../util/equipments')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const userStatusMapping = {
@@ -30,7 +31,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   inventoryDisplay += `\n\n背包物品：[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]`
   let slotContents = []
-  inventorySystem.kindOrder.forEach(kind => {
+  inventorySystem.kindOrders.forEach(kind => {
     for (let id in userInventory.items) {
       if (items[id].kind === kind) {
         for (let i = 0; i < Math.ceil(userInventory.items[id] / items[id].maxStack); i++) {
@@ -39,7 +40,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       }
     }
   })
-
   slotContents.forEach((icon, index) => {
     if (index % 8 === 0) {
       inventoryDisplay += '\n'
@@ -47,6 +47,20 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       inventoryDisplay += ' '
     }
     inventoryDisplay += icon
+  })
+
+  inventoryDisplay += `\n\n英雄裝備：`
+  userInventory.equipments.forEach(v => {
+    let equipment = equipments[v.id]
+    let abilities = inventorySystem.calculateAbility(v.id, v.level)
+
+    inventoryDisplay += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，`
+    if (equipment.kind === 'weapon') {
+      inventoryDisplay += `\`ATK\`: ${abilities[0]} / \`HIT\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
+    } else if (equipment.kind === 'armor') {
+      inventoryDisplay += `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
+    }
+    inventoryDisplay += `，\`87!enhance ${equipment.name}+${v.level}\``
   })
 
   // response

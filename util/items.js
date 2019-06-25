@@ -309,36 +309,36 @@ module.exports = {
   },
   29: {
     kind: 'mark',
-    name: 'stamp-weapon',
+    name: 'stamp-fight',
     icon: ':yellow_heart:',
-    displayName: '閃亮的印章-武器精靈',
-    description: '強化武器時會需要的材料，分解武器後獲得。',
+    displayName: '閃亮的印章-英雄戰鬥',
+    description: '英雄在戰鬥中勝利之後會獲得的印章，在英雄公會裡好像可以兌換些什麼。',
     maxStack: 1000,
     value: 10
   },
   30: {
     kind: 'mark',
-    name: 'stamp-armor',
+    name: 'stamp-adventure',
     icon: ':green_heart:',
-    displayName: '閃亮的印章-防具精靈',
-    description: '強化防具時會需要的材料，分解防具後獲得。',
+    displayName: '閃亮的印章-英雄冒險',
+    description: '當英雄完成冒險時會獲得的印章，在英雄公會裡好像可以兌換些什麼。',
     maxStack: 1000,
     value: 10
   },
   31: {
     kind: 'mark',
-    name: 'stamp-adventure',
+    name: 'stamp-',
     icon: ':blue_heart:',
-    displayName: '閃亮的印章-冒險證物',
+    displayName: '閃亮的印章-',
     description: '',
     maxStack: 1000,
     value: 10
   },
   32: {
     kind: 'mark',
-    name: 'stamp-babel',
+    name: 'stamp-',
     icon: ':purple_heart:',
-    displayName: '閃亮的印章-巴別塔',
+    displayName: '閃亮的印章-',
     description: '',
     maxStack: 1000,
     value: 10
@@ -472,7 +472,7 @@ module.exports = {
     displayName: '初級英雄防具兌換券',
     description: '使用後可以隨機獲得一種初級英雄防具。',
     maxStack: 1,
-    // price: 100,
+    price: 100,
     value: 10
   },
   46: {
