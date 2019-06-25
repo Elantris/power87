@@ -3,13 +3,14 @@
 
 語法：
 ```
-87!enhance [type] [amount]
+87!enhance [target] [amount]
 ```
-`type`：不含空格的字串
+`target`：不含空格的字串
 `amount` 大於 0 的整數數字
 
 範例：
 ```
+87!enhance
 87!enhance rarity
 87!enhance luk 3
 87!enhance sword+1
