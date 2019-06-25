@@ -10,7 +10,7 @@
 
 筆記：`add` / `delete` / `list`
 能量：`energy` / `daily` / `give` / `rank` / `slot` / `roll`
-道具：`inventory` / `buy` / `sell` / `fishing` / `use`
+道具：`inventory` / `buy` / `sell` / `fishing` / `use` / `mark`
 英雄：`hero` / `free` / `feed` / `enhance`
 其他：`help` / `wiki` / `hint` / `clean` / `about`
 

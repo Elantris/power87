@@ -28,6 +28,7 @@ module.exports = ({ client, database, message, guildId, userId }) => {
   }
 
   if (!commands[userCmd]) {
+    sendResponseMessage({ message, errorCode: 'ERROR_NO_COMMAND' })
     return
   }
 

@@ -13,8 +13,9 @@ const cooldownTime = {
   inventory: 5,
   buy: 3,
   sell: 3,
-  fishing: 5,
+  fishing: 10,
   use: 3,
+  mark: 5,
 
   hero: 5,
   free: 5,

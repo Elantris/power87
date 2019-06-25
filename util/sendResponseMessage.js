@@ -6,6 +6,7 @@ const hook = new Discord.WebhookClient(config.LoggerHook.id, config.LoggerHook.t
 
 const errors = {
   // general
+  ERROR_NO_COMMAND: '不存在的指令',
   ERROR_FORMAT: '指令格式錯誤',
   ERROR_NOT_FOUND: '查詢錯誤',
   ERROR_IS_COOLING: '指令冷卻中',

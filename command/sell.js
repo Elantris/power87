@@ -10,7 +10,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let description = ''
 
   if (args[1]) {
-    results = findTargets(args[1].toLowerCase())
+    results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item')
     if (results.length === 0) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return 0
@@ -38,7 +38,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   if (args.length === 1) { // no arguments
     description = `:moneybag: ${message.member.displayName} 背包內可以販賣的物品：\n`
 
-    inventorySystem.kindOrder.forEach(kind => {
+    inventorySystem.kindOrders.forEach(kind => {
       for (let id in userInventory.items) {
         if (items[id].kind === kind) {
           description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，\`87!sell ${items[id].name} ${userInventory.items[id]}\``
