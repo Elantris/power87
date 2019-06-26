@@ -305,7 +305,7 @@ module.exports = {
     displayName: '閃亮的印章-英雄飼養',
     description: '當英雄飽食度恢復時有機率獲得的印章，在英雄公會裡好像可以兌換些什麼。',
     maxStack: 1000,
-    value: 10
+    value: 1
   },
   29: {
     kind: 'mark',
@@ -314,7 +314,7 @@ module.exports = {
     displayName: '閃亮的印章-英雄戰鬥',
     description: '英雄在戰鬥中勝利之後會獲得的印章，在英雄公會裡好像可以兌換些什麼。',
     maxStack: 1000,
-    value: 10
+    value: 1
   },
   30: {
     kind: 'mark',
@@ -323,7 +323,7 @@ module.exports = {
     displayName: '閃亮的印章-英雄冒險',
     description: '當英雄完成冒險時會獲得的印章，在英雄公會裡好像可以兌換些什麼。',
     maxStack: 1000,
-    value: 10
+    value: 1
   },
   31: {
     kind: 'mark',
@@ -332,7 +332,7 @@ module.exports = {
     displayName: '閃亮的印章-',
     description: '',
     maxStack: 1000,
-    value: 10
+    value: 1
   },
   32: {
     kind: 'mark',
@@ -341,7 +341,7 @@ module.exports = {
     displayName: '閃亮的印章-',
     description: '',
     maxStack: 1000,
-    value: 10
+    value: 1
   },
   33: {
     kind: 'event',
@@ -489,7 +489,7 @@ module.exports = {
     kind: 'mark',
     name: 'frustrated-gambler',
     icon: ':broken_heart:',
-    displayName: '失落的印章-迷惘的賭徒',
+    displayName: '失落的印章-迷惘賭徒',
     description: '在賭博中失利時會獲得的印章，累積越多枚印章可以提高下次賭博贏得大獎的機率。',
     maxStack: 1000,
     value: 1
@@ -498,7 +498,7 @@ module.exports = {
     kind: 'mark',
     name: 'frustrated-hero',
     icon: ':broken_heart:',
-    displayName: '失落的印章-沮喪的英雄',
+    displayName: '失落的印章-沮喪英雄',
     description: '強化裝備失敗時會獲得的印章，累積越多枚印章可以提高下次強化成功的機率。',
     maxStack: 1000,
     value: 1
