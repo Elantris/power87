@@ -35,7 +35,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-
   if (userInventory.status === 'fishing') {
     sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
@@ -48,7 +47,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:arrow_double_up: ${message.member.displayName} 可以強化的項目：`
 
     if (userHero.rarity < 5) {
-      description += `\n\n:star:**英雄星數強化石**x${rarityCost[userHero.rarity]}\n**稀有度**：\`87!enhance rarity\`，${Math.floor(rarityChances[userHero.rarity] * 100)}%`
+      description += `\n\n:star:**英雄星數強化石**x${rarityCost[userHero.rarity]}\n**稀有度**：${Math.floor(rarityChances[userHero.rarity] * 100)}%，\`87!enhance rarity\``
     }
 
     let total = 0
@@ -65,11 +64,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description += '\n\n:sparkles:**英雄裝備強化粉末**x1'
     userInventory.equipments.forEach(v => {
       let equipment = equipments[v.id]
-      if (v.level === inventorySystem.enhanceChances[equipment.quality].length) {
+      if (v.level >= inventorySystem.enhanceChances[equipment.quality].length) {
         return
       }
       let chance = inventorySystem.enhanceChances[equipment.quality][v.level]
-      description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，\`87!enhance ${equipment.name}+${v.level}\`，${Math.floor(chance * 100)}%`
+      description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，${Math.floor(chance * 100)}%，\`87!enhance ${equipment.name}+${v.level}\``
     })
   } else if (args[1] === 'rarity') { // hero rarity
     if (userHero.rarity === 5) {
@@ -145,6 +144,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       return
     }
     userInventory.items['46'] -= 1
+
+    if (target.level >= inventorySystem.enhanceChances[target.quality].length) {
+      sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
+      return
+    }
 
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄裝備強化粉末**x1\n\n`
 

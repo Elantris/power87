@@ -19,7 +19,7 @@ const errors = {
   // energy
   ERROR_NO_ENERGY: '八七能量不足，看來你還不夠八七喔',
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
-  ERROR_MAX_LEVEL: '無法購買更高等級的道具',
+  ERROR_MAX_LEVEL: '無法再提升等級',
   ERROR_IS_FISHING: '出海捕魚中',
   ERROR_NO_TOOL: '未持有特定道具',
   ERROR_NO_ITEM: '沒有物品',
