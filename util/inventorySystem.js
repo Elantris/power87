@@ -5,6 +5,18 @@ const equipments = require('./equipments')
 const fishingSystem = require('./fishingSystem')
 
 const kindOrders = ['event', 'mark', 'hero', 'equipment', 'enhance', 'box', 'buff', 'petfood', 'jewel', 'fishing']
+const kindNames = {
+  box: '箱子',
+  buff: '增益道具',
+  enhance: '強化素材',
+  equipment: '英雄裝備',
+  event: '活動道具',
+  fishing: '漁獲',
+  hero: '英雄用品',
+  jewel: '珠寶飾品',
+  mark: '印章標記',
+  petfood: '英雄食品'
+}
 const equipmentMapping = {
   weapon: {
     base: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -128,6 +140,7 @@ const calculateAbility = (id, level) => equipments[id].blank.map((v, i) => v + e
 module.exports = {
   // properties
   kindOrders,
+  kindNames,
   enhanceChances,
 
   // methods

@@ -6,7 +6,7 @@ const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let results = []
-  let amount = 1
+  let amount = 10000
   let description = ''
 
   if (args[1]) {
@@ -23,8 +23,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
       return
     }
-  } else {
-    amount = 10000
   }
 
   // inventory system

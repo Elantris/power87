@@ -6,8 +6,12 @@ const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  if (!args[1]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
+  let description
+
+  if (args.length === 1 || args[1] === 'all') {
+    description = `:diamond_shape_with_a_dot_inside: 指定一個種類：\n\n` +
+      inventorySystem.kindOrders.map(kind => `${inventorySystem.kindNames[kind]} \`${kind}\``).join('\n')
+    sendResponseMessage({ message, description })
     return
   }
 
@@ -17,8 +21,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
     return
   }
-
-  let description
 
   if (results.length > 1) {
     description = `:diamond_shape_with_a_dot_inside: 指定其中一種道具/物品：\n`
