@@ -53,7 +53,11 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
       userInventory.tools[tmp[0]] = tmp[1]
 
       if (tmp[0] === '$0') { // bag
-        userInventory.maxSlots = userInventory.emptySlots = (parseInt(tmp[1]) + 1) * 8
+        userInventory.maxSlots += (parseInt(tmp[1]) + 1) * 8
+        userInventory.emptySlots += (parseInt(tmp[1]) + 1) * 8
+      } else if (tmp[0] === '$2') { // sailboat
+        userInventory.maxSlots += (parseInt(tmp[1]) + 1) * 4
+        userInventory.emptySlots += (parseInt(tmp[1]) + 1) * 4
       }
     } else if (item[0] === '%') { // buff: %id:timestamp
       tmp = item.split(':')

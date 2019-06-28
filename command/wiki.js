@@ -10,7 +10,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   if (args.length === 1 || args[1] === 'all') {
     description = `:diamond_shape_with_a_dot_inside: 指定一個種類：\n\n` +
-      inventorySystem.kindOrders.map(kind => `${inventorySystem.kindNames[kind]} \`${kind}\``).join('\n')
+      inventorySystem.kindOrders.map(kind => `${inventorySystem.kindNames[kind]}，\`87!wiki ${kind}\``).join('\n')
     sendResponseMessage({ message, description })
     return
   }

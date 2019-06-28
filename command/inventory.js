@@ -29,7 +29,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   }
 
-  inventoryDisplay += `\n\n背包物品：[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]`
+  inventoryDisplay += `\n\n背包物品：**[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]**\n`
   let slotContents = []
   inventorySystem.kindOrders.forEach(kind => {
     for (let id in userInventory.items) {
@@ -41,7 +41,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   })
   slotContents.forEach((icon, index) => {
-    if (index % 8 === 0) {
+    if (index % 12 === 0) {
       inventoryDisplay += '\n'
     } else {
       inventoryDisplay += ' '
@@ -49,7 +49,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     inventoryDisplay += icon
   })
 
-  inventoryDisplay += `\n\n英雄裝備：[${userInventory.equipments.length}/8]`
+  inventoryDisplay += `\n\n英雄裝備：**[${userInventory.equipments.length}/8]**`
   userInventory.equipments.forEach(v => {
     let equipment = equipments[v.id]
     let abilities = inventorySystem.calculateAbility(v.id, v.level)
