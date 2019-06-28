@@ -143,13 +143,16 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
     if (energyCost === 500) {
       userInventory.items['47'] += 2
-    } else if (energyCost > 50) {
+    } else if (energyCost >= 50) {
       userInventory.items['47'] += 1
     }
 
     description += `| : : : : **LOST** : : : : |\n\n` +
-      lostMessages[Math.floor(Math.random() * lostMessages.length)] + `\n` +
-      `目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
+      lostMessages[Math.floor(Math.random() * lostMessages.length)] + `\n`
+
+    if (energyCost >= 50) {
+      description += `目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
+    }
   } else if (winId === 0) {
     description += `| : **CONGRATS** : |\n\n<@${message.author.id}> 或成最大贏家，獲得了**頭獎** ${energyGain} 點八七能量`
     content = '@here 頭獎快訊！'
