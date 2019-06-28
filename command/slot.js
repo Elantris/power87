@@ -2,31 +2,46 @@ const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const icons = [
-  { prize: 100, symbol: ':gem:', weight: 5 },
-  { prize: 77, symbol: ':seven:', weight: 7 },
-  { prize: 50, symbol: ':trophy:', weight: 11 },
-  { prize: 30, symbol: ':moneybag:', weight: 13 },
-  { prize: 20, symbol: ':gift:', weight: 17 },
-  { prize: 15, symbol: ':ribbon:', weight: 19 },
-  { prize: 10, symbol: ':balloon:', weight: 23 },
-  { prize: 5, symbol: ':four_leaf_clover:', weight: 25 },
-  { prize: 3, symbol: ':battery:', weight: 40 },
-  { prize: 1, symbol: ':dollar:', weight: 60 },
-  { prize: 0, symbol: ':wrench:', weight: 5 },
-  { prize: 0, symbol: ':gear:', weight: 5 },
-  { prize: 0, symbol: ':bomb:', weight: 5 },
-  { prize: 0, symbol: ':paperclip:', weight: 5 },
-  { prize: 0, symbol: ':wastebasket:', weight: 5 }
+const symbols = [':gem:', ':seven:', ':trophy:', ':moneybag:', ':gift:', ':ribbon:', ':balloon:', ':four_leaf_clover:', ':battery:', ':dollar:']
+const prizes = [
+  { chance: 0.0001, pattern: '000', multiplier: 100 },
+  { chance: 0.0002, pattern: '111', multiplier: 77 },
+  { chance: 0.0005, pattern: '222', multiplier: 50 },
+  { chance: 0.0010, pattern: '333', multiplier: 30 },
+  { chance: 0.0020, pattern: '444', multiplier: 20 },
+  { chance: 0.0025, pattern: '555', multiplier: 15 },
+  { chance: 0.0050, pattern: '666', multiplier: 10 },
+  { chance: 0.0100, pattern: '777', multiplier: 5 },
+  { chance: 0.0200, pattern: '888', multiplier: 3 },
+  { chance: 0.0800, pattern: '999', multiplier: 1 },
+
+  { chance: 0.0100, pattern: '00', multiplier: 50 },
+  { chance: 0.0200, pattern: '11', multiplier: 38 },
+  { chance: 0.0400, pattern: '22', multiplier: 25 },
+  { chance: 0.0600, pattern: '33', multiplier: 15 },
+  { chance: 0.0800, pattern: '44', multiplier: 10 },
+  { chance: 0.1000, pattern: '55', multiplier: 7 },
+  { chance: 0.1200, pattern: '66', multiplier: 5 },
+  { chance: 0.2000, pattern: '77', multiplier: 2 },
+  { chance: 0.2487, pattern: '88', multiplier: 1 }
 ]
-const totalWeight = 245
+const baseHitChance = 0.08
+const lostMessages = [
+  '結果是一無所獲',
+  '然而什麼都沒有',
+  '也許下次會更好',
+  '再來一把一定行',
+  '感覺到了，再來一次一定中',
+  '這些能量都進了許願池',
+  '難過的是放棄的夢被打碎',
+  '呃啊啊啊啊啊'
+]
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let energyCost = 1
   let sayMessage = ''
 
-  // parse parameters
-  if (args.length > 1) {
+  if (args[1]) {
     if (Number.isSafeInteger(parseInt(args[1]))) {
       energyCost = parseInt(args[1])
       if (energyCost < 1 || energyCost > 500) {
@@ -61,66 +76,94 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
 
-  // check buffs
+  // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
-  let weightMinus = 0
-  if (userInventory.buffs['%4']) {
-    weightMinus = 25
-  } else if (userInventory.buffs['%3']) {
-    weightMinus = 15
+  let buffChance = 0
+  let markChance = 0
+
+  if (userInventory.buffs['%1']) {
+    buffChance = 0.02
   } else if (userInventory.buffs['%2']) {
-    weightMinus = 10
-  } else if (userInventory.buffs['%1']) {
-    weightMinus = 5
+    buffChance = 0.04
+  } else if (userInventory.buffs['%3']) {
+    buffChance = 0.06
+  } else if (userInventory.buffs['%4']) {
+    buffChance = 0.08
   }
 
-  // slot results
-  let result = []
-  for (let i = 0; i < 3; i++) {
-    let luck = Math.random() * (totalWeight - weightMinus)
-    for (let j in icons) {
-      if (luck < icons[j].weight) {
-        result.push(j)
-        break
+  if (userInventory.items['47']) {
+    markChance = userInventory.items['47'] * 0.005
+  }
+
+  // slot
+  let slotResults = []
+  let winId = -1
+  let energyGain = 0
+
+  let luck = Math.random()
+  if (luck < baseHitChance + buffChance + markChance) {
+    luck = Math.random()
+    prizes.some((prize, index) => {
+      if (luck < prize.chance) {
+        winId = index
+        return true
       }
-      luck -= icons[j].weight
+      luck -= prize.chance
+      return false
+    })
+    if (winId === -1) {
+      winId = prizes.length - 1
+    }
+
+    slotResults = prizes[winId].pattern.split('')
+    energyGain = energyCost * prizes[winId].multiplier
+  }
+
+  while (slotResults.length !== 3) {
+    let newSlot = Math.floor(Math.random() * 10).toString()
+    if (!slotResults.includes(newSlot)) {
+      slotResults.splice(Math.floor(Math.random() * 3), 0, newSlot)
     }
   }
-
-  let resultDisplay = `-------------------\n${result.map(n => icons[n].symbol).join(' : ')}\n-------------------\n`
-  result.sort()
-
-  // energy system
-  let multiplier = 0
-  if (result[0] === result[1] && result[1] === result[2]) {
-    multiplier = icons[result[0]].prize
-  } else if (result[1] < 8 && (result[0] === result[1] || result[1] === result[2])) {
-    multiplier = Math.floor(icons[result[1]].prize / 2)
-  }
-
-  let energyGain = energyCost * multiplier
 
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain - energyCost)
 
   // response
   let content
-  let resultMessage = ''
-  if (multiplier === 0) {
-    resultDisplay += `| : : : : **LOST** : : : : |`
-    resultMessage = '結果是一無所獲'
-  } else if (multiplier < icons[1].prize) {
-    resultDisplay += `| : : : : **WIN** : : : : : |`
-    resultMessage = `獲得了 ${energyGain} 點八七能量`
-  } else if (multiplier === icons[1].prize) {
-    content = '@here 777！'
-    resultDisplay += `| : : **77777777** : : |`
-    resultMessage = `<@${message.author.id}> 7 起來，獲得了 ${energyGain} 點八七能量`
-  } else if (multiplier === icons[0].prize) {
+  let description = `:slot_machine: 這是一台八七拉霸機\n\n` +
+    `${message.member.displayName} ${sayMessage} 投注了 ${energyCost} 點八七能量\n` +
+    `-------------------\n` +
+    slotResults.map(v => symbols[v]).join(' : ') + `\n` +
+    `-------------------\n`
+
+  if (winId === -1) {
+    if (!userInventory.items['47']) {
+      userInventory.items['47'] = 0
+    }
+    if (energyCost === 500) {
+      userInventory.items['47'] += 2
+    } else if (energyCost > 50) {
+      userInventory.items['47'] += 1
+    }
+
+    description += `| : : : : **LOST** : : : : |\n\n` +
+      lostMessages[Math.floor(Math.random() * lostMessages.length)] + `\n` +
+      `目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
+  } else if (winId === 0) {
+    description += `| : **CONGRATS** : |\n\n<@${message.author.id}> 或成最大贏家，獲得了**頭獎** ${energyGain} 點八七能量`
     content = '@here 頭獎快訊！'
-    resultDisplay += `| : **CONGRATS** : |`
-    resultMessage = `<@${message.author.id}> 或成最大贏家，獲得了 ${energyGain} 點八七能量`
+    delete userInventory.items['47']
+  } else if (winId === 1) {
+    description += `| : : **77777777** : : |\n\n<@${message.author.id}> 7 起來，獲得了 **777獎** ${energyGain} 點八七能量`
+    content = '@here 777！'
+    delete userInventory.items['47']
+  } else {
+    description += `| : : : : **WIN** : : : : : |\n\n贏得了 ${energyGain} 點八七能量`
+    delete userInventory.items['47']
   }
 
-  sendResponseMessage({ message, content, description: `:slot_machine: 這是一台八七拉霸機\n${resultDisplay}\n\n${message.member.displayName} ${sayMessage}投注 ${energyCost} 點八七能量，${resultMessage}` })
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
+
+  sendResponseMessage({ message, content, description })
 }

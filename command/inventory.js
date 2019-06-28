@@ -49,7 +49,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     inventoryDisplay += icon
   })
 
-  inventoryDisplay += `\n\n英雄裝備：`
+  inventoryDisplay += `\n\n英雄裝備：[${userInventory.equipments.length}/8]`
   userInventory.equipments.forEach(v => {
     let equipment = equipments[v.id]
     let abilities = inventorySystem.calculateAbility(v.id, v.level)
