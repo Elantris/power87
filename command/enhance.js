@@ -47,7 +47,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:arrow_double_up: ${message.member.displayName} 可以強化的項目：`
 
     if (userHero.rarity < 5) {
-      description += `\n\n:star:**英雄星數強化石**x${rarityCost[userHero.rarity]}\n**稀有度**：${Math.floor(rarityChances[userHero.rarity] * 100)}%，\`87!enhance rarity\``
+      description += `\n\n:star:**英雄星數強化石**x${userInventory.items['40'] || 0}\n` +
+        `**英雄稀有度**：消耗 :star:x${rarityCost[userHero.rarity]}，**${Math.floor(rarityChances[userHero.rarity] * 100)}%**，\`87!enhance rarity\``
     }
 
     let total = 0
@@ -55,21 +56,28 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       total += userHero[i]
     }
     if (total < userHero.level) {
-      description += `\n\n:sparkles:**英雄體質強化粉末**x1`
+      description += `\n\n:sparkles:**英雄體質強化粉末**x${userInventory.items['42'] || 0}`
       for (let i in abilities) {
-        description += `\n**${abilities[i]}**：\`87!enhance ${i} 1\``
+        description += `\n**${abilities[i]}**：消耗 :sparkles:x1，\`87!enhance ${i} 1\``
       }
     }
 
-    description += '\n\n:sparkles:**英雄裝備強化粉末**x1'
-    userInventory.equipments.forEach(v => {
-      let equipment = equipments[v.id]
-      if (v.level >= inventorySystem.enhanceChances[equipment.quality].length) {
-        return
+    let tmpEquipments = userInventory.equipments.filter(v => v.level < inventorySystem.enhanceChances[equipments[v.id].quality].length)
+    if (tmpEquipments.length) {
+      description += `\n\n:sparkles:**英雄裝備強化粉末**x${userInventory.items['46'] || 0}`
+      if (userInventory.items['48']) {
+        description += `，:broken_heart:**失落的印章-沮喪英雄**x${userInventory.items['48']}`
       }
-      let chance = inventorySystem.enhanceChances[equipment.quality][v.level]
-      description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，${Math.floor(chance * 100)}%，\`87!enhance ${equipment.name}+${v.level}\``
-    })
+
+      tmpEquipments.forEach(v => {
+        let equipment = equipments[v.id]
+        let chance = inventorySystem.enhanceChances[equipment.quality][v.level] * (1 + (userInventory.items['48'] || 0) * 0.02)
+        if (chance > 1) {
+          chance = 1
+        }
+        description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，消耗 :sparkles:x1，**${Math.floor(chance * 100)}%**，\`87!enhance ${equipment.name}+${v.level}\``
+      })
+    }
   } else if (args[1] === 'rarity') { // hero rarity
     if (userHero.rarity === 5) {
       sendResponseMessage({ message, errorCode: 'ERROR_MAX_RARITY' })
@@ -152,12 +160,21 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄裝備強化粉末**x1\n\n`
 
+    let buffChance = 1
+    if (userInventory.items['48']) {
+      buffChance = 1 + userInventory.items['48'] * 0.02
+    }
     let luck = Math.random()
-    if (luck < inventorySystem.enhanceChances[target.quality][target.level]) {
+    if (luck < inventorySystem.enhanceChances[target.quality][target.level] * buffChance) {
+      delete userInventory.items['48']
       userInventory.equipments[target.index].level += 1
       description += `強化成功，獲得了 ${equipments[target.id].icon}**${equipments[target.id].displayName}**+${target.level + 1}`
     } else {
-      description += `強化失敗，裝備維持原本的模樣`
+      if (!userInventory.items['48']) {
+        userInventory.items['48'] = 0
+      }
+      userInventory.items['48'] += 1
+      description += `強化失敗，裝備維持原本的模樣\n目前累積 :broken_heart:失落的印章-沮喪英雄x${userInventory.items['48']}`
     }
   }
 

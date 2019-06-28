@@ -29,7 +29,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   }
 
-  inventoryDisplay += `\n\n背包物品：**[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]**\n`
+  inventoryDisplay += `\n\n背包物品：**[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]**`
   let slotContents = []
   inventorySystem.kindOrders.forEach(kind => {
     for (let id in userInventory.items) {
