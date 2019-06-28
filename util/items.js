@@ -490,7 +490,7 @@ module.exports = {
     name: 'frustrated-gambler',
     icon: ':broken_heart:',
     displayName: '失落的印章-迷惘賭徒',
-    description: '在賭博中失利時會獲得的印章，累積越多枚印章可以提高下次贏得獎勵的機率。投注達 50 點換取一枚、達 500 點換取兩枚。',
+    description: '在賭博中失利時會獲得的印章，累積越多枚印章可以提高下次贏得獎勵的機率。單次投注達 50 點換取一枚、達 500 點換取兩枚，在拉霸機贏得獎勵或是在骰子遊戲中贏得雙倍賭注時會被全數收回。',
     maxStack: 1000,
     value: 1
   },

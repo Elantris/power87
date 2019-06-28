@@ -21,11 +21,11 @@ const prizes = [
   { chance: 0.0600, pattern: '33', multiplier: 15 },
   { chance: 0.0800, pattern: '44', multiplier: 10 },
   { chance: 0.1000, pattern: '55', multiplier: 7 },
-  { chance: 0.1200, pattern: '66', multiplier: 5 },
+  { chance: 0.1400, pattern: '66', multiplier: 5 },
   { chance: 0.2000, pattern: '77', multiplier: 2 },
-  { chance: 0.2487, pattern: '88', multiplier: 1 }
+  { chance: 0.2287, pattern: '88', multiplier: 1 }
 ]
-const baseHitChance = 0.08
+const baseHitChance = 0.1
 const lostMessages = [
   '結果是一無所獲',
   '然而什麼都沒有',

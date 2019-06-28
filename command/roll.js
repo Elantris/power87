@@ -1,13 +1,19 @@
 const energySystem = require('../util/energySystem')
+const inventorySystem = require('../util/inventorySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const diceIconMapping = {
+const symbols = {
   1: ':one:',
   2: ':two:',
   3: ':three:',
   4: ':four:',
   5: ':five:',
   6: ':six:'
+}
+const resultMapping = {
+  same: '一色',
+  12: '豹子',
+  3: '最小點'
 }
 
 const rollDice = () => {
@@ -34,7 +40,7 @@ const rollDice = () => {
 
   return {
     dice,
-    diceDisplay: dice.map(v => diceIconMapping[v]).join(' '),
+    display: dice.map(v => symbols[v]).join(' '),
     score
   }
 }
@@ -80,52 +86,97 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
 
-  // game
-  let gameDisplay = '莊家擲出了 '
-  let energyGain = 0
+  // inventory system
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+
+  let certainWinChance = 0
+  if (userInventory.buffs['%1']) {
+    certainWinChance = 0.02
+  } else if (userInventory.buffs['%2']) {
+    certainWinChance = 0.04
+  } else if (userInventory.buffs['%3']) {
+    certainWinChance = 0.06
+  } else if (userInventory.buffs['%4']) {
+    certainWinChance = 0.08
+  }
+
+  if (userInventory.items['47']) {
+    certainWinChance += userInventory.items['47'] * 0.005
+  }
+
+  // roll
   let host = rollDice()
-  if (host.score === 'same') {
-    gameDisplay += `**一色！**\n${host.diceDisplay}`
-    energyGain = bet * -1
-  } else if (host.score === 12) {
-    gameDisplay += `**豹子！**\n${host.diceDisplay}`
-    energyGain = bet * -1
+  let player = rollDice()
+
+  let luck = Math.random()
+  if (luck < certainWinChance) {
+    while (resultMapping[host.score]) {
+      host = rollDice()
+    }
+    while (player.score !== 'same' && player.score !== 12) {
+      player = rollDice()
+    }
+  }
+
+  let energyChange = 0
+  if (host.score === 12 || host.score === 'same') {
+    energyChange = bet * -1
   } else if (host.score === 3) {
-    gameDisplay += `**最小的 3 點！**\n${host.diceDisplay}`
-    energyGain = bet
+    energyChange = bet
+  } else if (player.score === 12 || player.score === 'same') {
+    energyChange = bet * 2
+  } else if (player.score === 3) {
+    energyChange = bet * -2
+  } else if (player.score > host.score) {
+    energyChange = bet
   } else {
-    gameDisplay += `**${host.score} 點**\n${host.diceDisplay}\n\n${message.member.displayName} ${sayMessage}擲出了 `
+    energyChange = bet * -1
+  }
 
-    let player = rollDice()
-    if (player.score === 'same') {
-      gameDisplay += `**一色！**`
-      energyGain = bet * 2
-    } else if (player.score === 12) {
-      gameDisplay += `**豹子！**`
-      energyGain = bet * 2
-    } else if (player.score === 3) {
-      gameDisplay += `**最小的 3 點！**`
-      energyGain = bet * -2
+  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyChange)
+
+  // response
+  let description = `:game_die: 碗公裡發出了清脆的聲響\n\n`
+
+  if (resultMapping[host.score]) {
+    description += `Power87 擲出了 **${resultMapping[host.score]}**！\n\n${host.display}\n\n`
+  } else {
+    description += `Power87 擲出了 **${host.score} 點**\n\n${host.display}\n\n`
+
+    if (resultMapping[player.score]) {
+      description += `${message.member.displayName} 擲出了 **${resultMapping[player.score]}**！\n\n${player.display}\n\n`
     } else {
-      gameDisplay += `**${player.score} 點**`
+      description += `${message.member.displayName} 擲出了 **${player.score} 點**\n\n${player.display}\n\n`
+    }
+  }
 
-      if (player.score > host.score) {
-        energyGain = bet
-      } else {
-        energyGain = bet * -1
+  if (energyChange > 0) {
+    description += `${message.member.displayName} 贏得了 ${energyChange} 點八七能量`
+
+    if (resultMapping[player.score]) {
+      delete userInventory.items['47']
+    }
+  } else {
+    description += `${message.member.displayName} 失去了 ${Math.abs(energyChange)} 點八七能量`
+
+    if (!userInventory.items['47']) {
+      userInventory.items['47'] = 0
+    }
+    if (bet === 500) {
+      userInventory.items['47'] += 2
+    } else if (bet >= 50) {
+      userInventory.items['47'] += 1
+      if (resultMapping[player.score]) {
+        userInventory.items['47'] += 1
       }
     }
-    gameDisplay += `\n${player.diceDisplay}`
   }
 
-  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain)
-
-  let resultDisplay = ``
-  if (energyGain > 0) {
-    resultDisplay = `${message.member.displayName} 贏得了 ${energyGain} 點八七能量`
-  } else if (energyGain < 0) {
-    resultDisplay = `${message.member.displayName} 失去了 ${energyGain * -1} 點八七能量`
+  if (userInventory.items['47']) {
+    description += `\n目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
   }
 
-  sendResponseMessage({ message, description: `:game_die: 碗公裡發出了清脆的聲響\n\n${gameDisplay}\n\n${resultDisplay}` })
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
+
+  sendResponseMessage({ message, description })
 }
