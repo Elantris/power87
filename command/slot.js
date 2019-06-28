@@ -150,20 +150,23 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description += `| : : : : **LOST** : : : : |\n\n` +
       lostMessages[Math.floor(Math.random() * lostMessages.length)] + `\n`
 
-    if (energyCost >= 50) {
+    if (userInventory.items['47']) {
       description += `目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
     }
   } else if (winId === 0) {
-    description += `| : **CONGRATS** : |\n\n<@${message.author.id}> 或成最大贏家，獲得了**頭獎** ${energyGain} 點八七能量`
+    delete userInventory.items['47']
     content = '@here 頭獎快訊！'
-    delete userInventory.items['47']
+    description += `| : **CONGRATS** : |\n\n` +
+      `<@${message.author.id}> 或成最大贏家，獲得了**頭獎** ${energyGain} 點八七能量`
   } else if (winId === 1) {
-    description += `| : : **77777777** : : |\n\n<@${message.author.id}> 7 起來，獲得了 **777獎** ${energyGain} 點八七能量`
+    delete userInventory.items['47']
     content = '@here 777！'
-    delete userInventory.items['47']
+    description += `| : : **77777777** : : |\n\n` +
+      `<@${message.author.id}> 7 起來，獲得了 **777獎** ${energyGain} 點八七能量`
   } else {
-    description += `| : : : : **WIN** : : : : : |\n\n贏得了 ${energyGain} 點八七能量`
     delete userInventory.items['47']
+    description += `| : : : : **WIN** : : : : : |\n\n` +
+      `贏得了 ${energyGain} 點八七能量`
   }
 
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
