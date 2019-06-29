@@ -91,17 +91,17 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   let certainWinChance = 0
   if (userInventory.buffs['%4']) {
-    certainWinChance = 0.08
-  } else if (userInventory.buffs['%3']) {
-    certainWinChance = 0.06
-  } else if (userInventory.buffs['%2']) {
     certainWinChance = 0.04
-  } else if (userInventory.buffs['%1']) {
+  } else if (userInventory.buffs['%3']) {
+    certainWinChance = 0.03
+  } else if (userInventory.buffs['%2']) {
     certainWinChance = 0.02
+  } else if (userInventory.buffs['%1']) {
+    certainWinChance = 0.01
   }
 
   if (userInventory.items['47']) {
-    certainWinChance += userInventory.items['47'] * 0.01
+    certainWinChance += userInventory.items['47'] * 0.005
   }
 
   // roll
