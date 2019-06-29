@@ -11,19 +11,19 @@
 範例：
 ```
 87!slot
-87!slot 10
-87!slot 10 這次一定行！
+87!slot 50
+87!slot 500 這次一定行！
 ```
 說明：
-消耗 1 ~ 500 點八七能量遊玩拉霸機，出現特定數量的相同圖樣則獲得 1 ~ 100 倍的獎勵點數，若出現兩個相同的圖案則獎勵為三個相同的一半。冷卻時間 15 秒，冷卻期間不會有任何回覆。
+消耗 1 ~ 500 點八七能量遊玩拉霸機，出現特定數量的相同圖樣可獲得對應的 1 ~ 100 倍獎勵點數，若出現兩個相同的圖案則獎勵為三個相同的一半。冷卻時間 15 秒。沒有中獎時單次投注達 50 點可獲得一枚 :broken_heart:**失落的印章-沮喪英雄**、達 500 點獲得兩枚，中獎時回收全部印章。
 
-:gem: 100x
-:seven: 77x
-:trophy: 50x
-:moneybag: 30x
-:gift: 20x
-:ribbon: 15x
-:balloon: 10x
-:four_leaf_clover: 5x
-:battery: 3x
+:gem: 100x、50x
+:seven: 77x、38x
+:trophy: 50x、25x
+:moneybag: 30x、15x
+:gift: 20x、10x
+:ribbon: 15x、7x
+:balloon: 10x、5x
+:four_leaf_clover: 5x、2x
+:battery: 3x、1x
 :dollar: 1x

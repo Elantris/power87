@@ -90,18 +90,18 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let certainWinChance = 0
-  if (userInventory.buffs['%1']) {
-    certainWinChance = 0.02
-  } else if (userInventory.buffs['%2']) {
-    certainWinChance = 0.04
+  if (userInventory.buffs['%4']) {
+    certainWinChance = 0.08
   } else if (userInventory.buffs['%3']) {
     certainWinChance = 0.06
-  } else if (userInventory.buffs['%4']) {
-    certainWinChance = 0.08
+  } else if (userInventory.buffs['%2']) {
+    certainWinChance = 0.04
+  } else if (userInventory.buffs['%1']) {
+    certainWinChance = 0.02
   }
 
   if (userInventory.items['47']) {
-    certainWinChance += userInventory.items['47'] * 0.005
+    certainWinChance += userInventory.items['47'] * 0.01
   }
 
   // roll
@@ -133,7 +133,26 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     energyChange = bet * -1
   }
 
+  if (energyChange > 0) {
+    delete userInventory.items['47']
+  } else {
+    if (!userInventory.items['47']) {
+      userInventory.items['47'] = 0
+    }
+    if (bet >= 50) {
+      userInventory.items['47'] += 1
+      if (resultMapping[player.score]) {
+        userInventory.items['47'] += 1
+      }
+    }
+    if (bet === 500) {
+      userInventory.items['47'] += 1
+    }
+  }
+
+  // update database
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyChange)
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   let description = `:game_die: 碗公裡發出了清脆的聲響\n\n`
@@ -152,31 +171,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   if (energyChange > 0) {
     description += `${message.member.displayName} 贏得了 ${energyChange} 點八七能量`
-
-    if (resultMapping[player.score]) {
-      delete userInventory.items['47']
-    }
   } else {
     description += `${message.member.displayName} 失去了 ${Math.abs(energyChange)} 點八七能量`
-
-    if (!userInventory.items['47']) {
-      userInventory.items['47'] = 0
-    }
-    if (bet === 500) {
-      userInventory.items['47'] += 2
-    } else if (bet >= 50) {
-      userInventory.items['47'] += 1
-      if (resultMapping[player.score]) {
-        userInventory.items['47'] += 1
-      }
-    }
   }
 
   if (userInventory.items['47']) {
     description += `\n目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
   }
-
-  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   sendResponseMessage({ message, description })
 }

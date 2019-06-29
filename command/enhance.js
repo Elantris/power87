@@ -75,7 +75,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
         if (chance > 1) {
           chance = 1
         }
-        description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，消耗 :sparkles:x1，**${Math.floor(chance * 100)}%**，\`87!enhance ${equipment.name}+${v.level}\``
+        description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，消耗 :sparkles:x1，**${(chance * 100).toFixed(2)}%**，\`87!enhance ${equipment.name}+${v.level}\``
       })
     }
   } else if (args[1] === 'rarity') { // hero rarity
@@ -174,7 +174,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
         userInventory.items['48'] = 0
       }
       userInventory.items['48'] += 1
-      description += `強化失敗，裝備維持原本的模樣\n目前累積 :broken_heart:失落的印章-沮喪英雄x${userInventory.items['48']}`
+      description += `強化失敗，裝備維持原本的模樣\n目前累積 :broken_heart:**失落的印章-沮喪英雄**x${userInventory.items['48']}`
     }
   }
 

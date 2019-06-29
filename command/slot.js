@@ -82,18 +82,18 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let buffChance = 0
   let markChance = 0
 
-  if (userInventory.buffs['%1']) {
-    buffChance = 0.02
-  } else if (userInventory.buffs['%2']) {
-    buffChance = 0.04
+  if (userInventory.buffs['%4']) {
+    buffChance = 0.08
   } else if (userInventory.buffs['%3']) {
     buffChance = 0.06
-  } else if (userInventory.buffs['%4']) {
-    buffChance = 0.08
+  } else if (userInventory.buffs['%2']) {
+    buffChance = 0.04
+  } else if (userInventory.buffs['%1']) {
+    buffChance = 0.02
   }
 
   if (userInventory.items['47']) {
-    markChance = userInventory.items['47'] * 0.005
+    markChance = userInventory.items['47'] * 0.01
   }
 
   // slot
@@ -127,7 +127,22 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   }
 
+  if (winId === -1) {
+    if (!userInventory.items['47']) {
+      userInventory.items['47'] = 0
+    }
+    if (energyCost === 500) {
+      userInventory.items['47'] += 2
+    } else if (energyCost >= 50) {
+      userInventory.items['47'] += 1
+    }
+  } else {
+    delete userInventory.items['47']
+  }
+
+  // update database
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain - energyCost)
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   let content
@@ -138,15 +153,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     `-------------------\n`
 
   if (winId === -1) {
-    if (!userInventory.items['47']) {
-      userInventory.items['47'] = 0
-    }
-    if (energyCost === 500) {
-      userInventory.items['47'] += 2
-    } else if (energyCost >= 50) {
-      userInventory.items['47'] += 1
-    }
-
     description += `| : : : : **LOST** : : : : |\n\n` +
       lostMessages[Math.floor(Math.random() * lostMessages.length)] + `\n`
 
@@ -154,22 +160,17 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       description += `目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
     }
   } else if (winId === 0) {
-    delete userInventory.items['47']
     content = '@here 頭獎快訊！'
     description += `| : **CONGRATS** : |\n\n` +
       `<@${message.author.id}> 或成最大贏家，獲得了**頭獎** ${energyGain} 點八七能量`
   } else if (winId === 1) {
-    delete userInventory.items['47']
     content = '@here 777！'
     description += `| : : **77777777** : : |\n\n` +
       `<@${message.author.id}> 7 起來，獲得了 **777獎** ${energyGain} 點八七能量`
   } else {
-    delete userInventory.items['47']
     description += `| : : : : **WIN** : : : : : |\n\n` +
       `贏得了 ${energyGain} 點八七能量`
   }
-
-  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   sendResponseMessage({ message, content, description })
 }
