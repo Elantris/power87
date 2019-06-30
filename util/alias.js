@@ -16,9 +16,6 @@ module.exports = {
   inv: 'inventory',
   fish: 'fishing',
 
-  eq: 'equipment',
-
   h: 'help',
-  manual: 'help',
-  clear: 'clean'
+  manual: 'help'
 }

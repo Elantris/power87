@@ -8,7 +8,7 @@ const gainFromTextChannel = async ({ database, energy, guildId, userId }) => {
   } else {
     userEnergy = INITIAL_USER_ENERGY
   }
-  await database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + 1)
+  database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + 1)
 }
 
 const isQualified = member => member.voiceChannelID && !member.deaf

@@ -5,6 +5,7 @@ const inventorySystem = require('../util/inventorySystem')
 const items = require('../util/items')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
+const dailyReward = 20
 const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 let monthlyReward = {
   month: '',
@@ -20,12 +21,12 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // update monthly rewards
   if (monthlyReward.month !== todayDisplay.substring(0, 6)) {
+    monthlyReward.month = todayDisplay.substring(0, 6)
+
     let monthlyRewardRaw = await database.ref(`/monthlyReward/${todayDisplay.substring(0, 6)}`).once('value')
     if (monthlyRewardRaw.exists()) {
       monthlyReward.items = monthlyRewardRaw.val().split(',')
       monthlyReward.items.unshift('-')
-
-      monthlyReward.month = todayDisplay.substring(0, 6)
 
       monthlyReward.days = monthDays[message.createdAt.getMonth()]
       if (monthlyReward.days === 28) { // Febularay
@@ -72,7 +73,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   } else {
     userEnergy = energySystem.INITIAL_USER_ENERGY
   }
-  userEnergy += 20
+  userEnergy += dailyReward
 
   let bonusEnergy = ''
   if (dailyData[1] % 30 === 0) {
@@ -84,7 +85,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   // inventory system
-  let bonusItem = ''
+  let rewardMessage = ''
   if (monthlyReward.items[dailyData[2]] && monthlyReward.items[dailyData[2]] !== '-') {
     let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
     let reward = monthlyReward.items[dailyData[2]].split('.')
@@ -94,7 +95,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     userInventory.items[reward[0]] += parseInt(reward[1] || 1)
     inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
-    bonusItem = `，獲得 ${items[reward[0]].icon}**${items[reward[0]].displayName}**x${reward[1] || 1}`
+    rewardMessage = `，獲得 ${items[reward[0]].icon}**${items[reward[0]].displayName}**x${reward[1] || 1}`
   }
 
   // update databse
@@ -102,7 +103,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
 
   // response
-  description = `:calendar: ${message.member.displayName} 完成每日簽到獲得 20 點八七能量。連續簽到 ${dailyData[1]} 天${bonusEnergy}；本月累計簽到 ${dailyData[2]} 天${bonusItem}\n\n本月簽到獎勵列表：\n`
+  description = `:calendar: ${message.member.displayName} 完成每日簽到獲得 ${dailyReward} 點八七能量。連續簽到 ${dailyData[1]} 天${bonusEnergy}；本月累計簽到 ${dailyData[2]} 天${rewardMessage}\n\n本月簽到獎勵列表：\n`
 
   for (let i = 1; i <= monthlyReward.days; i++) {
     if (i % 7 === 1) {

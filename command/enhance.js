@@ -14,6 +14,12 @@ const abilities = {
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  if (userInventory.status === 'fishing') {
+    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
+    return
+  }
+
   if (args[1]) {
     args[1] = args[1].toLowerCase()
   }
@@ -31,12 +37,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   if (userHero.status === 'dead') {
     sendResponseMessage({ message, errorCode: 'ERROR_HERO_DEAD' })
     database.ref(`/hero/${guildId}/${userId}`).remove()
-    return
-  }
-
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-  if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
     return
   }
 

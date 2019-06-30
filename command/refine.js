@@ -57,6 +57,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
 
+  // update database
   if (!userInventory.items['46']) {
     userInventory.items['46'] = 0
   }
@@ -65,11 +66,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
   userInventory.items['46'] += target.level + 1
-
   userInventory.equipments = userInventory.equipments.filter((v, index) => index !== target.index)
 
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
+  // response
   description = `:arrows_counterclockwise: ${message.member.displayName} 拆解了 ${equipments[target.id].icon}**${equipments[target.id].displayName}**+${target.level}，獲得 :sparkles:**英雄裝備強化粉末**x${target.level + 1}`
   sendResponseMessage({ message, description })
 }

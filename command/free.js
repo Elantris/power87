@@ -20,7 +20,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   // energy system
-  let energyGain = Math.floor(userHero.exp * 0.5)
+  let energyGain = Math.floor(userHero.exp * 0.5 + userHero.rarity * 50)
   let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
   userEnergy = userEnergy.val()
 

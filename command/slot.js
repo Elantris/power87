@@ -34,7 +34,8 @@ const lostMessages = [
   '感覺到了，再來一次一定中',
   '這些能量都進了許願池',
   '難過的是放棄的夢被打碎',
-  '呃啊啊啊啊啊'
+  '呃啊啊啊啊啊',
+  '獲得更多的印章'
 ]
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {

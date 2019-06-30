@@ -2,7 +2,8 @@ const fs = require('fs')
 
 const alias = require('./alias')
 const isCoolingDown = require('./isCoolingDown')
-let sendResponseMessage = require('./sendResponseMessage')
+const energySystem = require('./energySystem')
+const sendResponseMessage = require('./sendResponseMessage')
 
 // * load commands
 let commands = {}
@@ -13,6 +14,13 @@ fs.readdirSync('./command/').filter(filename => !filename.startsWith('.')).forEa
 
 // * main message
 module.exports = ({ client, database, message, guildId, userId }) => {
+  if (!message.content.startsWith('87')) {
+    if (!isCoolingDown({ userCmd: 'gainFromMessage', message, userId })) {
+      energySystem.gainFromTextChannel({ database, guildId, userId })
+    }
+    return
+  }
+
   // parse command
   let userCmd = ''
   let args = message.content.replace(/  +/g, ' ').split(' ')
@@ -28,7 +36,7 @@ module.exports = ({ client, database, message, guildId, userId }) => {
   }
 
   if (!commands[userCmd]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_COMMAND' })
+    sendResponseMessage({ message, errorCode: 'ERROR_NO_COMMAND', fade: true })
     return
   }
 

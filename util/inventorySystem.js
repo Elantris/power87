@@ -6,7 +6,7 @@ const fishingSystem = require('./fishingSystem')
 
 const kindOrders = ['event', 'mark', 'hero', 'equipment', 'enhance', 'box', 'buff', 'petfood', 'jewel', 'fishing']
 const kindNames = {
-  box: '箱子',
+  box: '箱子道具',
   buff: '增益道具',
   enhance: '強化素材',
   equipment: '英雄裝備',
@@ -37,7 +37,8 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     equipments: [],
     items: {},
     maxSlots: 0,
-    emptySlots: 0
+    emptySlots: 0,
+    maxEquipments: 0
   }
 
   let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
@@ -55,6 +56,7 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
       if (tmp[0] === '$0') { // bag
         userInventory.maxSlots += (parseInt(tmp[1]) + 1) * 8
         userInventory.emptySlots += (parseInt(tmp[1]) + 1) * 8
+        userInventory.maxEquipments = parseInt(tmp[1])
       } else if (tmp[0] === '$2') { // sailboat
         userInventory.maxSlots += (parseInt(tmp[1]) + 1) * 4
         userInventory.emptySlots += (parseInt(tmp[1]) + 1) * 4
@@ -128,6 +130,10 @@ const write = (database, guildId, userId, userInventory, timenow = Date.now()) =
 }
 
 const getEquipment = (userInventory, kind, quality) => {
+  if (userInventory.equipments.length >= userInventory.maxEquipments) {
+    return 'ERROR_BAG_FULL'
+  }
+
   if (!equipmentMapping[kind][quality]) {
     return 'ERROR_NOT_FOUND'
   }

@@ -12,24 +12,27 @@ const userStatusMapping = {
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  let description = `:diamond_shape_with_a_dot_inside: ${message.member.displayName}`
 
-  let inventoryDisplay = `\n功能道具：`
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  description += ` ${userStatusMapping[userInventory.status]}`
+
+  description += `\n功能道具：`
   for (let id in userInventory.tools) {
-    inventoryDisplay += `${tools[id].icon}+${userInventory.tools[id]} `
+    description += `${tools[id].icon}+${userInventory.tools[id]} `
   }
 
-  inventoryDisplay += `\n增益效果：`
+  description += `\n增益效果：`
   for (let id in userInventory.buffs) {
     if (userInventory.buffs[id] > message.createdTimestamp) {
       let buffTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
       let buffTimeHour = Math.floor(buffTime / 60).toString().padStart(2, '0')
       let buffTimeMinute = Math.floor(buffTime % 60).toString().padStart(2, '0')
-      inventoryDisplay += `${items[buffs[id]].icon}${buffTimeHour}:${buffTimeMinute}`
+      description += `${items[buffs[id]].icon}${buffTimeHour}:${buffTimeMinute}`
     }
   }
 
-  inventoryDisplay += `\n\n背包物品：**[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]**`
+  description += `\n\n背包物品：**[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]**`
   let slotContents = []
   inventorySystem.kindOrders.forEach(kind => {
     for (let id in userInventory.items) {
@@ -42,26 +45,26 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   })
   slotContents.forEach((icon, index) => {
     if (index % 12 === 0) {
-      inventoryDisplay += '\n'
+      description += '\n'
     } else {
-      inventoryDisplay += ' '
+      description += ' '
     }
-    inventoryDisplay += icon
+    description += icon
   })
 
-  inventoryDisplay += `\n\n英雄裝備：**[${userInventory.equipments.length}/8]**`
+  description += `\n\n英雄裝備：**[${userInventory.equipments.length}/${userInventory.maxEquipments}]**`
   userInventory.equipments.forEach(v => {
     let equipment = equipments[v.id]
     let abilities = inventorySystem.calculateAbility(v.id, v.level)
 
-    inventoryDisplay += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，`
+    description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，`
     if (equipment.kind === 'weapon') {
-      inventoryDisplay += `\`ATK\`: ${abilities[0]} / \`HIT\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
+      description += `\`ATK\`: ${abilities[0]} / \`HIT\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     } else if (equipment.kind === 'armor') {
-      inventoryDisplay += `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
+      description += `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
   })
 
   // response
-  sendResponseMessage({ message, description: `:diamond_shape_with_a_dot_inside: ${message.member.displayName} ${userStatusMapping[userInventory.status]}\n${inventoryDisplay}` })
+  sendResponseMessage({ message, description })
 }

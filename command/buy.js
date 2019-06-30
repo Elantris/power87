@@ -6,12 +6,12 @@ const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const availableKinds = {
-  buff: '增益道具',
-  petfood: '英雄食品',
-  box: '箱子',
-  hero: '英雄用品',
-  enhance: '強化素材',
-  equipment: '英雄裝備'
+  buff: true,
+  petfood: true,
+  box: true,
+  hero: true,
+  enhance: true,
+  equipment: true
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
@@ -79,8 +79,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
     }
 
-    description += `\n\n__特色商品__：\`87!buy [kind]\`\n`
-    description += Object.keys(availableKinds).map(kind => `\`${kind}\``).join(' / ')
+    description += `\n\n__特色商品__：\n`
+    description += Object.keys(availableKinds).map(kind => `${inventorySystem.kindNames[kind]}，\`87!buy ${kind}\``).join('\n')
 
     sendResponseMessage({ message, description })
     return

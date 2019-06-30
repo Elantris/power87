@@ -23,7 +23,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // energy system
   let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
-  // let userEnergy = snapshot.val()
   if (userEnergy.exists()) {
     userEnergy = userEnergy.val()
   } else {

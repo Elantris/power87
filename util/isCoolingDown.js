@@ -15,12 +15,13 @@ const cooldownTime = {
   sell: 3,
   fishing: 10,
   use: 3,
-  mark: 5,
+  mark: 10,
 
   hero: 5,
   free: 5,
   feed: 3,
   enhance: 5,
+  refine: 5,
 
   help: 3,
   wiki: 3,
@@ -38,7 +39,7 @@ for (let i in cooldownTime) {
 
 let userLastUsed = {}
 
-const isCoolingDown = ({ userCmd, message, userId }) => {
+module.exports = ({ userCmd, message, userId }) => {
   // undefined detection
   if (!userLastUsed[userId]) {
     userLastUsed[userId] = {}
@@ -56,5 +57,3 @@ const isCoolingDown = ({ userCmd, message, userId }) => {
   userLastUsed[userId][userCmd] = message.createdTimestamp
   return false
 }
-
-module.exports = isCoolingDown
