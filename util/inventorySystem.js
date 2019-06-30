@@ -145,6 +145,18 @@ const getEquipment = (userInventory, kind, quality) => {
   })
 }
 
+const findEquipment = (userInventory, search) => {
+  search = search.split('+')
+  search[1] = parseInt(search[1] || 0)
+
+  return userInventory.equipments.findIndex((v, index) => {
+    if (search[0] === equipments[v.id].name && search[1] === v.level) {
+      return true
+    }
+    return false
+  })
+}
+
 const calculateAbility = (id, level) => equipments[id].blank.map((v, i) => v + equipments[id].levelUp[i] * level)
 
 module.exports = {
@@ -157,5 +169,6 @@ module.exports = {
   read,
   write,
   getEquipment,
+  findEquipment,
   calculateAbility
 }

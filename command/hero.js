@@ -1,4 +1,6 @@
+const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
+const equipments = require('../util/equipments')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const statusMapping = {
@@ -18,6 +20,7 @@ const statusDisplay = (status) => {
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+
   if (!userHero.name) {
     sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
     return
@@ -28,15 +31,63 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
 
-  // display hero info
-  let description = `:scroll: ${message.member.displayName} 召喚的英雄\n\n` +
-    `:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}\n\n` +
-    `成長：**Lv.${userHero.level}** (${userHero.expPercent}%)\n` +
-    `飽食度：${userHero.feed < 0 ? 0 : userHero.feed}/${userHero.maxFeed} (${userHero.feedPercent}%)\n` +
-    `體質：\`STR:\` ${userHero.str} / \`VIT:\` ${userHero.vit} / \`AGI:\` ${userHero.agi} / \`INT:\` ${userHero.int} / \`LUK:\` ${userHero.luk}\n` +
-    `狀態：${statusDisplay(userHero.status)}`
+  let description
 
-  sendResponseMessage({ message, description: description })
+  if (args.length === 1) { // display hero info
+    description = `:scroll: ${message.member.displayName} 召喚的英雄\n\n` +
+      `:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}\n\n` +
+      `成長：**Lv.${userHero.level}** (${userHero.expPercent}%)\n` +
+      `飽食度：${userHero.feed < 0 ? 0 : userHero.feed}/${userHero.maxFeed} (${userHero.feedPercent}%)\n` +
+      `狀態：${statusDisplay(userHero.status)}\n\n` +
+      `體質：\`STR:\` ${userHero.str} / \`VIT:\` ${userHero.vit} / \`AGI:\` ${userHero.agi} / \`INT:\` ${userHero.int} / \`LUK:\` ${userHero.luk}\n` +
+      `戰鬥：\`ATK\`: ${userHero.atk} / \`DEF\`: ${userHero.def} / \`HIT\`: ${userHero.hit} / \`EV\`: ${userHero.ev} / \`SPD\`: ${userHero.spd}`
 
+    if (userHero.weapon) {
+      let abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
+      description += `\n武器：:crossed_swords:**${equipments[userHero.weapon.id].displayName}**+${userHero.weapon.level}，` +
+        `\`ATK\`: ${abilities[0]} / \`HIT\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
+    }
+    if (userHero.armor) {
+      let abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
+      description += `\n防具：:shield:**${equipments[userHero.armor.id].displayName}**+${userHero.armor.level}，` +
+        `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
+    }
+  } else { // equip weapon or armor
+    let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+
+    let targetIndex = inventorySystem.findEquipment(userInventory, args[1])
+    if (targetIndex === -1) {
+      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
+      return
+    }
+
+    let targetEquipment = equipments[userInventory.equipments[targetIndex].id]
+
+    if (userHero[targetEquipment.kind]) {
+      userInventory.equipments.push({
+        id: userHero[targetEquipment.kind].id,
+        level: userHero[targetEquipment.kind].level
+      })
+    }
+
+    userHero[targetEquipment.kind] = {
+      id: userInventory.equipments[targetIndex].id,
+      level: userInventory.equipments[targetIndex].level
+    }
+
+    userInventory.equipments = userInventory.equipments.filter((v, i) => i !== targetIndex)
+    userInventory.equipments.sort((a, b) => a.id - b.id || b.level - a.level)
+
+    inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
+
+    description = `:scroll: ${message.member.displayName} 召喚的英雄\n\n` +
+      `:${userHero.species}: **${userHero.name}** ` +
+      `裝備了 ${targetEquipment.icon}**${targetEquipment.displayName}**+${userHero[targetEquipment.kind].level}`
+  }
+
+  // update database
   heroSystem.write(database, guildId, userId, userHero)
+
+  // response
+  sendResponseMessage({ message, description: description })
 }

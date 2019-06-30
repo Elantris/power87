@@ -1,4 +1,6 @@
 const config = require('../config')
+const equipments = require('./equipments')
+const inventorySystem = require('./inventorySystem')
 
 // * properties
 const species = ['ant', 'baby_chick', 'bat', 'bear', 'bee', 'beetle', 'bird', 'blowfish', 'boar', 'bug', 'butterfly', 'camel', 'cat', 'cat2', 'chicken', 'chipmunk', 'cow', 'cow2', 'crab', 'crocodile', 'deer', 'dog', 'dog2', 'dolphin', 'dove', 'dragon', 'dragon_face', 'dromedary_camel', 'duck', 'eagle', 'elephant', 'feet', 'fish', 'fox', 'frog', 'goat', 'gorilla', 'hamster', 'horse', 'jack_o_lantern', 'koala', 'leopard', 'lion_face', 'lizard', 'monkey_face', 'mouse', 'mouse2', 'octopus', 'owl', 'ox', 'panda_face', 'penguin', 'pig', 'pig2', 'poodle', 'rabbit', 'rabbit2', 'racehorse', 'ram', 'rat', 'rhino', 'rooster', 'scorpion', 'shark', 'sheep', 'shrimp', 'snail', 'snake', 'snowman', 'spider', 'squid', 'tiger', 'tiger2', 'tropical_fish', 'turkey', 'turtle', 'unicorn', 'water_buffalo', 'whale', 'whale2', 'wolf']
@@ -11,7 +13,8 @@ const expRange = [0, 100, 210, 331, 464, 610, 770, 946, 1139, 1351, 1584, 1840, 
 // 4 experience : number
 // 5 feed : number
 // 6 ability : array (number)
-// 7 status : string
+// 7 equipment: array (string)
+// 8 status : string
 
 // * methods
 const read = async (database, guildId, userId, timenow = Date.now()) => {
@@ -35,15 +38,19 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     agi: 0,
     int: 0,
     luk: 0,
-    weapon: '',
-    armor: '',
-    accessory: '',
+    weapon: null,
+    armor: null,
 
     // calculated
     level: 0,
     expPercent: 0,
     maxFeed: 100,
     feedPercent: 0,
+    atk: 1,
+    def: 1,
+    hit: 1,
+    ev: 1,
+    spd: 1,
     status: ''
   }
 
@@ -62,7 +69,27 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   userHero.int = ability[3]
   userHero.luk = ability[4]
 
-  userHero.status = heroData[7]
+  // equipment
+  heroData[7].split(',').filter(v => v).forEach(v => {
+    let tmp = v.slice(1).split('+').map(v => parseInt(v))
+    userHero[equipments[tmp[0]].kind] = {
+      id: tmp[0],
+      level: parseInt(tmp[1])
+    }
+
+    let abilities = inventorySystem.calculateAbility(tmp[0], tmp[1])
+    if (equipments[tmp[0]].kind === 'weapon') {
+      userHero.atk += abilities[0]
+      userHero.hit += abilities[1]
+      userHero.spd += abilities[2]
+    } else if (equipments[tmp[0]].kind === 'armor') {
+      userHero.def += abilities[0]
+      userHero.ev += abilities[1]
+      userHero.spd += abilities[2]
+    }
+  })
+
+  userHero.status = heroData[8]
 
   // level
   for (let level in expRange) {
@@ -101,8 +128,19 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 
 const write = (database, guildId, userId, userHero, timenow = Date.now()) => {
   userHero.lastUpdate = parseInt(timenow / config.tick)
+
   let ability = `${userHero.str},${userHero.vit},${userHero.agi},${userHero.int},${userHero.luk}`
-  database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${userHero.status}`)
+
+  let equipment = []
+  if (userHero.weapon) {
+    equipment.push(userHero.weapon)
+  }
+  if (userHero.armor) {
+    equipment.push(userHero.armor)
+  }
+  equipment = equipment.map(v => `&${v.id.toString().padStart(4, '0')}+${v.level}`).join(',')
+
+  database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${equipment};${userHero.status}`)
 }
 
 const rarityDisplay = (rarity) => ':star:'.repeat(rarity)
