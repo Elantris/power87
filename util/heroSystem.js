@@ -72,18 +72,20 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   userHero.luk = heroAbilities[4]
 
   // equipment
-  userHero.weapon = inventorySystem.parseEquipment(heroData[8])
-  userHero.armor = inventorySystem.parseEquipment(heroData[9])
-
-  let abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
-  userHero.atk += abilities[0]
-  userHero.hit += abilities[1]
-  userHero.spd += abilities[2]
-
-  abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
-  userHero.def += abilities[0]
-  userHero.ev += abilities[1]
-  userHero.spd += abilities[2]
+  if (heroData[8]) {
+    userHero.weapon = inventorySystem.parseEquipment(heroData[8])
+    let abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
+    userHero.atk += abilities[0]
+    userHero.hit += abilities[1]
+    userHero.spd += abilities[2]
+  }
+  if (heroData[9]) {
+    userHero.armor = inventorySystem.parseEquipment(heroData[9])
+    let abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
+    userHero.def += abilities[0]
+    userHero.ev += abilities[1]
+    userHero.spd += abilities[2]
+  }
 
   // level
   for (let level in expRange) {
@@ -121,8 +123,8 @@ const write = (database, guildId, userId, userHero, timenow = Date.now()) => {
   userHero.lastUpdate = Math.floor(timenow / config.tick)
 
   let ability = `${userHero.str},${userHero.vit},${userHero.agi},${userHero.int},${userHero.luk}`
-  let weapon = `&${userHero.weapon.id.toString().padStart(4, '0')}+${userHero.weapon.level}`
-  let armor = `&${userHero.armor.id.toString().padStart(4, '0')}+${userHero.armor.level}`
+  let weapon = userHero.weapon ? `&${userHero.weapon.id.toString().padStart(4, '0')}+${userHero.weapon.level}` : ``
+  let armor = userHero.armor ? `&${userHero.armor.id.toString().padStart(4, '0')}+${userHero.armor.level}` : ``
 
   database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.status};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${weapon};${armor}`)
 }
