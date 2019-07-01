@@ -39,7 +39,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     inventorySystem.kindOrders.forEach(kind => {
       for (let id in userInventory.items) {
         if (items[id].kind === kind) {
-          description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，:battery: **${items[id].value}**，\`87!sell ${items[id].name} ${userInventory.items[id]}\``
+          description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，\`${kind}\`，:battery: **${items[id].value}**，\`87!sell ${items[id].name} ${userInventory.items[id]}\``
         }
       }
     })

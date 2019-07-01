@@ -101,7 +101,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   if (userInventory.items['47']) {
-    certainWinChance += userInventory.items['47'] * 0.005
+    certainWinChance += userInventory.items['47'] * 0.01
   }
 
   // roll

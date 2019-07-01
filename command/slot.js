@@ -25,7 +25,7 @@ const prizes = [
   { chance: 0.2000, pattern: '77', multiplier: 2 },
   { chance: 0.2287, pattern: '88', multiplier: 1 }
 ]
-const baseHitChance = 0.08
+const baseHitChance = 0.1
 const lostMessages = [
   '結果是一無所獲',
   '然而什麼都沒有',
@@ -94,7 +94,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   if (userInventory.items['47']) {
-    markChance = userInventory.items['47'] * 0.005
+    markChance = userInventory.items['47'] * 0.01
   }
 
   // slot

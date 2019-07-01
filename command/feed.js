@@ -5,6 +5,7 @@ const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
 const availableKinds = {
+  buff: true,
   fishing: true,
   petfood: true
 }
@@ -35,11 +36,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     target = results[0]
     target.kind = items[target.id].kind
     target.amount = 1
-
-    if (!availableKinds[target.kind]) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_USABLE' })
-      return
-    }
   }
 
   // amount
