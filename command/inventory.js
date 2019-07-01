@@ -63,6 +63,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     } else if (equipment.kind === 'armor') {
       description += `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
+    description += `，\`87!hero ${equipment.name}+${v.level}\``
   })
 
   // response

@@ -28,34 +28,14 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     return
   }
 
-  let target = {
-    name: '',
-    level: '',
-    index: -1,
-    id: -1
-  }
+  let targetIndex = inventorySystem.findEquipmentIndex(userInventory, args[1])
 
-  let tmp = args[1].split('+')
-  target.name = tmp[0]
-  target.level = parseInt(tmp[1] || 0)
-
-  if (!Number.isSafeInteger(target.level)) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
-  }
-
-  target.index = userInventory.equipments.findIndex((v, index) => {
-    if (target.name === equipments[v.id].name && target.level === v.level) {
-      target.id = v.id
-      return true
-    }
-    return false
-  })
-
-  if (target.index === -1) {
+  if (targetIndex === -1) {
     sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
     return
   }
+  let equipment = equipments[userInventory.equipments[targetIndex].id]
+  let targetLevel = userInventory.equipments[targetIndex].level
 
   // update database
   if (!userInventory.items['46']) {
@@ -65,12 +45,12 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
     return
   }
-  userInventory.items['46'] += target.level + 1
-  userInventory.equipments = userInventory.equipments.filter((v, index) => index !== target.index)
+  userInventory.items['46'] += targetLevel + 1
+  userInventory.equipments = userInventory.equipments.filter((v, i) => i !== targetIndex)
 
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
-  description = `:arrows_counterclockwise: ${message.member.displayName} 拆解了 ${equipments[target.id].icon}**${equipments[target.id].displayName}**+${target.level}，獲得 :sparkles:**英雄裝備強化粉末**x${target.level + 1}`
+  description = `:arrows_counterclockwise: ${message.member.displayName} 拆解了 ${equipment.icon}**${equipment.displayName}**+${targetLevel}，獲得 :sparkles:**英雄裝備強化粉末**x${targetLevel + 1}`
   sendResponseMessage({ message, description })
 }

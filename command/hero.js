@@ -39,38 +39,40 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       `成長：**Lv.${userHero.level}** (${userHero.expPercent}%)\n` +
       `飽食度：${userHero.feed < 0 ? 0 : userHero.feed}/${userHero.maxFeed} (${userHero.feedPercent}%)\n` +
       `狀態：${statusDisplay(userHero.status)}\n\n` +
-      `體質：\`STR:\` ${userHero.str} / \`VIT:\` ${userHero.vit} / \`AGI:\` ${userHero.agi} / \`INT:\` ${userHero.int} / \`LUK:\` ${userHero.luk}\n` +
-      `戰鬥：\`ATK\`: ${userHero.atk} / \`DEF\`: ${userHero.def} / \`HIT\`: ${userHero.hit} / \`EV\`: ${userHero.ev} / \`SPD\`: ${userHero.spd}`
+      `體質：\`STR\`: ${userHero.str} / \`VIT\`: ${userHero.vit} / \`AGI\`: ${userHero.agi} / \`INT\`: ${userHero.int} / \`LUK\`: ${userHero.luk}\n` +
+      `戰鬥：\`ATK\`: ${userHero.atk} / \`DEF\`: ${userHero.def} / \`SPD\`: ${userHero.spd} / \`HIT\`: ${userHero.hit} / \`EV\`: ${userHero.ev}`
 
+    description += `\n武器：`
     if (userHero.weapon) {
       let abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
-      description += `\n武器：:crossed_swords:**${equipments[userHero.weapon.id].displayName}**+${userHero.weapon.level}，` +
+      description += `:crossed_swords:**${equipments[userHero.weapon.id].displayName}**+${userHero.weapon.level}，` +
         `\`ATK\`: ${abilities[0]} / \`HIT\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
+    description += `\n防具：`
     if (userHero.armor) {
       let abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
-      description += `\n防具：:shield:**${equipments[userHero.armor.id].displayName}**+${userHero.armor.level}，` +
+      description += `:shield:**${equipments[userHero.armor.id].displayName}**+${userHero.armor.level}，` +
         `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
   } else { // equip weapon or armor
     let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
-    let targetIndex = inventorySystem.findEquipment(userInventory, args[1])
+    let targetIndex = inventorySystem.findEquipmentIndex(userInventory, args[1].toLowerCase())
     if (targetIndex === -1) {
       sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
       return
     }
 
-    let targetEquipment = equipments[userInventory.equipments[targetIndex].id]
+    let equipment = equipments[userInventory.equipments[targetIndex].id]
 
-    if (userHero[targetEquipment.kind]) {
+    if (userHero[equipment.kind]) {
       userInventory.equipments.push({
-        id: userHero[targetEquipment.kind].id,
-        level: userHero[targetEquipment.kind].level
+        id: userHero[equipment.kind].id,
+        level: userHero[equipment.kind].level
       })
     }
 
-    userHero[targetEquipment.kind] = {
+    userHero[equipment.kind] = {
       id: userInventory.equipments[targetIndex].id,
       level: userInventory.equipments[targetIndex].level
     }
@@ -82,7 +84,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     description = `:scroll: ${message.member.displayName} 召喚的英雄\n\n` +
       `:${userHero.species}: **${userHero.name}** ` +
-      `裝備了 ${targetEquipment.icon}**${targetEquipment.displayName}**+${userHero[targetEquipment.kind].level}`
+      `裝備了 ${equipment.icon}**${equipment.displayName}**+${userHero[equipment.kind].level}`
   }
 
   // update database

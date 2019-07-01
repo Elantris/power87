@@ -129,7 +129,7 @@ const write = (database, guildId, userId, userInventory, timenow = Date.now()) =
   database.ref(`/inventory/${guildId}/${userId}`).set(inventoryData.join(','))
 }
 
-const getEquipment = (userInventory, kind, quality) => {
+const exchangeEquipment = (userInventory, kind, quality) => {
   if (userInventory.equipments.length >= userInventory.maxEquipments) {
     return 'ERROR_BAG_FULL'
   }
@@ -145,12 +145,19 @@ const getEquipment = (userInventory, kind, quality) => {
   })
 }
 
-const findEquipment = (userInventory, search) => {
+const parseEquipment = (raw) => {
+  raw = raw.split('+')
+  return {
+    id: parseInt(raw[0].slice(1)),
+    level: parseInt(raw[1] || 0)
+  }
+}
+
+const findEquipmentIndex = (userInventory, search) => {
   search = search.split('+')
-  search[1] = parseInt(search[1] || 0)
 
   return userInventory.equipments.findIndex((v, index) => {
-    if (search[0] === equipments[v.id].name && search[1] === v.level) {
+    if (search[0] === equipments[v.id].name && parseInt(search[1]) === v.level) {
       return true
     }
     return false
@@ -168,7 +175,8 @@ module.exports = {
   // methods
   read,
   write,
-  getEquipment,
-  findEquipment,
+  exchangeEquipment,
+  parseEquipment,
+  findEquipmentIndex,
   calculateAbility
 }

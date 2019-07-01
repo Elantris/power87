@@ -147,9 +147,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     let errorCode
     if (items[target.id].name === 'base-weapon') {
-      errorCode = inventorySystem.getEquipment(userInventory, 'weapon', 'base')
+      errorCode = inventorySystem.exchangeEquipment(userInventory, 'weapon', 'base')
     } else if (items[target.id].name === 'base-armor') {
-      errorCode = inventorySystem.getEquipment(userInventory, 'armor', 'base')
+      errorCode = inventorySystem.exchangeEquipment(userInventory, 'armor', 'base')
     } else {
       errorCode = 'ERROR_NOT_FOUND'
     }

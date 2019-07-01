@@ -1,5 +1,4 @@
 const config = require('../config')
-const equipments = require('./equipments')
 const inventorySystem = require('./inventorySystem')
 
 // * properties
@@ -7,14 +6,15 @@ const species = ['ant', 'baby_chick', 'bat', 'bear', 'bee', 'beetle', 'bird', 'b
 const expRange = [0, 100, 210, 331, 464, 610, 770, 946, 1139, 1351, 1584, 1840, 2121, 2430, 2769, 3141, 3550, 3999, 4492, 5034, 5630, 6285, 7005, 7797, 8668, 9626, 10679, 11837, 13110, 14510, 16050, 17744, 19607, 21656, 23909, 26387, 29112, 32109, 35405, 39030, 43017, 47402, 52225, 57530, 63365, 69783, 76842, 84606, 93146, 102540, 112873, 9999999]
 
 // 0 lastUpdate : timeGap
-// 1 name : string
-// 2 species : string
-// 3 rarity : number
-// 4 experience : number
-// 5 feed : number
-// 6 ability : array (number)
-// 7 equipment: array (string)
-// 8 status : string
+// 1 status : string
+// 2 name : string
+// 3 species : string
+// 4 rarity : number
+// 5 experience : number
+// 6 feed : number
+// 7 ability : array (number)
+// 8 weapon : string
+// 9 armor : string
 
 // * methods
 const read = async (database, guildId, userId, timenow = Date.now()) => {
@@ -28,6 +28,7 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     lastUpdate: 0,
 
     // basic
+    status: '',
     name: '',
     species: '',
     rarity: '',
@@ -48,48 +49,41 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     feedPercent: 0,
     atk: 1,
     def: 1,
-    hit: 1,
-    ev: 1,
     spd: 1,
-    status: ''
+    hit: 1,
+    ev: 1
   }
 
   let heroData = heroRaw.val().split(';')
-  userHero.lastUpdate = parseInt(heroData[0])
-  userHero.name = heroData[1]
-  userHero.species = heroData[2]
-  userHero.rarity = parseInt(heroData[3])
-  userHero.exp = parseInt(heroData[4])
-  userHero.feed = parseInt(heroData[5])
 
-  let ability = heroData[6].split(',').map(v => parseInt(v))
-  userHero.str = ability[0]
-  userHero.vit = ability[1]
-  userHero.agi = ability[2]
-  userHero.int = ability[3]
-  userHero.luk = ability[4]
+  userHero.lastUpdate = parseInt(heroData[0])
+  userHero.status = heroData[1]
+  userHero.name = heroData[2]
+  userHero.species = heroData[3]
+  userHero.rarity = parseInt(heroData[4])
+  userHero.exp = parseInt(heroData[5])
+  userHero.feed = parseInt(heroData[6])
+
+  let heroAbilities = heroData[7].split(',').map(v => parseInt(v))
+  userHero.str = heroAbilities[0]
+  userHero.vit = heroAbilities[1]
+  userHero.agi = heroAbilities[2]
+  userHero.int = heroAbilities[3]
+  userHero.luk = heroAbilities[4]
 
   // equipment
-  heroData[7].split(',').filter(v => v).forEach(v => {
-    let tmp = v.slice(1).split('+').map(v => parseInt(v))
-    userHero[equipments[tmp[0]].kind] = {
-      id: tmp[0],
-      level: parseInt(tmp[1])
-    }
+  userHero.weapon = inventorySystem.parseEquipment(heroData[8])
+  userHero.armor = inventorySystem.parseEquipment(heroData[9])
 
-    let abilities = inventorySystem.calculateAbility(tmp[0], tmp[1])
-    if (equipments[tmp[0]].kind === 'weapon') {
-      userHero.atk += abilities[0]
-      userHero.hit += abilities[1]
-      userHero.spd += abilities[2]
-    } else if (equipments[tmp[0]].kind === 'armor') {
-      userHero.def += abilities[0]
-      userHero.ev += abilities[1]
-      userHero.spd += abilities[2]
-    }
-  })
+  let abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
+  userHero.atk += abilities[0]
+  userHero.hit += abilities[1]
+  userHero.spd += abilities[2]
 
-  userHero.status = heroData[8]
+  abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
+  userHero.def += abilities[0]
+  userHero.ev += abilities[1]
+  userHero.spd += abilities[2]
 
   // level
   for (let level in expRange) {
@@ -120,27 +114,17 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     userHero.status = 'dead'
   }
 
-  // meta
-  userHero.lastUpdate = timeGap
-
   return userHero
 }
 
 const write = (database, guildId, userId, userHero, timenow = Date.now()) => {
-  userHero.lastUpdate = parseInt(timenow / config.tick)
+  userHero.lastUpdate = Math.floor(timenow / config.tick)
 
   let ability = `${userHero.str},${userHero.vit},${userHero.agi},${userHero.int},${userHero.luk}`
+  let weapon = `&${userHero.weapon.id.toString().padStart(4, '0')}+${userHero.weapon.level}`
+  let armor = `&${userHero.armor.id.toString().padStart(4, '0')}+${userHero.armor.level}`
 
-  let equipment = []
-  if (userHero.weapon) {
-    equipment.push(userHero.weapon)
-  }
-  if (userHero.armor) {
-    equipment.push(userHero.armor)
-  }
-  equipment = equipment.map(v => `&${v.id.toString().padStart(4, '0')}+${v.level}`).join(',')
-
-  database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${equipment};${userHero.status}`)
+  database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.status};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${weapon};${armor}`)
 }
 
 const rarityDisplay = (rarity) => ':star:'.repeat(rarity)
