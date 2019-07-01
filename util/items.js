@@ -31,12 +31,12 @@ let itemsRaw = `id:String | kind:String | name:String | icon:String | displayNam
 33 | event | bug-bounty | :gift: | [活動]GM的禮物-除錯獎金 | 1 | price | 500 | buffId | duration | feed | contains | 感謝你幫忙找到 Power87 中任何一項錯誤！
 36 | event | lakiaro-celebration | :gift: | [紀念]野生拉奇亞洛慶祝禮包 | 1 | price | 11000 | buffId | duration | feed | contains | 慶祝 2019/6/11 開發者成功挖出原始的野生拉奇亞洛ヽ(✿ﾟ▽ﾟ)ノ
 
-18 | buff | bait | :bug: | 魚餌 | 5 | 20 | 2 | %0 | 3600000 | feed | contains | 使用後一小時內減少釣魚時間，重複使用會延長時效。
-19 | buff | candy | :candy: | 好棒棒軟糖 | 5 | 10 | 1 | %1 | 900000 | feed | contains | 嚐起來有點甜膩的糖果，專門發給乖巧又懂事的小孩作為獎勵，據說吃下去後會變得比較幸運。
-20 | buff | lollipop | :lollipop: | 好運棒棒糖 | 5 | 50 | 5 | %2 | 900000 | feed | contains | 因為賭場裡面全面禁菸，賭客們為了裝帥會去購買的棒棒糖，因為他們相信吃下去會變得比較幸運。
-21 | buff | chocolatebar | :chocolate_bar: | 巧克力好棒 | 5 | 250 | 25 | %3 | 900000 | feed | contains | 能夠迅速補充體力，適合那些在賭場裡流連忘返又不吃飯的賭客們。
-22 | buff | popcorn | :popcorn: | 棒棒爆米花 | 5 | 1250 | 125 | %4 | 900000 | feed | contains | 原本只是在一旁看戲的賭客吃下爆米花後運氣似乎變得特別好。
-41 | buff | ice | :gem: | 冰塊 | 10 | 5 | 0 | %5 | 60000 | feed | contains | 雕刻成鑽石造型的冰塊，使用後可以暫時獲得冰涼的效果，適合在夏天享受短暫的愉悅。
+18 | buff | bait | :bug: | 魚餌 | 5 | 20 | 2 | %0 | 3600000 | 4 | contains | 使用後一小時內減少釣魚時間，重複使用會延長時效。
+19 | buff | candy | :candy: | 好棒棒軟糖 | 5 | 10 | 1 | %1 | 900000 | 2 | contains | 嚐起來有點甜膩的糖果，專門發給乖巧又懂事的小孩作為獎勵，據說吃下去後會變得比較幸運。
+20 | buff | lollipop | :lollipop: | 好運棒棒糖 | 5 | 50 | 5 | %2 | 900000 | 10 | contains | 因為賭場裡面全面禁菸，賭客們為了裝帥會去購買的棒棒糖，因為他們相信吃下去會變得比較幸運。
+21 | buff | chocolatebar | :chocolate_bar: | 巧克力好棒 | 5 | 250 | 25 | %3 | 900000 | 50 | contains | 能夠迅速補充體力，適合那些在賭場裡流連忘返又不吃飯的賭客們。
+22 | buff | popcorn | :popcorn: | 棒棒爆米花 | 5 | 1250 | 125 | %4 | 900000 | 250 | contains | 原本只是在一旁看戲的賭客吃下爆米花後運氣似乎變得特別好。
+41 | buff | ice | :gem: | 冰塊 | 10 | 5 | 0 | %5 | 60000 | 1 | contains | 雕刻成鑽石造型的冰塊，使用後可以暫時獲得冰涼的效果，適合在夏天享受短暫的愉悅。
 
 24 | petfood | cookie | :cookie: | 營養口糧 | 1 | 50 | 5 | buffId | duration | 25 | contains | 《營養食品》生產能夠方便攜帶的餅乾。
 25 | petfood | riceball | :rice_ball: | 營養飯糰 | 1 | 110 | 11 | buffId | duration | 50 | contains | 《營養食品》製造可以迅速補足英雄體力的飯糰。
