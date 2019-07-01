@@ -71,7 +71,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
       tmpEquipments.forEach(v => {
         let equipment = equipments[v.id]
-        let chance = inventorySystem.enhanceChances[equipment.quality][v.level] * (1 + (userInventory.items['48'] || 0) * 0.02)
+        let chance = inventorySystem.enhanceChances[equipment.quality][v.level]
+        if (userInventory.items['48']) {
+          chance += (10 - v.level) * 0.001 * userInventory.items['48']
+        }
         if (chance > 1) {
           chance = 1
         }
@@ -160,12 +163,12 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄裝備強化粉末**x1\n\n`
 
-    let buffChance = 1
+    let chance = inventorySystem.enhanceChances[target.quality][target.level]
     if (userInventory.items['48']) {
-      buffChance = 1 + userInventory.items['48'] * 0.02
+      chance += (10 - target.level) * 0.001 * userInventory.items['48']
     }
     let luck = Math.random()
-    if (luck < inventorySystem.enhanceChances[target.quality][target.level] * buffChance) {
+    if (luck < chance) {
       delete userInventory.items['48']
       userInventory.equipments[target.index].level += 1
       description += `強化成功，獲得了 ${equipments[target.id].icon}**${equipments[target.id].displayName}**+${target.level + 1}`
