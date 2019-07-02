@@ -40,19 +40,19 @@ const lostMessages = [
 ]
 const buffMapping = {
   '%1': {
-    buffChance: 0.02,
+    chance: 0.02,
     icon: ':candy:'
   },
   '%2': {
-    buffChance: 0.04,
+    chance: 0.04,
     icon: ':lollipop:'
   },
   '%3': {
-    buffChance: 0.06,
+    chance: 0.06,
     icon: ':chocolate_bar:'
   },
   '%4': {
-    buffChance: 0.08,
+    chance: 0.08,
     icon: ':popcorn:'
   }
 }
@@ -175,7 +175,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   if (buffInUse) {
     let buffTime = moment.duration(userInventory.buffs[buffInUse] - message.createdTimestamp)
-    description += `${buffMapping[buffInUse].icon} ${Math.floor(buffTime.asHours())}:${buffTime.minutes()}`
+    description += `${buffMapping[buffInUse].icon} ${Math.floor(buffTime.asHours()).toString().padStart(2, '0')}:${buffTime.minutes().toString().padStart(2, '0')}`
   }
 
   description += `\n-------------------\n` +
