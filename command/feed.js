@@ -4,12 +4,6 @@ const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 const sendResponseMessage = require('../util/sendResponseMessage')
 
-const availableKinds = {
-  buff: true,
-  fishing: true,
-  petfood: true
-}
-
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let description = ''
   let target = {}
@@ -60,7 +54,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description = `:arrow_double_up: ${message.member.displayName} 背包內可以餵食英雄的物品：\n`
 
     for (let id in userInventory.items) {
-      if (availableKinds[items[id].kind]) {
+      if ('feed' in items[id]) {
         description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，**+${items[id].feed}**，\`87!feed ${items[id].name} ${userInventory.items[id]}\``
       }
     }

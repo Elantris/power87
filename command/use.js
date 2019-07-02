@@ -97,7 +97,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   } else if (target.kind === 'box') { // open box and get items
     description = `:arrow_double_up: ${message.member.displayName} 打開 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，獲得物品：\n\n`
 
-    items[target.id].content.split(',').forEach(v => {
+    items[target.id].contains.split(',').forEach(v => {
       let itemData = v.split('.')
       if (!userInventory.items[itemData[0]]) {
         userInventory.items[itemData[0]] = 0

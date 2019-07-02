@@ -1,3 +1,4 @@
+const moment = require('moment')
 const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
 const sendResponseMessage = require('../util/sendResponseMessage')
@@ -6,24 +7,24 @@ const symbols = [':gem:', ':seven:', ':trophy:', ':moneybag:', ':gift:', ':ribbo
 const prizes = [
   { chance: 0.0001, pattern: '000', multiplier: 100 },
   { chance: 0.0002, pattern: '111', multiplier: 77 },
-  { chance: 0.0005, pattern: '222', multiplier: 50 },
-  { chance: 0.0010, pattern: '333', multiplier: 30 },
-  { chance: 0.0020, pattern: '444', multiplier: 20 },
-  { chance: 0.0025, pattern: '555', multiplier: 15 },
-  { chance: 0.0050, pattern: '666', multiplier: 10 },
-  { chance: 0.0100, pattern: '777', multiplier: 5 },
-  { chance: 0.0200, pattern: '888', multiplier: 3 },
-  { chance: 0.0800, pattern: '999', multiplier: 1 },
+  { chance: 0.0004, pattern: '222', multiplier: 50 },
+  { chance: 0.0008, pattern: '333', multiplier: 30 },
+  { chance: 0.0016, pattern: '444', multiplier: 20 },
+  { chance: 0.0032, pattern: '555', multiplier: 15 },
+  { chance: 0.0064, pattern: '666', multiplier: 10 },
+  { chance: 0.0128, pattern: '777', multiplier: 5 },
+  { chance: 0.0256, pattern: '888', multiplier: 3 },
+  { chance: 0.0512, pattern: '999', multiplier: 1 },
 
   { chance: 0.0100, pattern: '00', multiplier: 50 },
   { chance: 0.0200, pattern: '11', multiplier: 38 },
   { chance: 0.0400, pattern: '22', multiplier: 25 },
-  { chance: 0.0600, pattern: '33', multiplier: 15 },
-  { chance: 0.0800, pattern: '44', multiplier: 10 },
-  { chance: 0.1000, pattern: '55', multiplier: 7 },
+  { chance: 0.0800, pattern: '33', multiplier: 15 },
+  { chance: 0.1000, pattern: '44', multiplier: 10 },
+  { chance: 0.1200, pattern: '55', multiplier: 7 },
   { chance: 0.1400, pattern: '66', multiplier: 5 },
-  { chance: 0.2000, pattern: '77', multiplier: 2 },
-  { chance: 0.2287, pattern: '88', multiplier: 1 }
+  { chance: 0.1600, pattern: '77', multiplier: 2 },
+  { chance: 0.2277, pattern: '88', multiplier: 1 }
 ]
 const baseHitChance = 0.1
 const lostMessages = [
@@ -37,6 +38,24 @@ const lostMessages = [
   '呃啊啊啊啊啊',
   '獲得更多的印章'
 ]
+const buffMapping = {
+  '%1': {
+    buffChance: 0.02,
+    icon: ':candy:'
+  },
+  '%2': {
+    buffChance: 0.04,
+    icon: ':lollipop:'
+  },
+  '%3': {
+    buffChance: 0.06,
+    icon: ':chocolate_bar:'
+  },
+  '%4': {
+    buffChance: 0.08,
+    icon: ':popcorn:'
+  }
+}
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let energyCost = 1
@@ -80,27 +99,30 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
-  let buffChance = 0
-  let markChance = 0
-
+  let buffInUse
   if (userInventory.buffs['%4']) {
-    buffChance = 0.04
+    buffInUse = '%4'
   } else if (userInventory.buffs['%3']) {
-    buffChance = 0.03
+    buffInUse = '%3'
   } else if (userInventory.buffs['%2']) {
-    buffChance = 0.02
+    buffInUse = '%2'
   } else if (userInventory.buffs['%1']) {
-    buffChance = 0.01
-  }
-
-  if (userInventory.items['47']) {
-    markChance = userInventory.items['47'] * 0.01
+    buffInUse = '%1'
   }
 
   // slot
   let slotResults = []
   let winId = -1
   let energyGain = 0
+  let buffChance = 0
+  let markChance = 0
+
+  if (buffInUse) {
+    buffChance = buffMapping[buffInUse].chance
+  }
+  if (userInventory.items['47']) {
+    markChance = userInventory.items['47'] * 0.01
+  }
 
   let luck = Math.random()
   if (luck < baseHitChance + buffChance + markChance) {
@@ -149,16 +171,23 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let content
   let description = `:slot_machine: 這是一台八七拉霸機\n\n` +
     `${message.member.displayName} ${sayMessage} 投注了 ${energyCost} 點八七能量\n` +
-    `-------------------\n` +
+    `增益效果：`
+
+  if (buffInUse) {
+    let buffTime = moment.duration(userInventory.buffs[buffInUse] - message.createdTimestamp)
+    description += `${buffMapping[buffInUse].icon} ${Math.floor(buffTime.asHours())}:${buffTime.minutes()}`
+  }
+
+  description += `\n-------------------\n` +
     slotResults.map(v => symbols[v]).join(' : ') + `\n` +
     `-------------------\n`
 
   if (winId === -1) {
     description += `| : : : : **LOST** : : : : |\n\n` +
-      lostMessages[Math.floor(Math.random() * lostMessages.length)] + `\n`
+      lostMessages[Math.floor(Math.random() * lostMessages.length)]
 
     if (userInventory.items['47']) {
-      description += `目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
+      description += `\n\n目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
     }
   } else if (winId === 0) {
     content = '@here 頭獎快訊！'
