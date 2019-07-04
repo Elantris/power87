@@ -49,11 +49,7 @@ module.exports = async ({ client, database, settings, message, guildId, userId }
 
   // call command
   let response = await commands[userCmd]({ args, client, database, message, guildId, userId }) || {}
-
-  let fade = true
-  if (settings[guildId] && settings[guildId] === message.channel.id) {
-    fade = false
-  }
+  let fade = (guildId in settings && settings[guildId] !== message.channel.id)
 
   if (response.errorCode) {
     sendResponse({ message, errorCode: response.errorCode, fade })
