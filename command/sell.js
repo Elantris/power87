@@ -2,38 +2,34 @@ const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
 const items = require('../util/items')
 const findTargets = require('../util/findTargets')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let results = []
   let amount = 10000
-  let description = ''
+  let description
 
   if (args[1]) {
     results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item')
     if (results.length === 0) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return 0
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
   }
 
   if (args[2]) {
     amount = parseInt(args[2])
     if (!Number.isSafeInteger(amount) || amount < 1) {
-      sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-      return
+      return { errorCode: 'ERROR_FORMAT' }
     }
   }
 
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-
   if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    return
+    return { errorCode: 'ERROR_IS_FISHING' }
   }
 
-  if (args.length === 1) { // no arguments
+  // no arguments
+  if (args.length === 1) {
     description = `:moneybag: ${message.member.displayName} 背包內可以販賣的物品：\n`
 
     inventorySystem.kindOrders.forEach(kind => {
@@ -44,8 +40,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       }
     })
 
-    sendResponseMessage({ message, description })
-    return
+    return { description }
   }
 
   let soldItems = {}
@@ -73,8 +68,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   })
 
   if (soldItemsCount === 0) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
-    return
+    return { errorCode: 'ERROR_NO_ITEM' }
   }
 
   // energy system
@@ -90,10 +84,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
-  let soldItemsDisplay = ``
+  description = `:moneybag: ${message.member.displayName} 販賣 ${soldItemsCount} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n`
   for (let id in soldItems) {
-    soldItemsDisplay += `${items[id].icon}**${items[id].displayName}**x${soldItems[id]} `
+    description += `${items[id].icon}**${items[id].displayName}**x${soldItems[id]} `
   }
 
-  sendResponseMessage({ message, description: `:moneybag: ${message.member.displayName} 販賣 ${soldItemsCount} 件物品，獲得了 ${gainEnergy} 點八七能量\n\n${soldItemsDisplay}` })
+  return { description }
 }

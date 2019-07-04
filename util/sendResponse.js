@@ -1,7 +1,7 @@
 const moment = require('moment')
 const Discord = require('discord.js')
-const config = require('../config')
 
+const config = require('../config')
 const hook = new Discord.WebhookClient(config.LoggerHook.id, config.LoggerHook.token)
 
 const errors = {
@@ -61,8 +61,9 @@ module.exports = async ({ message, content, description = '', errorCode, fade = 
 
   let responseMessage = await message.channel.send(content, { embed })
   if (fade) {
-    setTimeout(() => {
-      responseMessage.delete()
+    setTimeout(async () => {
+      await responseMessage.delete()
+      await message.delete()
     }, 10000)
   }
 

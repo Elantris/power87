@@ -1,13 +1,10 @@
 const energySystem = require('../util/energySystem')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const energyCost = 15
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  // check command format
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
+    return { errorCode: 'ERROR_FORMAT' }
   }
 
   let term = args[1]
@@ -15,8 +12,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   let note = await database.ref(`/note/${guildId}/${term}/${position}`).once('value')
   if (!note.exists()) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-    return
+    return { errorCode: 'ERROR_NOT_FOUND' }
   }
 
   // energy system
@@ -29,8 +25,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   if (userEnergy < energyCost) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-    return
+    return { errorCode: 'ERROR_NO_ENERGY' }
   }
 
   // update database
@@ -38,5 +33,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   database.ref(`/note/${guildId}/${term}/${position}`).remove()
 
   // response
-  sendResponseMessage({ message, description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目` })
+  return { description: `:fire: 成功移除了 **${term}** 的第 **${position}** 個項目` }
 }

@@ -1,5 +1,3 @@
-const sendResponseMessage = require('../util/sendResponseMessage')
-
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let description = ':bookmark_tabs: '
 
@@ -15,8 +13,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     let term = args[1]
     let responses = await database.ref(`/note/${guildId}/${term}`).once('value')
     if (!responses.val()) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
     responses = responses.val()
 
@@ -26,5 +23,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   }
 
-  sendResponseMessage({ message, description: description })
+  return { description }
 }

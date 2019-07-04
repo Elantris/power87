@@ -1,13 +1,11 @@
 const inventorySystem = require('../util/inventorySystem')
 const hintSystem = require('../util/hintSystem')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userAction = ''
   let hint = ''
 
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-
   if (userInventory.status === 'fishing') {
     userAction = '結束釣魚'
 
@@ -16,12 +14,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     userAction = '從大洋歸來'
   } else {
     if (!userInventory.tools.$0 || !userInventory.tools.$1) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NO_TOOL' })
-      return
+      return { errorCode: 'ERROR_NO_TOOL' }
     }
     if (userInventory.emptySlots <= 0) {
-      sendResponseMessage(({ message, errorCode: 'ERROR_BAG_FULL' }))
-      return
+      return { errorCode: 'ERROR_BAG_FULL' }
     }
 
     userAction = '開始釣魚'
@@ -31,5 +27,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   // response
-  sendResponseMessage({ message, description: `:fishing_pole_and_fish: ${message.member.displayName} ${userAction}\n\n${hint}` })
+  return { description: `:fishing_pole_and_fish: ${message.member.displayName} ${userAction}\n\n${hint}` }
 }

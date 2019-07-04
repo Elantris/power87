@@ -1,11 +1,7 @@
 const fs = require('fs')
-
 const alias = require('../util/alias')
-const sendResponseMessage = require('../util/sendResponseMessage')
-
 const encoding = 'utf8'
 
-// * load manuals
 let manuals = {}
 fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach(filename => {
   let cmd = filename.split('.md')[0]
@@ -14,18 +10,15 @@ fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args.length === 1) {
-    sendResponseMessage({ message, description: manuals.default })
-    return
+    return { description: manuals.default }
   }
 
   let search = args[1].toLowerCase()
   search = alias[search] || search
 
-  // command manual
   if (!manuals[search]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-    return
+    return { errorCode: 'ERROR_NOT_FOUND' }
   }
 
-  sendResponseMessage({ message, description: manuals[search] })
+  return { description: manuals[search] }
 }

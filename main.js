@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const firebase = require('firebase')
 
 const config = require('./config')
-const handleMessage = require('./util/handleCommand')
+const handleCommand = require('./util/handleCommand')
 const energySystem = require('./util/energySystem')
 
 const client = new Discord.Client()
@@ -13,6 +13,10 @@ const database = firebase.database()
 let banlist = {}
 database.ref('/banlist').on('value', snapshot => {
   banlist = snapshot.val()
+})
+let settings = {}
+database.ref(`/settings`).on('value', snapshot => {
+  settings = snapshot.val()
 })
 
 // handle message
@@ -31,7 +35,7 @@ client.on('message', message => {
     database.ref(`/banlist/${userId}`).remove()
   }
 
-  handleMessage({ client, database, message, guildId, userId })
+  handleCommand({ client, database, settings, message, guildId, userId })
 })
 
 client.on('ready', () => {

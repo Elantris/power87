@@ -1,6 +1,5 @@
 const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const symbols = {
   1: ':one:',
@@ -54,8 +53,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     if (Number.isSafeInteger(parseInt(args[1]))) {
       bet = parseInt(args[1])
       if (bet < 1 || bet > 500) {
-        sendResponseMessage({ message, errorCode: 'ERROR_ENERGY_EXCEED' })
-        return
+        return { errorCode: 'ERROR_ENERGY_EXCEED' }
       }
       sayMessage = args.slice(2)
     } else {
@@ -65,8 +63,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     if (sayMessage.length) {
       sayMessage = sayMessage.join(' ')
       if (sayMessage.length > 50) {
-        sendResponseMessage({ message, errorCode: 'ERROR_LENGTH_EXCEED' })
-        return
+        return { errorCode: 'ERROR_LENGTH_EXCEED' }
       }
       sayMessage = `大喊「${sayMessage}」之後`
     }
@@ -82,8 +79,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   if (userEnergy < bet * 2) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-    return
+    return { errorCode: 'ERROR_NO_ENERGY' }
   }
 
   // inventory system
@@ -179,5 +175,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description += `\n目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
   }
 
-  sendResponseMessage({ message, description })
+  return { description }
 }

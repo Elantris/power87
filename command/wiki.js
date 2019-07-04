@@ -3,7 +3,6 @@ const tools = require('../util/tools')
 const items = require('../util/items')
 const equipments = require('../util/equipments')
 const findTargets = require('../util/findTargets')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let description
@@ -11,15 +10,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   if (args.length === 1 || args[1] === 'all') {
     description = `:diamond_shape_with_a_dot_inside: 指定一個種類：\n\n` +
       inventorySystem.kindOrders.map(kind => `${inventorySystem.kindNames[kind]}，\`87!wiki ${kind}\``).join('\n')
-    sendResponseMessage({ message, description })
-    return
+    return { description }
   }
 
   let results = findTargets(args[1].toLowerCase())
 
   if (results.length === 0) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-    return
+    return { errorCode: 'ERROR_NOT_FOUND' }
   }
 
   if (results.length > 1) {
@@ -31,8 +28,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
         description += `\n${equipments[result.id].icon}**${equipments[result.id].displayName}**，\`87!wiki ${equipments[result.id].name}\``
       }
     })
-    sendResponseMessage({ message, description })
-    return
+    return { description }
   }
 
   description = ':diamond_shape_with_a_dot_inside: 道具/物品詳細說明'
@@ -88,5 +84,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   // response
-  sendResponseMessage({ message, description })
+  return { description }
 }

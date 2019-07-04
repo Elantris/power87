@@ -1,7 +1,6 @@
 const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
 const equipments = require('../util/equipments')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const statusMapping = {
   starve: ['極度飢餓', '餓昏頭', '長期饑餓', '找不到東西吃', '需要主人的關愛'],
@@ -20,15 +19,12 @@ const statusDisplay = (status) => {
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
-
   if (!userHero.name) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
-    return
+    return { errorCode: 'ERROR_NO_HERO' }
   }
   if (userHero.status === 'dead') {
     database.ref(`/hero/${guildId}/${userId}`).remove()
-    sendResponseMessage({ message, errorCode: 'ERROR_HERO_DEAD' })
-    return
+    return { errorCode: 'ERROR_HERO_DEAD' }
   }
 
   let description
@@ -59,8 +55,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     let targetIndex = inventorySystem.findEquipmentIndex(userInventory, args[1].toLowerCase())
     if (targetIndex === -1) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
 
     let equipment = equipments[userInventory.equipments[targetIndex].id]
@@ -91,5 +86,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   heroSystem.write(database, guildId, userId, userHero)
 
   // response
-  sendResponseMessage({ message, description: description })
+  return { description }
 }

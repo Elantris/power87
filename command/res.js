@@ -1,8 +1,6 @@
-const sendResponseMessage = require('../util/sendResponseMessage')
-
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args.length === 1) {
-    return
+    return {}
   }
 
   let term = args[1]
@@ -18,8 +16,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       let candidates = Object.keys(responses)
       choice = candidates[~~(Math.random() * candidates.length)]
     } else if (!responses[choice]) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
 
     message.channel.send(responses[choice])

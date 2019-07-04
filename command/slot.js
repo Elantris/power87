@@ -1,7 +1,6 @@
 const moment = require('moment')
 const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const symbols = [':gem:', ':seven:', ':trophy:', ':moneybag:', ':gift:', ':ribbon:', ':balloon:', ':four_leaf_clover:', ':battery:', ':dollar:']
 const prizes = [
@@ -26,7 +25,7 @@ const prizes = [
   { chance: 0.1600, pattern: '77', multiplier: 2 },
   { chance: 0.2277, pattern: '88', multiplier: 1 }
 ]
-const baseHitChance = 0.1
+const baseHitChance = 0.08
 const lostMessages = [
   '結果是一無所獲',
   '然而什麼都沒有',
@@ -65,8 +64,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     if (Number.isSafeInteger(parseInt(args[1]))) {
       energyCost = parseInt(args[1])
       if (energyCost < 1 || energyCost > 500) {
-        sendResponseMessage({ message, errorCode: 'ERROR_ENERGY_EXCEED' })
-        return
+        return { errorCode: 'ERROR_ENERGY_EXCEED' }
       }
       sayMessage = args.slice(2)
     } else {
@@ -76,8 +74,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     if (sayMessage.length) {
       sayMessage = sayMessage.join(' ')
       if (sayMessage.length > 50) {
-        sendResponseMessage({ message, errorCode: 'ERROR_LENGTH_EXCEED' })
-        return
+        return { errorCode: 'ERROR_LENGTH_EXCEED' }
       }
       sayMessage = `說完「${sayMessage}」之後`
     }
@@ -92,8 +89,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
   }
   if (userEnergy < energyCost) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-    return
+    return { errorCode: 'ERROR_NO_ENERGY' }
   }
 
   // inventory system
@@ -179,8 +175,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   description += `\n-------------------\n` +
-    slotResults.map(v => symbols[v]).join(' : ') + `\n` +
-    `-------------------\n`
+    slotResults.map(v => symbols[v]).join(' : ') +
+    `\n-------------------\n`
 
   if (winId === -1) {
     description += `| : : : : **LOST** : : : : |\n\n` +
@@ -202,5 +198,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       `贏得了 ${energyGain} 點八七能量`
   }
 
-  sendResponseMessage({ message, content, description })
+  return { content, description }
 }

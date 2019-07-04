@@ -1,9 +1,9 @@
+const moment = require('moment')
 const inventorySystem = require('../util/inventorySystem')
 const tools = require('../util/tools')
 const items = require('../util/items')
 const buffs = require('../util/buffs')
 const equipments = require('../util/equipments')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const userStatusMapping = {
   stay: '在村莊裡發呆',
@@ -25,10 +25,8 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   description += `\n增益效果：`
   for (let id in userInventory.buffs) {
     if (userInventory.buffs[id] > message.createdTimestamp) {
-      let buffTime = (userInventory.buffs[id] - message.createdTimestamp) / 60000
-      let buffTimeHour = Math.floor(buffTime / 60).toString().padStart(2, '0')
-      let buffTimeMinute = Math.floor(buffTime % 60).toString().padStart(2, '0')
-      description += `${items[buffs[id]].icon}${buffTimeHour}:${buffTimeMinute}`
+      let buffTime = moment.duration(userInventory.buffs[id] - message.createdTimestamp)
+      description += `${items[buffs[id]].icon}${Math.floor(buffTime.asHours()).toString().padStart(2, '0')}:${buffTime.minutes().toString().padStart(2, '0')}`
     }
   }
 
@@ -67,5 +65,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   })
 
   // response
-  sendResponseMessage({ message, description })
+  return { description }
 }

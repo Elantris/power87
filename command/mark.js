@@ -1,6 +1,5 @@
 const inventorySystem = require('../util/inventorySystem')
 const items = require('../util/items')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
@@ -12,5 +11,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   }
 
-  sendResponseMessage({ message, description })
+  return { description }
 }

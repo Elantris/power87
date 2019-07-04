@@ -3,7 +3,6 @@ const inventorySystem = require('../util/inventorySystem')
 const tools = require('../util/tools')
 const items = require('../util/items')
 const findTargets = require('../util/findTargets')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const availableKinds = {
   buff: true,
@@ -15,20 +14,14 @@ const availableKinds = {
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1)) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
-  }
-
-  // check target exists
-  let description = ''
+  let description
   let target = {}
+
   if (args[1]) {
     let results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'tool' || (result.type === 'item' && 'price' in items[result.id]))
 
     if (results.length === 0) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
 
     if (results.length > 1) {
@@ -37,8 +30,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
         let item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，:battery: **${item.price}**，\`87!buy ${item.name}\``
       })
-      sendResponseMessage({ message, description })
-      return
+      return { description }
     }
 
     target = results[0]
@@ -50,20 +42,24 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       target.price = items[target.id].price
       target.amount = parseInt(args[2] || 1)
     } else {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
+  }
+
+  if (target.type === 'item' && args[2]) {
+    if (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1) {
+      return { errorCode: 'ERROR_FORMAT' }
+    }
+
+    target.amount = parseInt(args[2])
   }
 
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-
   if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    return
+    return { errorCode: 'ERROR_IS_FISHING' }
   }
 
-  // no arguments
   if (args.length === 1) {
     description = `:shopping_cart: ${message.member.displayName} 可購買的商品：`
 
@@ -82,20 +78,20 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description += `\n\n__特色商品__：\n`
     description += Object.keys(availableKinds).map(kind => `${inventorySystem.kindNames[kind]}，\`87!buy ${kind}\``).join('\n')
 
-    sendResponseMessage({ message, description })
-    return
+    return { description }
   }
 
-  // user target
-  if (target.type === 'tool' && userInventory.tools[target.id]) {
-    target.level = parseInt(userInventory.tools[target.id]) + 1
+  if (target.type === 'tool') {
+    if (userInventory.tools[target.id]) {
+      target.level = parseInt(userInventory.tools[target.id]) + 1
 
-    if (target.level > tools[target.id].maxLevel) {
-      sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
-      return
+      if (target.level > tools[target.id].maxLevel) {
+        return { errorCode: 'ERROR_MAX_LEVEL' }
+      }
     }
 
     target.price = tools[target.id].prices[target.level]
+    userInventory.tools[target.id] = target.level.toString()
   } else if (target.type === 'item') {
     target.maxBuy = items[target.id].maxStack * userInventory.emptySlots
 
@@ -103,14 +99,17 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       target.maxBuy += items[target.id].maxStack - userInventory.items[target.id] % items[target.id].maxStack
     }
 
+    if (target.maxBuy <= 0) {
+      return { errorCode: 'ERROR_BAG_FULL' }
+    }
+
     if (target.amount > target.maxBuy) {
       target.amount = target.maxBuy
     }
-
-    if (target.amount <= 0) {
-      sendResponseMessage({ message, errorCode: 'ERROR_BAG_FULL' })
-      return
+    if (!userInventory.items[target.id]) {
+      userInventory.items[target.id] = 0
     }
+    userInventory.items[target.id] += target.amount
   }
 
   // energy system
@@ -124,20 +123,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   let energyCost = target.price * target.amount
   if (userEnergy < energyCost) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-    return
+    return { errorCode: 'ERROR_NO_ENERGY' }
   }
 
   // update database
-  if (target.type === 'tool') {
-    userInventory.tools[target.id] = target.level.toString()
-  } else if (target.type === 'item') {
-    if (!userInventory.items[target.id]) {
-      userInventory.items[target.id] = 0
-    }
-    userInventory.items[target.id] += target.amount
-  }
-
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
@@ -149,5 +138,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description += `${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}`
   }
 
-  sendResponseMessage({ message, description })
+  return { description }
 }

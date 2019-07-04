@@ -2,29 +2,24 @@ const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
 const items = require('../util/items')
 const findTargets = require('../util/findTargets')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  let description = ''
+  let description
   let target = {}
 
-  // target
   if (args[1]) {
     let results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item' && 'feed' in items[result.id])
 
     if (results.length === 0) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
 
     if (results.length > 1) {
       description = `:arrow_double_up: 指定其中一種道具/物品：\n`
       results.forEach(result => {
-        let item = items[result.id]
-        description += `\n${item.icon}**${item.displayName}**，\`87!feed ${item.name}\``
+        description += `\n${items[result.id].icon}**${items[result.id].displayName}**，**+${items[result.id].feed}**，\`87!feed ${items[result.id].name}\``
       })
-      sendResponseMessage({ message, description })
-      return
+      return { description }
     }
 
     target = results[0]
@@ -32,11 +27,9 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     target.amount = 1
   }
 
-  // amount
   if (args[2]) {
     if (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1) {
-      sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-      return
+      return { errorCode: 'ERROR_FORMAT' }
     }
 
     target.amount = parseInt(args[2])
@@ -44,13 +37,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-
   if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    return
+    return { errorCode: 'ERROR_IS_FISHING' }
   }
 
-  if (args.length === 1) { // list all usable items
+  if (args.length === 1) {
     description = `:arrow_double_up: ${message.member.displayName} 背包內可以餵食英雄的物品：\n`
 
     for (let id in userInventory.items) {
@@ -59,13 +50,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       }
     }
 
-    sendResponseMessage({ message, description })
-    return
+    return { description }
   }
 
   if (!userInventory.items[target.id]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
-    return
+    return { errorCode: 'ERROR_NO_ITEM' }
   }
 
   if (target.amount > userInventory.items[target.id]) {
@@ -75,19 +64,15 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   // hero system
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
-    return
+    return { errorCode: 'ERROR_NO_HERO' }
   }
-
   if (userHero.status === 'dead') {
     database.ref(`/hero/${guildId}/${userId}`).remove()
-    sendResponseMessage({ message, errorCode: 'ERROR_HERO_DEAD' })
-    return
+    return { errorCode: 'ERROR_HERO_DEAD' }
   }
 
   if (userHero.feed === userHero.maxFeed) {
-    sendResponseMessage({ message, description: `:scroll: :${userHero.species}: **${userHero.name}** 現在很飽` })
-    return
+    return { description: `:scroll: :${userHero.species}: **${userHero.name}** 現在很飽` }
   }
 
   // feed hero
@@ -139,5 +124,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     description += `，獲得 ${items[28].icon}**${items[28].displayName}**x${stampAmount}`
   }
 
-  sendResponseMessage({ message, description })
+  return { description }
 }

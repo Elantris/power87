@@ -1,7 +1,6 @@
 const inventorySystem = require('../util/inventorySystem')
 const heroSystem = require('../util/heroSystem')
 const equipments = require('../util/equipments')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const rarityCost = [0, 4, 8, 16, 32]
 const rarityChances = [0, 0.81, 0.27, 0.09, 0.03]
@@ -14,30 +13,28 @@ const abilities = {
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-  if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    return
-  }
-
   if (args[1]) {
     args[1] = args[1].toLowerCase()
   }
 
   if (args[2] && (!Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 0)) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
+    return { errorCode: 'ERROR_FORMAT' }
   }
 
+  // inventory system
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  if (userInventory.status === 'fishing') {
+    return { errorCode: 'ERROR_IS_FISHING' }
+  }
+
+  // hero system
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_HERO' })
-    return
+    return { errorCode: 'ERROR_NO_HERO' }
   }
   if (userHero.status === 'dead') {
-    sendResponseMessage({ message, errorCode: 'ERROR_HERO_DEAD' })
     database.ref(`/hero/${guildId}/${userId}`).remove()
-    return
+    return { errorCode: 'ERROR_HERO_DEAD' }
   }
 
   let description
@@ -83,12 +80,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   } else if (args[1] === 'rarity') { // hero rarity
     if (userHero.rarity === 5) {
-      sendResponseMessage({ message, errorCode: 'ERROR_MAX_RARITY' })
-      return
+      return { errorCode: 'ERROR_MAX_RARITY' }
     }
     if (!userInventory.items['40'] || userInventory.items['40'] < rarityCost[userHero.rarity]) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_ENOUGH' })
-      return
+      return { errorCode: 'ERROR_NOT_ENOUGH' }
     }
     userInventory.items['40'] -= rarityCost[userHero.rarity]
 
@@ -104,8 +99,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   } else if (args[1] in abilities) { // hero ability
     let amount = parseInt(args[2] || 1)
     if (!userInventory.items['42'] || userInventory.items['42'] < amount) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_ENOUGH' })
-      return
+      return { errorCode: 'ERROR_NOT_ENOUGH' }
     }
 
     let total = 0
@@ -113,8 +107,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       total += userHero[i]
     }
     if (total + amount > userHero.level) {
-      sendResponseMessage({ message, errorCode: 'ERROR_MAX_ABILITY' })
-      return
+      return { errorCode: 'ERROR_MAX_ABILITY' }
     }
 
     userInventory.items['42'] -= amount
@@ -133,8 +126,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     if (!Number.isSafeInteger(target.level)) {
-      sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-      return
+      return { errorCode: 'ERROR_FORMAT' }
     }
 
     target.index = userInventory.equipments.findIndex((equipment, index) => {
@@ -146,19 +138,16 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       return false
     })
     if (target.index === -1) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
 
     if (!userInventory.items['46']) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_ENOUGH' })
-      return
+      return { errorCode: 'ERROR_NOT_ENOUGH' }
     }
     userInventory.items['46'] -= 1
 
     if (target.level >= inventorySystem.enhanceChances[target.quality].length) {
-      sendResponseMessage({ message, errorCode: 'ERROR_MAX_LEVEL' })
-      return
+      return { errorCode: 'ERROR_MAX_LEVEL' }
     }
 
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄裝備強化粉末**x1\n\n`
@@ -186,5 +175,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
 
   // response
-  sendResponseMessage({ message, description })
+  return { description }
 }

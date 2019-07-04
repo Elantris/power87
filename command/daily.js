@@ -3,7 +3,6 @@ const moment = require('moment')
 const energySystem = require('../util/energySystem')
 const inventorySystem = require('../util/inventorySystem')
 const items = require('../util/items')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const dailyReward = 20
 const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -17,7 +16,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let now = moment(message.createdAt)
   let todayDisplay = now.format('YYYYMMDD')
   let yesterdayDisplay = now.subtract(1, 'd').format('YYYYMMDD')
-  let description = ''
 
   // update monthly rewards
   if (monthlyReward.month !== todayDisplay.substring(0, 6)) {
@@ -48,8 +46,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let dailyData = dailyRaw.split(',')
 
   if (dailyData[0] === todayDisplay) {
-    sendResponseMessage({ message, description: `:calendar: ${message.member.displayName} 已經連續簽到 ${dailyData[1]} 天；本月累計簽到 ${dailyData[2] || 0} 天` })
-    return
+    return { description: `:calendar: ${message.member.displayName} 已經連續簽到 ${dailyData[1]} 天；本月累計簽到 ${dailyData[2] || 0} 天` }
   }
 
   if (dailyData[0] === yesterdayDisplay) {
@@ -103,7 +100,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
 
   // response
-  description = `:calendar: ${message.member.displayName} 完成每日簽到獲得 ${dailyReward} 點八七能量。連續簽到 ${dailyData[1]} 天${bonusEnergy}；本月累計簽到 ${dailyData[2]} 天${rewardMessage}\n\n本月簽到獎勵列表：\n`
+  let description = `:calendar: ${message.member.displayName} 完成每日簽到獲得 ${dailyReward} 點八七能量。連續簽到 ${dailyData[1]} 天${bonusEnergy}；本月累計簽到 ${dailyData[2]} 天${rewardMessage}\n\n本月簽到獎勵列表：\n`
 
   for (let i = 1; i <= monthlyReward.days; i++) {
     if (i % 7 === 1) {
@@ -121,5 +118,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
   }
 
-  sendResponseMessage({ message, description })
+  return { description }
 }

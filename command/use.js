@@ -3,7 +3,6 @@ const heroSystem = require('../util/heroSystem')
 const items = require('../util/items')
 const equipments = require('../util/equipments')
 const findTargets = require('../util/findTargets')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 const availableKinds = {
   buff: true,
@@ -13,16 +12,15 @@ const availableKinds = {
 }
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
-  let description = ''
+  let description
   let target = {}
 
-  // check args format
+  // target
   if (args[1]) {
     let results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item' && items[result.id].kind in availableKinds)
 
     if (results.length === 0) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_FOUND' })
-      return
+      return { errorCode: 'ERROR_NOT_FOUND' }
     }
 
     if (results.length > 1) {
@@ -31,8 +29,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
         let item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，\`87!use ${item.name}\``
       })
-      sendResponseMessage({ message, description })
-      return
+      return { description }
     }
 
     target = results[0]
@@ -40,14 +37,12 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     target.amount = 1
 
     if (!availableKinds[target.kind]) {
-      sendResponseMessage({ message, errorCode: 'ERROR_NOT_USABLE' })
-      return
+      return { errorCode: 'ERROR_NOT_USABLE' }
     }
 
     if (args[2] && target.kind !== 'hero') {
       if (!Number.isSafeInteger(parseInt(args[2]))) {
-        sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-        return
+        return { errorCode: 'ERROR_FORMAT' }
       }
       target.amount = parseInt(args[2])
     }
@@ -55,13 +50,12 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
   // inventory system
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-
   if (userInventory.status === 'fishing') {
-    sendResponseMessage({ message, errorCode: 'ERROR_IS_FISHING' })
-    return
+    return { errorCode: 'ERROR_IS_FISHING' }
   }
 
-  if (args.length === 1) { // no arguments
+  // no arguments
+  if (args.length === 1) {
     description = `:arrow_double_up: ${message.member.displayName} 背包內可以使用的道具：\n`
 
     for (let id in userInventory.items) {
@@ -70,13 +64,11 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
       }
     }
 
-    sendResponseMessage({ message, description })
-    return
+    return { description }
   }
 
   if (!userInventory.items[target.id]) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ITEM' })
-    return
+    return { errorCode: 'ERROR_NO_ITEM' }
   }
 
   if (target.amount > userInventory.items[target.id]) {
@@ -108,6 +100,10 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     })
   } else if (target.kind === 'hero') { // hero kind
     let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+    if (userHero.status === 'dead') {
+      database.ref(`/hero/${guildId}/${userId}`).remove()
+      return { errorCode: 'ERROR_HERO_DEAD' }
+    }
 
     target.amount = 1
     description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
@@ -128,18 +124,13 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     if (errorCode) {
-      if (errorCode === 'ERROR_HERO_DEAD') {
-        database.ref(`/hero/${guildId}/${userId}`).remove()
-      }
-      sendResponseMessage({ message, errorCode })
-      return
+      return { errorCode }
     }
 
     heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
   } else if (target.kind === 'equipment') {
     if (userInventory.equipments.length >= 8) {
-      sendResponseMessage({ message, errorCode: 'ERROR_ITEM_EXCEED' })
-      return
+      return { errorCode: 'ERROR_ITEM_EXCEED' }
     }
 
     target.amount = 1
@@ -155,8 +146,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     if (errorCode) {
-      sendResponseMessage({ message, errorCode })
-      return
+      return { errorCode }
     }
 
     let newEquipment = userInventory.equipments.slice(-1)[0]
@@ -170,5 +160,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
-  sendResponseMessage({ message, description })
+  return { description }
 }

@@ -1,10 +1,8 @@
 const energySystem = require('../util/energySystem')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   if (args.length < 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1) {
-    sendResponseMessage({ message, errorCode: 'ERROR_FORMAT' })
-    return
+    return { errorCode: 'ERROR_FORMAT' }
   }
 
   let targetId = message.mentions.users.array()[0].id
@@ -15,8 +13,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   if (args.length > 3) {
     let tmp = args.slice(3).join(' ')
     if (tmp > 50) {
-      sendResponseMessage({ message, errorCode: 'ERROR_LENGTH_EXCEED' })
-      return
+      return { errorCode: 'ERROR_LENGTH_EXCEED' }
     }
     sayMessage = `${message.member.displayName} 對 <@${targetId}> 說「${tmp}」\n\n`
   }
@@ -31,8 +28,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   }
 
   if (userEnergy < energyCost) {
-    sendResponseMessage({ message, errorCode: 'ERROR_NO_ENERGY' })
-    return
+    return { errorCode: 'ERROR_NO_ENERGY' }
   }
 
   let targetEnergy = await database.ref(`/energy/${guildId}/${targetId}`).once('value')
@@ -47,5 +43,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   database.ref(`/energy/${guildId}/${targetId}`).set(targetEnergy + energyGain)
 
   // response
-  sendResponseMessage({ message, description: `:money_mouth: ${sayMessage}${message.member.displayName} 消耗 ${energyCost} 點八七能量，<@${targetId}> 獲得了 ${energyGain} 點八七能量` })
+  return { description: `:money_mouth: ${sayMessage}${message.member.displayName} 消耗 ${energyCost} 點八七能量，<@${targetId}> 獲得了 ${energyGain} 點八七能量` }
 }

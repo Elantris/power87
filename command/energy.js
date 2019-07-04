@@ -1,5 +1,4 @@
 const energySystem = require('../util/energySystem')
-const sendResponseMessage = require('../util/sendResponseMessage')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
   let userEnergy = await database.ref(`energy/${guildId}/${userId}`).once('value')
@@ -10,5 +9,5 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
   }
 
-  sendResponseMessage({ message, description: `:battery: ${message.member.displayName} 擁有 ${parseInt(userEnergy)} 點八七能量` })
+  return { description: `:battery: ${message.member.displayName} 擁有 ${parseInt(userEnergy)} 點八七能量` }
 }
