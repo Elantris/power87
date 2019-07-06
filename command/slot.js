@@ -16,16 +16,16 @@ const prizes = [
   { chance: 0.0512, pattern: '999', multiplier: 1 },
 
   { chance: 0.0100, pattern: '00', multiplier: 50 },
-  { chance: 0.0200, pattern: '11', multiplier: 38 },
-  { chance: 0.0400, pattern: '22', multiplier: 25 },
-  { chance: 0.0800, pattern: '33', multiplier: 15 },
-  { chance: 0.1000, pattern: '44', multiplier: 10 },
+  { chance: 0.0100, pattern: '11', multiplier: 38 },
+  { chance: 0.0200, pattern: '22', multiplier: 25 },
+  { chance: 0.0400, pattern: '33', multiplier: 15 },
+  { chance: 0.0800, pattern: '44', multiplier: 10 },
   { chance: 0.1200, pattern: '55', multiplier: 7 },
-  { chance: 0.1400, pattern: '66', multiplier: 5 },
-  { chance: 0.1600, pattern: '77', multiplier: 2 },
-  { chance: 0.2277, pattern: '88', multiplier: 1 }
+  { chance: 0.1600, pattern: '66', multiplier: 5 },
+  { chance: 0.2000, pattern: '77', multiplier: 2 },
+  { chance: 0.2577, pattern: '88', multiplier: 1 }
 ]
-const baseHitChance = 0.08
+const baseHitChance = 0.12
 const lostMessages = [
   '結果是一無所獲',
   '然而什麼都沒有',
@@ -39,19 +39,19 @@ const lostMessages = [
 ]
 const buffMapping = {
   '%1': {
-    chance: 0.02,
+    chance: 0.01,
     icon: ':candy:'
   },
   '%2': {
-    chance: 0.04,
+    chance: 0.02,
     icon: ':lollipop:'
   },
   '%3': {
-    chance: 0.06,
+    chance: 0.03,
     icon: ':chocolate_bar:'
   },
   '%4': {
-    chance: 0.08,
+    chance: 0.04,
     icon: ':popcorn:'
   }
 }
