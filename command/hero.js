@@ -3,10 +3,7 @@ const heroSystem = require('../util/heroSystem')
 const equipments = require('../util/equipments')
 
 const statusMapping = {
-  starve: ['極度飢餓', '餓昏頭', '長期饑餓', '找不到東西吃', '需要主人的關愛'],
-  hungry: ['肚子餓了', '想吃東西', '肚子還有點餓', '快給我吃的', '給我...吃...的...'],
-  stay: ['閒置', '發呆', '空閑', '無聊', '站著', '坐著', '躺著'],
-  work: ['工作中', '賣命工作中', '勤奮工作中', '為了錢工作中', '為了食物工作中']
+  stay: ['閒置', '發呆', '空閑', '無聊', '站著', '坐著', '躺著']
 }
 
 const statusDisplay = (status) => {
@@ -21,10 +18,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
     return { errorCode: 'ERROR_NO_HERO' }
-  }
-  if (userHero.status === 'dead') {
-    database.ref(`/hero/${guildId}/${userId}`).remove()
-    return { errorCode: 'ERROR_HERO_DEAD' }
   }
 
   let description

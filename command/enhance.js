@@ -32,10 +32,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   if (!userHero.name) {
     return { errorCode: 'ERROR_NO_HERO' }
   }
-  if (userHero.status === 'dead') {
-    database.ref(`/hero/${guildId}/${userId}`).remove()
-    return { errorCode: 'ERROR_HERO_DEAD' }
-  }
 
   let description
 

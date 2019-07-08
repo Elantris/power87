@@ -104,17 +104,10 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   // feed
   userHero.maxFeed = 98 + userHero.level * 2
   userHero.feed -= timeGap - userHero.lastUpdate
-
-  if (userHero.feed > 0) {
-    userHero.feedPercent = (userHero.feed * 100 / userHero.maxFeed).toFixed(2)
-    userHero.status = 'stay'
-  } else if (userHero.feed > -240) {
-    userHero.status = 'hungry'
-  } else if (userHero.feed > -1200 - userHero.level * 120) {
-    userHero.status = 'starve'
-  } else { // starving than 5 days
-    userHero.status = 'dead'
+  if (userHero.feed < 0) {
+    userHero.feed = 0
   }
+  userHero.feedPercent = (userHero.feed * 100 / userHero.maxFeed).toFixed(2)
 
   return userHero
 }
@@ -176,9 +169,6 @@ const changeName = (userHero, heroName) => {
   if (!userHero.name) {
     return 'ERROR_NO_HERO'
   }
-  if (userHero.status === 'dead') {
-    return 'ERROR_HERO_DEAD'
-  }
   if (!heroName) {
     return 'ERROR_HERO_NAME'
   }
@@ -192,9 +182,6 @@ const changeName = (userHero, heroName) => {
 const changeLooks = (userHero, heroSpecies) => {
   if (!userHero.name) {
     return 'ERROR_NO_HERO'
-  }
-  if (userHero.status === 'dead') {
-    return 'ERROR_HERO_DEAD'
   }
   if (!heroSpecies || species.indexOf(heroSpecies.toLowerCase()) === -1) {
     return 'ERROR_NO_SPECIES'

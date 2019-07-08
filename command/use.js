@@ -100,10 +100,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     })
   } else if (target.kind === 'hero') { // hero kind
     let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
-    if (userHero.status === 'dead') {
-      database.ref(`/hero/${guildId}/${userId}`).remove()
-      return { errorCode: 'ERROR_HERO_DEAD' }
-    }
 
     target.amount = 1
     description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`

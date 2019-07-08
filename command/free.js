@@ -1,18 +1,36 @@
 const heroSystem = require('../util/heroSystem')
+const inventorySystem = require('../util/inventorySystem')
 
 module.exports = async ({ args, client, database, message, guildId, userId }) => {
+  // hero system
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
     return { errorCode: 'ERROR_NO_HERO' }
-  }
-  if (userHero.status === 'dead') {
-    database.ref(`/hero/${guildId}/${userId}`).remove()
-    return { errorCode: 'ERROR_HERO_DEAD' }
   }
 
   if (!args[1] || args[1] !== userHero.name) {
     return { errorCode: 'ERROR_HERO_NAME' }
   }
+
+  // inventory system
+  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  if (userInventory.status === 'fishing') {
+    return { errorCode: 'ERROR_IS_FISHING' }
+  }
+
+  if (userHero.weapon) {
+    userInventory.equipments.push({
+      id: userHero.weapon.id,
+      level: userHero.weapon.level
+    })
+  }
+  if (userHero.armor) {
+    userInventory.equipments.push({
+      id: userHero.armor.id,
+      level: userHero.armor.level
+    })
+  }
+  userInventory.equipments.sort((a, b) => (a.id - b.id) || (b.level - a.level))
 
   // energy system
   let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
@@ -22,6 +40,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
   // update database
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain)
   database.ref(`/hero/${guildId}/${userId}`).remove()
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
   return { description: `:scroll: ${message.member.displayName} 讓 :${userHero.species}: **${userHero.name}** 回歸自由，臨別之前他留下了 ${energyGain} 點八七能量` }
