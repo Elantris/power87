@@ -63,8 +63,7 @@ module.exports = async ({ message, content, description = '', errorCode, fade = 
   if (fade) {
     setTimeout(async () => {
       await responseMessage.delete()
-      await message.delete()
-    }, 10000)
+    }, 5000)
   }
 
   // logger

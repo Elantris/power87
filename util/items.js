@@ -8,6 +8,11 @@
 
 let itemsRaw = `id:String | kind:String | name:String | icon:String | displayName:String | maxStack:Number | price:Number | value:Number | buffId:String | duration:Number | feed:Number | contains:String | description:String
 0 | jewel | gem | :gem: | 鑽石 | 1 | price | 1000 | buffId | duration | feed | contains | 非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫耀自己的財富。
+49 | jewel | shabby-moneybag | :moneybag: | 簡陋的錢袋 | 10 | 11 | 10 | buffId | duration | feed | contains | 非常破舊的錢袋，連當舖都不太想收購的東西
+50 | jewel | light-moneybag | :moneybag: | 輕盈的錢袋 | 10 | 101 | 100 | buffId | duration | feed | contains | 裡面裝了一點錢的錢袋
+51 | jewel | normal-moneybag | :moneybag: | 普通的錢袋 | 10 | 1010 | 1000 | buffId | duration | feed | contains | 這是一個帶出門可以支付一週生活費的錢袋
+52 | jewel | heavy-moneybag | :moneybag: | 沉重的錢袋 | 10 | 10100 | 10000 | buffId | duration | feed | contains | 感覺有點重量的錢袋
+53 | jewel | fadacai-moneybag | :moneybag: | 發大財錢袋 | 1 | price | 101000 | buffId | duration | feed | contains | 發大財！Power87 發大財！
 
 1 | fishing | penguin | :penguin: | 企鵝 | 1 | price | 500 | buffId | duration | 500 | contains | 雖然不曉得為什麼，在水裡游泳的企鵝好像禁不起魚餌的誘惑。
 2 | fishing | whale | :whale: | 比較的大鯨魚 | 1 | price | 500 | buffId | duration | 500 | contains | 這年頭竟然有人不知道大中天，難道是我老了嗎...？
@@ -45,9 +50,9 @@ let itemsRaw = `id:String | kind:String | name:String | icon:String | displayNam
 
 28 | mark | stamp-feed | :heart: | 閃亮的印章-英雄飼養 | 1000 | price | 1 | buffId | duration | feed | contains | 當英雄飽食度恢復時有機率獲得的印章，在英雄公會裡好像可以兌換些什麼。
 29 | mark | stamp-fight | :yellow_heart: | 閃亮的印章-英雄戰鬥 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在戰鬥中勝利之後會獲得的印章，在英雄公會裡好像可以兌換些什麼。
-30 | mark | stamp-adventure | :green_heart: | 閃亮的印章-英雄冒險 | 1000 | price | 1 | buffId | duration | feed | contains | 當英雄完成冒險時會獲得的印章，在英雄公會裡好像可以兌換些什麼。
-31 | mark | stamp- | :blue_heart: | 閃亮的印章- | 1000 | price | 1 | buffId | duration | feed | contains |
-32 | mark | stamp- | :purple_heart: | 閃亮的印章- | 1000 | price | 1 | buffId | duration | feed | contains |
+30 | mark | stamp-adventure | :green_heart: | 閃亮的印章-英雄冒險 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在冒險的旅途上偶爾會獲得的印章，在英雄公會裡好像可以兌換些什麼。
+31 | mark | stamp-tower | :blue_heart: | 閃亮的印章-魔神之塔 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在魔神之塔闖關留下的紀錄證明，擁有越多印章可以指定要攻略的層數。
+32 | mark | stamp-arena | :purple_heart: | 閃亮的印章-競技之王 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在競技場比賽中贏得勝利時會獲得的印章，是一個榮譽的象徵。
 47 | mark | frustrated-gambler | :broken_heart: | 失落的印章-迷惘賭徒 | 1000 | price | 1 | buffId | duration | feed | contains | 在賭博中失利時會獲得的印章，累積越多枚印章可以提高下次贏得獎勵的機率。
 48 | mark | frustrated-hero | :broken_heart: | 失落的印章-沮喪英雄 | 1000 | price | 1 | buffId | duration | feed | contains | 強化裝備失敗時會獲得的印章，累積越多枚印章可以提高下次強化成功的機率，強化成功時會全數回收。
 
@@ -64,8 +69,8 @@ let itemsRaw = `id:String | kind:String | name:String | icon:String | displayNam
 42 | enhance | enhance-ability | :sparkles: | 英雄體質強化粉末 | 50 | 10 | 1 | buffId | duration | feed | contains | 具有神秘力量的不可思議粉末，能夠提升英雄各項體質。
 46 | enhance | enhance-equipment | :sparkles: | 英雄裝備強化粉末 | 50 | 50 | 5 | buffId | duration | feed | contains | 具有神秘力量的不可思議粉末，能夠解放潛藏在裝備內的精靈之力，提高裝備的各項素質。
 
-44 | equipment | base-weapon | :crossed_swords: | 初級英雄武器兌換券 | 1 | 00 | 10 | buffId | duration | feed | contains | 使用後可以隨機獲得一種初級英雄武器。
-45 | equipment | base-armor | :shield: | 初級英雄防具兌換券 | 1 | 00 | 10 | buffId | duration | feed | contains | 使用後可以隨機獲得一種初級英雄防具。
+44 | equipment | base-weapon | :crossed_swords: | 初級英雄武器兌換券 | 1 | 100 | 10 | buffId | duration | feed | contains | 使用後可以隨機獲得一種初級英雄武器。
+45 | equipment | base-armor | :shield: | 初級英雄防具兌換券 | 1 | 100 | 10 | buffId | duration | feed | contains | 使用後可以隨機獲得一種初級英雄防具。
 
 id | kind | name | icon | displayName | maxStack | price | value | buffId | duration | feed | contains | description
 `

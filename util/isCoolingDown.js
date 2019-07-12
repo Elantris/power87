@@ -42,18 +42,25 @@ let userLastUsed = {}
 module.exports = ({ userCmd, message, userId }) => {
   // undefined detection
   if (!userLastUsed[userId]) {
-    userLastUsed[userId] = {}
+    userLastUsed[userId] = {
+      global: 0
+    }
   }
+
+  // global cooldown
+  if (message.createdTimestamp - userLastUsed[userId].global < 2000) {
+    return true
+  }
+  userLastUsed[userId].global = message.createdTimestamp
+
+  // command cooldown
   if (!userLastUsed[userId][userCmd]) {
     userLastUsed[userId][userCmd] = 0
   }
-
-  // calculate cooldown time
   if (message.createdTimestamp - userLastUsed[userId][userCmd] < (cooldownTime[userCmd] || 5000)) {
     return true
   }
-
-  // update last command timestamp
   userLastUsed[userId][userCmd] = message.createdTimestamp
+
   return false
 }
