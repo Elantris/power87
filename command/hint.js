@@ -1,6 +1,6 @@
 const hintSystem = require('../util/hintSystem')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let hint = ''
   if (args.length > 1 && Number.isSafeInteger(parseInt(args[1]))) {
     hint = hintSystem(args[1])

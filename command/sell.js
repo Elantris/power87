@@ -3,7 +3,7 @@ const inventorySystem = require('../util/inventorySystem')
 const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let results = []
   let amount = 10000
   let description

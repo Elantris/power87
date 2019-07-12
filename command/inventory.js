@@ -11,7 +11,7 @@ const userStatusMapping = {
   return: '從大洋歸來'
 }
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let description = `:diamond_shape_with_a_dot_inside: ${message.member.displayName}`
 
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)

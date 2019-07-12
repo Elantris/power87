@@ -1,7 +1,7 @@
 const inventorySystem = require('../util/inventorySystem')
 const equipments = require('../util/equipments')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   if (userInventory.status === 'fishing') {
     return { errorCode: 'ERROR_IS_FISHING' }
@@ -14,9 +14,6 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
 
     userInventory.equipments.forEach(v => {
       let equipment = equipments[v.id]
-      if (v.level === inventorySystem.enhanceChances[equipment.quality].length) {
-        return
-      }
       description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，\`87!refine ${equipment.name}+${v.level}\``
     })
 

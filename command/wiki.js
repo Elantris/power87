@@ -4,7 +4,7 @@ const items = require('../util/items')
 const equipments = require('../util/equipments')
 const findTargets = require('../util/findTargets')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let description
 
   if (args.length === 1 || args[1] === 'all') {

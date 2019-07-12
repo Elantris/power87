@@ -35,7 +35,7 @@ client.on('message', message => {
     database.ref(`/banlist/${userId}`).remove()
   }
 
-  handleCommand({ client, database, settings, message, guildId, userId })
+  handleCommand({ database, settings, message, guildId, userId })
 })
 
 client.on('ready', () => {

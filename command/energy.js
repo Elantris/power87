@@ -1,6 +1,6 @@
 const energySystem = require('../util/energySystem')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let userEnergy = await database.ref(`energy/${guildId}/${userId}`).once('value')
   if (userEnergy.exists()) {
     userEnergy = userEnergy.val()

@@ -2,7 +2,7 @@ const energySystem = require('../util/energySystem')
 
 const energyCost = 15
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args.length < 3 || !Number.isSafeInteger(parseInt(args[2]))) {
     return { errorCode: 'ERROR_FORMAT' }
   }

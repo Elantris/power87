@@ -25,7 +25,7 @@ const prizes = [
   { chance: 0.2000, pattern: '77', multiplier: 2 },
   { chance: 0.2577, pattern: '88', multiplier: 1 }
 ]
-const baseHitChance = 0.12
+const baseHitChance = 0.08
 const lostMessages = [
   '結果是一無所獲',
   '然而什麼都沒有',
@@ -47,16 +47,16 @@ const buffMapping = {
     icon: ':lollipop:'
   },
   '%3': {
-    chance: 0.03,
+    chance: 0.04,
     icon: ':chocolate_bar:'
   },
   '%4': {
-    chance: 0.04,
+    chance: 0.08,
     icon: ':popcorn:'
   }
 }
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let energyCost = 1
   let sayMessage = ''
 

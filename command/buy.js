@@ -5,6 +5,7 @@ const items = require('../util/items')
 const findTargets = require('../util/findTargets')
 
 const availableKinds = {
+  jewel: true,
   buff: true,
   petfood: true,
   box: true,
@@ -13,7 +14,7 @@ const availableKinds = {
   equipment: true
 }
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let description
   let target = {}
 

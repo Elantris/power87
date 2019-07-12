@@ -1,7 +1,7 @@
 const heroSystem = require('../util/heroSystem')
 const inventorySystem = require('../util/inventorySystem')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   // hero system
   let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {

@@ -7,11 +7,12 @@
  */
 
 let itemsRaw = `id:String | kind:String | name:String | icon:String | displayName:String | maxStack:Number | price:Number | value:Number | buffId:String | duration:Number | feed:Number | contains:String | description:String
+
 0 | jewel | gem | :gem: | 鑽石 | 1 | price | 1000 | buffId | duration | feed | contains | 非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫耀自己的財富。
-49 | jewel | shabby-moneybag | :moneybag: | 簡陋的錢袋 | 10 | 11 | 10 | buffId | duration | feed | contains | 非常破舊的錢袋，連當舖都不太想收購的東西
-50 | jewel | light-moneybag | :moneybag: | 輕盈的錢袋 | 10 | 101 | 100 | buffId | duration | feed | contains | 裡面裝了一點錢的錢袋
-51 | jewel | normal-moneybag | :moneybag: | 普通的錢袋 | 10 | 1010 | 1000 | buffId | duration | feed | contains | 這是一個帶出門可以支付一週生活費的錢袋
-52 | jewel | heavy-moneybag | :moneybag: | 沉重的錢袋 | 10 | 10100 | 10000 | buffId | duration | feed | contains | 感覺有點重量的錢袋
+49 | jewel | shabby-moneybag | :moneybag: | 簡陋的錢袋 | 10 | 11 | 10 | buffId | duration | feed | contains | 非常破舊的錢袋，連當舖都不太想收購的東西。
+50 | jewel | light-moneybag | :moneybag: | 輕盈的錢袋 | 10 | 101 | 100 | buffId | duration | feed | contains | 裡面裝了一點錢的錢袋。
+51 | jewel | normal-moneybag | :moneybag: | 普通的錢袋 | 10 | 1010 | 1000 | buffId | duration | feed | contains | 這是一個帶出門可以支付一週生活費的錢袋。
+52 | jewel | heavy-moneybag | :moneybag: | 沉重的錢袋 | 10 | 10100 | 10000 | buffId | duration | feed | contains | 感覺有點重量的錢袋。
 53 | jewel | fadacai-moneybag | :moneybag: | 發大財錢袋 | 1 | price | 101000 | buffId | duration | feed | contains | 發大財！Power87 發大財！
 
 1 | fishing | penguin | :penguin: | 企鵝 | 1 | price | 500 | buffId | duration | 500 | contains | 雖然不曉得為什麼，在水裡游泳的企鵝好像禁不起魚餌的誘惑。
@@ -60,8 +61,8 @@ let itemsRaw = `id:String | kind:String | name:String | icon:String | displayNam
 34 | box | bait-box | :package: | 魚餌箱子 | 1 | 170 | 17 | buffId | duration | feed | 18.10 | 一次購買十個魚餌享 85 折優惠！
 35 | box | candy-box | :package: | 糖果箱子 | 1 | 79 | 7 | buffId | duration | feed | 19.10 | 《好棒食品》推出糖果禮包，讓賭客可以用優惠的價格買到更多好運。
 
-37 | hero | summon-scroll | :scroll: | 英雄召喚捲軸 | 1 | 100 | 10 | buffId | duration | feed | contains | 蘊含神秘力量的卷軸，使用後會透過魔法陣從異世界隨機召喚一隻與你訂下契約的英雄。
-38 | hero | change-name | :label: | 英雄名稱變更券 | 1 | 50 | 5 | buffId | duration | feed | contains | 偶爾幫英雄換個稱呼或許會比較聽話。
+37 | hero | summon-scroll | :scroll: | 英雄召喚捲軸 | 1 | 100 | 10 | buffId | duration | feed | contains | 蘊含神秘力量的卷軸，使用後會透過魔法陣從異世界隨機召喚一隻與你訂下契約的英雄。\`87!use summon-scroll 英雄的名字\`
+38 | hero | change-name | :label: | 英雄名稱變更券 | 1 | 50 | 5 | buffId | duration | feed | contains | 偶爾幫英雄換個稱呼或許會比較聽話。\`87!use change-name 英雄的名字\`
 39 | hero | change-looks | :label: | 英雄外型變更券 | 1 | 3000 | 300 | buffId | duration | feed | contains | 這隻英雄長得好奇怪，把他換成指定的外型好了。使用時請輸入 emoji 的名稱，例如 :rhino: -> \`87!use change-looks rhino\`，用 \`87!help hero\` 查看所有英雄的種族。
 43 | hero | reset-ability | :pill: | 英雄體質重置藥丸 | 1 | 50 | 5 | buffId | duration | feed | contains | 使用後會將英雄的各項體質數值歸零。
 
@@ -74,7 +75,7 @@ let itemsRaw = `id:String | kind:String | name:String | icon:String | displayNam
 
 id | kind | name | icon | displayName | maxStack | price | value | buffId | duration | feed | contains | description
 `
-// last item id: 48
+// last item id: 53
 
 let items = {}
 let itemsData = itemsRaw.split('\n').filter(v => v)

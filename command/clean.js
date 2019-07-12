@@ -1,6 +1,6 @@
 let isCleaning = {}
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   if (isCleaning[guildId]) {
     return { errorCode: 'ERROR_IS_CLEANING' }
   }
@@ -37,7 +37,7 @@ module.exports = async ({ args, client, database, message, guildId, userId }) =>
     }
 
     let messages = await message.channel.fetchMessages({ limit, before })
-    messages = messages.filter(m => m.deletable).filter(m => m.author.id === client.user.id || m.content.startsWith('87'))
+    messages = messages.filter(m => m.deletable).filter(m => m.author.id === message.client.user.id || m.content.startsWith('87'))
     if (messages.size === 0) {
       break
     }

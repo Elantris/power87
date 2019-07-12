@@ -11,7 +11,7 @@ const availableKinds = {
   equipment: true
 }
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let description
   let target = {}
 

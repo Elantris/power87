@@ -1,4 +1,4 @@
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args.length === 1) {
     return {}
   }

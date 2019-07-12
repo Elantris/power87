@@ -1,6 +1,6 @@
 const energySystem = require('../util/energySystem')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args.length < 3 || !message.mentions.users.array()[0] || !Number.isSafeInteger(parseInt(args[2])) || parseInt(args[2]) < 1) {
     return { errorCode: 'ERROR_FORMAT' }
   }

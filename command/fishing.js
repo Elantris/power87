@@ -1,7 +1,7 @@
 const inventorySystem = require('../util/inventorySystem')
 const hintSystem = require('../util/hintSystem')
 
-module.exports = async ({ args, client, database, message, guildId, userId }) => {
+module.exports = async ({ args, database, message, guildId, userId }) => {
   let userAction = ''
   let hint = ''
 
