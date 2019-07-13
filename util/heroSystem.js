@@ -18,20 +18,20 @@ const expRange = [0, 100, 210, 331, 464, 610, 770, 946, 1139, 1351, 1584, 1840, 
 
 // * methods
 const read = async (database, guildId, userId, timenow = Date.now()) => {
-  let heroRaw = await database.ref(`/hero/${guildId}/${userId}`).once('value')
+  const heroRaw = await database.ref(`/hero/${guildId}/${userId}`).once('value')
   if (!heroRaw.exists()) {
     return {}
   }
 
-  let timeGap = Math.floor(timenow / config.tick)
-  let userHero = {
+  const timeGap = Math.floor(timenow / config.tick)
+  const userHero = {
     lastUpdate: 0,
 
     // basic
     status: '',
     name: '',
     species: '',
-    rarity: '',
+    rarity: 1,
     exp: 0,
     feed: 100,
     str: 0,
@@ -54,7 +54,7 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     ev: 1
   }
 
-  let heroData = heroRaw.val().split(';')
+  const heroData = heroRaw.val().split(';')
 
   userHero.lastUpdate = parseInt(heroData[0])
   userHero.status = heroData[1]
@@ -64,7 +64,7 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   userHero.exp = parseInt(heroData[5])
   userHero.feed = parseInt(heroData[6])
 
-  let heroAbilities = heroData[7].split(',').map(v => parseInt(v))
+  const heroAbilities = heroData[7].split(',').map(v => parseInt(v))
   userHero.str = heroAbilities[0]
   userHero.vit = heroAbilities[1]
   userHero.agi = heroAbilities[2]
@@ -74,21 +74,21 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   // equipment
   if (heroData[8]) {
     userHero.weapon = inventorySystem.parseEquipment(heroData[8])
-    let abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
+    const abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
     userHero.atk += abilities[0]
     userHero.hit += abilities[1]
     userHero.spd += abilities[2]
   }
   if (heroData[9]) {
     userHero.armor = inventorySystem.parseEquipment(heroData[9])
-    let abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
+    const abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
     userHero.def += abilities[0]
     userHero.ev += abilities[1]
     userHero.spd += abilities[2]
   }
 
   // level
-  for (let level in expRange) {
+  for (const level in expRange) {
     if (level > userHero.rarity * 10) {
       userHero.level = userHero.rarity * 10
       userHero.exp = expRange[level - 1] - 1
@@ -115,9 +115,9 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 const write = (database, guildId, userId, userHero, timenow = Date.now()) => {
   userHero.lastUpdate = Math.floor(timenow / config.tick)
 
-  let ability = `${userHero.str},${userHero.vit},${userHero.agi},${userHero.int},${userHero.luk}`
-  let weapon = userHero.weapon ? `&${userHero.weapon.id.toString().padStart(4, '0')}+${userHero.weapon.level}` : ``
-  let armor = userHero.armor ? `&${userHero.armor.id.toString().padStart(4, '0')}+${userHero.armor.level}` : ``
+  const ability = `${userHero.str},${userHero.vit},${userHero.agi},${userHero.int},${userHero.luk}`
+  const weapon = userHero.weapon ? `&${userHero.weapon.id.toString().padStart(4, '0')}+${userHero.weapon.level}` : ``
+  const armor = userHero.armor ? `&${userHero.armor.id.toString().padStart(4, '0')}+${userHero.armor.level}` : ``
 
   database.ref(`/hero/${guildId}/${userId}`).set(`${userHero.lastUpdate};${userHero.status};${userHero.name};${userHero.species};${userHero.rarity};${userHero.exp};${userHero.feed};${ability};${weapon};${armor}`)
 }
@@ -198,6 +198,61 @@ const resetAbility = (userHero) => {
   userHero.luk = 0
 }
 
+const battleRound = (attacker, defender) => {
+  // hit detection
+  const hit = attacker.hit * (Math.random() * (1 + attacker.inv * 0.02))
+  const ev = defender.ev * (Math.random() * (1 + defender.luk * 0.02))
+  console.log(`HIT: ${hit.toFixed(4)} / EV: ${ev.toFixed(4)}`)
+  if (hit < ev) {
+    return [attacker.name, defender.name, 'miss', 0]
+  }
+
+  // damage calculation
+  const atk = attacker.atk * (0.5 + Math.random() * (1 + attacker.str * 0.03))
+  const def = defender.def * (Math.random() * (1 + defender.vit * 0.02))
+  let damage = atk - def
+  console.log(`ATK: ${atk.toFixed(4)} / DEF: ${def.toFixed(4)} / Damage: ${damage}`)
+  if (damage < 1) {
+    damage = 1
+  }
+  damage = Math.floor(damage)
+  defender.hp -= damage
+  return [attacker.name, defender.name, 'hit', damage]
+}
+
+const battle = (attacker, defender) => {
+  attacker.hp = 100 + attacker.level * 5
+  defender.hp = 100 + defender.level * 5
+  const records = []
+  // attacker, defender, damage, defenderHp
+
+  while (records.length < 10) {
+    const spd1 = attacker.spd * Math.random() * (1 + attacker.agi * 0.02)
+    const spd2 = defender.spd * Math.random() * (1 + defender.agi * 0.02)
+    if (spd1 > spd2) {
+      records.push(battleRound(attacker, defender))
+      if (defender.hp <= 0) {
+        break
+      }
+      records.push(battleRound(defender, attacker))
+      if (attacker.hp <= 0) {
+        break
+      }
+    } else {
+      records.push(battleRound(defender, attacker))
+      if (attacker.hp <= 0) {
+        break
+      }
+      records.push(battleRound(attacker, defender))
+      if (defender.hp <= 0) {
+        break
+      }
+    }
+  }
+
+  return records
+}
+
 module.exports = {
   // methods
   read,
@@ -208,5 +263,6 @@ module.exports = {
   summon,
   changeName,
   changeLooks,
-  resetAbility
+  resetAbility,
+  battle
 }

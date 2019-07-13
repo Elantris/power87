@@ -5,13 +5,13 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return { errorCode: 'ERROR_FORMAT' }
   }
 
-  let targetId = message.mentions.users.array()[0].id
-  let energyGain = parseInt(args[2])
-  let energyCost = Math.ceil(energyGain * 1.3)
+  const targetId = message.mentions.users.array()[0].id
+  const energyGain = parseInt(args[2])
+  const energyCost = Math.ceil(energyGain * 1.3)
   let sayMessage = ''
 
   if (args.length > 3) {
-    let tmp = args.slice(3).join(' ')
+    const tmp = args.slice(3).join(' ')
     if (tmp > 50) {
       return { errorCode: 'ERROR_LENGTH_EXCEED' }
     }

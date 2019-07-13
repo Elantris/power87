@@ -22,13 +22,13 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // inventory system
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   if (userInventory.status === 'fishing') {
     return { errorCode: 'ERROR_IS_FISHING' }
   }
 
   // hero system
-  let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+  const userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
     return { errorCode: 'ERROR_NO_HERO' }
   }
@@ -45,17 +45,17 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
 
     let total = 0
-    for (let i in abilities) {
+    for (const i in abilities) {
       total += userHero[i]
     }
     if (total < userHero.level) {
       description += `\n\n:sparkles:**英雄體質強化粉末**x${userInventory.items['42'] || 0}`
-      for (let i in abilities) {
+      for (const i in abilities) {
         description += `\n**${abilities[i]}**：消耗 :sparkles:x1，\`87!enhance ${i} 1\``
       }
     }
 
-    let tmpEquipments = userInventory.equipments.filter(v => v.level < inventorySystem.enhanceChances[equipments[v.id].quality].length)
+    const tmpEquipments = userInventory.equipments.filter(v => v.level < inventorySystem.enhanceChances[equipments[v.id].quality].length)
     if (tmpEquipments.length) {
       description += `\n\n:sparkles:**英雄裝備強化粉末**x${userInventory.items['46'] || 0}`
       if (userInventory.items['48']) {
@@ -63,7 +63,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       }
 
       tmpEquipments.forEach(v => {
-        let equipment = equipments[v.id]
+        const equipment = equipments[v.id]
         let chance = inventorySystem.enhanceChances[equipment.quality][v.level]
         if (userInventory.items['48']) {
           chance += (10 - v.level) * 0.001 * userInventory.items['48']
@@ -85,7 +85,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :star:**英雄星數強化石**x${rarityCost[userHero.rarity]} 試圖強化英雄\n\n`
 
-    let luck = Math.random()
+    const luck = Math.random()
     if (luck < rarityChances[userHero.rarity] * (1 + 0.01 * userHero.level)) {
       userHero.rarity += 1
       description += `強化成功！英雄稀有度提升一階，:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)}`
@@ -93,13 +93,13 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       description += '強化失敗，維持原狀，'
     }
   } else if (args[1] in abilities) { // hero ability
-    let amount = parseInt(args[2] || 1)
+    const amount = parseInt(args[2] || 1)
     if (!userInventory.items['42'] || userInventory.items['42'] < amount) {
       return { errorCode: 'ERROR_NOT_ENOUGH' }
     }
 
     let total = 0
-    for (let i in abilities) {
+    for (const i in abilities) {
       total += userHero[i]
     }
     if (total + amount > userHero.level) {
@@ -112,8 +112,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     description = `:arrow_double_up: ${message.member.displayName} 消耗 :sparkles:**英雄體質強化粉末**x${amount}\n\n` +
       `:${userHero.species}: **${userHero.name}** 的 **${abilities[args[1]]}** 提升 ${amount} 點，\`${args[1].toUpperCase()}\`: ${userHero[args[1]]}`
   } else { // hero equipment
-    let tmp = args[1].split('+')
-    let target = {
+    const tmp = args[1].split('+')
+    const target = {
       name: tmp[0],
       level: parseInt(tmp[1] || 0),
       index: -1,
@@ -152,7 +152,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     if (userInventory.items['48']) {
       chance += (10 - target.level) * 0.001 * userInventory.items['48']
     }
-    let luck = Math.random()
+    const luck = Math.random()
     if (luck < chance) {
       delete userInventory.items['48']
       userInventory.equipments[target.index].level += 1

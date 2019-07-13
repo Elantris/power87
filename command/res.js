@@ -3,17 +3,17 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return {}
   }
 
-  let term = args[1]
+  const term = args[1]
   let choice = args[2]
 
   database.ref(`/note/${guildId}/${term}`).once('value').then(snapshot => {
-    let responses = snapshot.val()
+    const responses = snapshot.val()
     if (!responses) {
       return
     }
 
     if (args.length === 2) {
-      let candidates = Object.keys(responses)
+      const candidates = Object.keys(responses)
       choice = candidates[~~(Math.random() * candidates.length)]
     } else if (!responses[choice]) {
       return { errorCode: 'ERROR_NOT_FOUND' }

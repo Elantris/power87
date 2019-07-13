@@ -9,7 +9,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // check term legnth
-  let term = args[1]
+  const term = args[1]
   if (term.length > 20) {
     return { errorCode: 'ERROR_LENGTH_EXCEED' }
   }
@@ -41,8 +41,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // update database
-  let newResponse = args.slice(2).join(' ')
-  let updates = {}
+  const newResponse = args.slice(2).join(' ')
+  const updates = {}
   updates[emptyPosition] = newResponse
 
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy - energyCost)

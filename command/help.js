@@ -2,9 +2,9 @@ const fs = require('fs')
 const alias = require('../util/alias')
 const encoding = 'utf8'
 
-let manuals = {}
+const manuals = {}
 fs.readdirSync('./manual/').filter(filename => filename.endsWith('.md')).forEach(filename => {
-  let cmd = filename.split('.md')[0]
+  const cmd = filename.split('.md')[0]
   manuals[cmd] = fs.readFileSync(`./manual/${cmd}.md`, { encoding })
 })
 

@@ -9,9 +9,9 @@ module.exports = {
   all: 'list',
 
   e: 'energy',
-  '18': 'roll',
+  18: 'roll',
   '18la': 'roll',
-  '24': 'roll',
+  24: 'roll',
 
   inv: 'inventory',
   fish: 'fishing',

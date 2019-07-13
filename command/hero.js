@@ -15,7 +15,7 @@ const statusDisplay = (status) => {
 }
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
-  let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+  const userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
     return { errorCode: 'ERROR_NO_HERO' }
   }
@@ -33,25 +33,25 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     description += `\n武器：`
     if (userHero.weapon) {
-      let abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
+      const abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
       description += `:crossed_swords:**${equipments[userHero.weapon.id].displayName}**+${userHero.weapon.level}，` +
         `\`ATK\`: ${abilities[0]} / \`HIT\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
     description += `\n防具：`
     if (userHero.armor) {
-      let abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
+      const abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
       description += `:shield:**${equipments[userHero.armor.id].displayName}**+${userHero.armor.level}，` +
         `\`DEF\`: ${abilities[0]} / \`EV\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
   } else { // equip weapon or armor
-    let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+    const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
-    let targetIndex = inventorySystem.findEquipmentIndex(userInventory, args[1].toLowerCase())
+    const targetIndex = inventorySystem.findEquipmentIndex(userInventory, args[1].toLowerCase())
     if (targetIndex === -1) {
       return { errorCode: 'ERROR_NOT_FOUND' }
     }
 
-    let equipment = equipments[userInventory.equipments[targetIndex].id]
+    const equipment = equipments[userInventory.equipments[targetIndex].id]
 
     if (userHero[equipment.kind]) {
       userInventory.equipments.push({

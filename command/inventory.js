@@ -14,26 +14,26 @@ const userStatusMapping = {
 module.exports = async ({ args, database, message, guildId, userId }) => {
   let description = `:diamond_shape_with_a_dot_inside: ${message.member.displayName}`
 
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   description += ` ${userStatusMapping[userInventory.status]}`
 
   description += `\n功能道具：`
-  for (let id in userInventory.tools) {
+  for (const id in userInventory.tools) {
     description += `${tools[id].icon}+${userInventory.tools[id]} `
   }
 
   description += `\n增益效果：`
-  for (let id in userInventory.buffs) {
+  for (const id in userInventory.buffs) {
     if (userInventory.buffs[id] > message.createdTimestamp) {
-      let buffTime = moment.duration(userInventory.buffs[id] - message.createdTimestamp)
+      const buffTime = moment.duration(userInventory.buffs[id] - message.createdTimestamp)
       description += `${items[buffs[id]].icon}${Math.floor(buffTime.asHours()).toString().padStart(2, '0')}:${buffTime.minutes().toString().padStart(2, '0')}`
     }
   }
 
   description += `\n\n背包物品：**[${userInventory.maxSlots - userInventory.emptySlots}/${userInventory.maxSlots}]**`
-  let slotContents = []
+  const slotContents = []
   inventorySystem.kindOrders.forEach(kind => {
-    for (let id in userInventory.items) {
+    for (const id in userInventory.items) {
       if (items[id].kind === kind) {
         for (let i = 0; i < Math.ceil(userInventory.items[id] / items[id].maxStack); i++) {
           slotContents.push(items[id].icon)
@@ -52,8 +52,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   description += `\n\n英雄裝備：**[${userInventory.equipments.length}/${userInventory.maxEquipments}]**`
   userInventory.equipments.forEach(v => {
-    let equipment = equipments[v.id]
-    let abilities = inventorySystem.calculateAbility(v.id, v.level)
+    const equipment = equipments[v.id]
+    const abilities = inventorySystem.calculateAbility(v.id, v.level)
 
     description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，`
     if (equipment.kind === 'weapon') {

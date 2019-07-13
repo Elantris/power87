@@ -14,27 +14,27 @@ const gainFromTextChannel = async ({ database, energy, guildId, userId }) => {
 const isQualified = member => member.voiceChannelID && !member.deaf
 
 const gainFromVoiceChannel = ({ client, banlist, database }) => {
-  let timenow = Date.now()
+  const timenow = Date.now()
 
   client.guilds.filter(guild => !banlist[guild.id]).tap(async guild => {
-    let guildId = guild.id
+    const guildId = guild.id
 
     let guildEnergy = await database.ref(`/energy/${guildId}`).once('value')
     let guildFishing = await database.ref(`/fishing/${guildId}`).once('value')
     guildEnergy = guildEnergy.val() || {}
     guildFishing = guildFishing.val() || {}
-    let guildEnergyUpdates = {}
-    let guildFishingUpdates = {}
+    const guildEnergyUpdates = {}
+    const guildFishingUpdates = {}
 
     guild.members.filter(member => !banlist[member.id] && !member.user.bot).tap(async member => {
-      let userId = member.id
+      const userId = member.id
       if (guildFishing[userId]) {
         if (!isQualified(member) && Math.random() < 0.8) {
           return
         }
 
-        let fishingData = guildFishing[userId].split(';')
-        let counts = fishingData[0].split(',').map(v => parseInt(v))
+        const fishingData = guildFishing[userId].split(';')
+        const counts = fishingData[0].split(',').map(v => parseInt(v))
 
         if (counts[0] + counts[1] < 240) {
           if (fishingData[1] && parseInt(fishingData[1]) > timenow) {

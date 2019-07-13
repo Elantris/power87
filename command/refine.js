@@ -2,7 +2,7 @@ const inventorySystem = require('../util/inventorySystem')
 const equipments = require('../util/equipments')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   if (userInventory.status === 'fishing') {
     return { errorCode: 'ERROR_IS_FISHING' }
   }
@@ -13,21 +13,21 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     description = `:arrows_counterclockwise: ${message.member.displayName} 可以拆解的英雄裝備：\n`
 
     userInventory.equipments.forEach(v => {
-      let equipment = equipments[v.id]
+      const equipment = equipments[v.id]
       description += `\n${equipment.icon}**${equipment.displayName}**+${v.level}，\`87!refine ${equipment.name}+${v.level}\``
     })
 
     return { description }
   }
 
-  let targetIndex = inventorySystem.findEquipmentIndex(userInventory, args[1])
+  const targetIndex = inventorySystem.findEquipmentIndex(userInventory, args[1])
 
   if (targetIndex === -1) {
     return { errorCode: 'ERROR_NOT_FOUND' }
   }
 
-  let equipment = equipments[userInventory.equipments[targetIndex].id]
-  let targetLevel = userInventory.equipments[targetIndex].level
+  const equipment = equipments[userInventory.equipments[targetIndex].id]
+  const targetLevel = userInventory.equipments[targetIndex].level
 
   if (!userInventory.items['46']) {
     userInventory.items['46'] = 0

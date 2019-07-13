@@ -1,38 +1,38 @@
 const chances = {
-  '0': [0.0001, 0.0001, 0.0001, 0.0001, 0.0001],
+  0: [0.0001, 0.0001, 0.0001, 0.0001, 0.0001],
 
-  '1': [0.0001, 0.0002, 0.0003, 0.0004, 0.0005],
-  '2': [0.0001, 0.0002, 0.0003, 0.0004, 0.0005],
-  '3': [0.0002, 0.0003, 0.0004, 0.0005, 0.0006],
-  '4': [0.0005, 0.0006, 0.0007, 0.0008, 0.0009],
-  '5': [0.0008, 0.0009, 0.0010, 0.0011, 0.0012],
-  '6': [0.0010, 0.0011, 0.0012, 0.0013, 0.0014],
+  1: [0.0001, 0.0002, 0.0003, 0.0004, 0.0005],
+  2: [0.0001, 0.0002, 0.0003, 0.0004, 0.0005],
+  3: [0.0002, 0.0003, 0.0004, 0.0005, 0.0006],
+  4: [0.0005, 0.0006, 0.0007, 0.0008, 0.0009],
+  5: [0.0008, 0.0009, 0.0010, 0.0011, 0.0012],
+  6: [0.0010, 0.0011, 0.0012, 0.0013, 0.0014],
 
-  '7': [0.0010, 0.0010, 0.0010, 0.0010, 0.0100],
-  '8': [0.0010, 0.0010, 0.0010, 0.0100, 0.0150],
-  '9': [0.0010, 0.0010, 0.0100, 0.0140, 0.0200],
-  '10': [0.0010, 0.0100, 0.0130, 0.0180, 0.0250],
-  '11': [0.0100, 0.0120, 0.0160, 0.0220, 0.0300],
+  7: [0.0010, 0.0010, 0.0010, 0.0010, 0.0100],
+  8: [0.0010, 0.0010, 0.0010, 0.0100, 0.0150],
+  9: [0.0010, 0.0010, 0.0100, 0.0140, 0.0200],
+  10: [0.0010, 0.0100, 0.0130, 0.0180, 0.0250],
+  11: [0.0100, 0.0120, 0.0160, 0.0220, 0.0300],
 
-  '12': [0.0100, 0.0200, 0.0400, 0.0800, 0.5400],
-  '13': [0.0200, 0.0400, 0.0800, 0.5800, 0.0100],
-  '14': [0.0400, 0.0800, 0.6200, 0.0100, 0.0100],
-  '15': [0.0800, 0.6600, 0.0100, 0.0100, 0.0100],
-  '16': [0.7000, 0.0100, 0.0100, 0.0100, 0.0100]
+  12: [0.0100, 0.0200, 0.0400, 0.0800, 0.5400],
+  13: [0.0200, 0.0400, 0.0800, 0.5800, 0.0100],
+  14: [0.0400, 0.0800, 0.6200, 0.0100, 0.0100],
+  15: [0.0800, 0.6600, 0.0100, 0.0100, 0.0100],
+  16: [0.7000, 0.0100, 0.0100, 0.0100, 0.0100]
 }
 
 const getLoot = ({ pool, multiplierNormal, multiplierRare }) => {
   let luck = Math.random()
   let multiplierTmp = 1
 
-  for (let id in chances) {
+  for (const id in chances) {
     if (id === '1') {
       multiplierTmp = multiplierRare
     } else if (id === '7') {
       multiplierTmp = multiplierNormal
     }
 
-    let weight = chances[id][pool] * multiplierTmp
+    const weight = chances[id][pool] * multiplierTmp
     if (luck < weight) {
       return id
     }
@@ -48,8 +48,8 @@ module.exports = (userInventory, fishingRaw) => {
     return userInventory
   }
 
-  let fishingPoleLevel = parseInt(userInventory.tools.$1)
-  let multiplierNormal = 1 + fishingPoleLevel * 0.01 // fishing pole
+  const fishingPoleLevel = parseInt(userInventory.tools.$1)
+  const multiplierNormal = 1 + fishingPoleLevel * 0.01 // fishing pole
   let multiplierRare = multiplierNormal
   let pool = 0
   if (userInventory.tools.$2) { // sailboat
@@ -60,7 +60,7 @@ module.exports = (userInventory, fishingRaw) => {
   }
 
   let count = 0
-  let counts = fishingRaw.split(';')[0].split(',').map(v => parseInt(v))
+  const counts = fishingRaw.split(';')[0].split(',').map(v => parseInt(v))
 
   count += counts[0] + counts[1]
   for (let i = 0; i < counts[0]; i++) { // fishing pole
@@ -73,7 +73,7 @@ module.exports = (userInventory, fishingRaw) => {
   }
 
   for (let i = 0; i < count && userInventory.emptySlots > 0; i++) {
-    let loot = getLoot({ pool, multiplierNormal, multiplierRare })
+    const loot = getLoot({ pool, multiplierNormal, multiplierRare })
     if (loot === -1) {
       continue
     }

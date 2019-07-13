@@ -6,7 +6,7 @@
  * box: contains
  */
 
-let itemsRaw = `id:String | kind:String | name:String | icon:String | displayName:String | maxStack:Number | price:Number | value:Number | buffId:String | duration:Number | feed:Number | contains:String | description:String
+const itemsRaw = `id:String | kind:String | name:String | icon:String | displayName:String | maxStack:Number | price:Number | value:Number | buffId:String | duration:Number | feed:Number | contains:String | description:String
 
 0 | jewel | gem | :gem: | 鑽石 | 1 | price | 1000 | buffId | duration | feed | contains | 非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫耀自己的財富。
 49 | jewel | shabby-moneybag | :moneybag: | 簡陋的錢袋 | 10 | 11 | 10 | buffId | duration | feed | contains | 非常破舊的錢袋，連當舖都不太想收購的東西。
@@ -77,11 +77,11 @@ id | kind | name | icon | displayName | maxStack | price | value | buffId | dura
 `
 // last item id: 53
 
-let items = {}
-let itemsData = itemsRaw.split('\n').filter(v => v)
+const items = {}
+const itemsData = itemsRaw.split('\n').filter(v => v)
 
-let attrs = itemsData.shift().split(' | ').map(v => {
-  let tmp = v.split(':')
+const attrs = itemsData.shift().split(' | ').map(v => {
+  const tmp = v.split(':')
   return {
     name: tmp[0],
     type: tmp[1]

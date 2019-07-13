@@ -6,29 +6,29 @@ const items = require('../util/items')
 
 const dailyReward = 20
 const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-let monthlyReward = {
+const monthlyReward = {
   month: '',
   days: 0,
   items: []
 }
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
-  let now = moment(message.createdAt)
-  let todayDisplay = now.format('YYYYMMDD')
-  let yesterdayDisplay = now.subtract(1, 'd').format('YYYYMMDD')
+  const now = moment(message.createdAt)
+  const todayDisplay = now.format('YYYYMMDD')
+  const yesterdayDisplay = now.subtract(1, 'd').format('YYYYMMDD')
 
   // update monthly rewards
   if (monthlyReward.month !== todayDisplay.substring(0, 6)) {
     monthlyReward.month = todayDisplay.substring(0, 6)
 
-    let monthlyRewardRaw = await database.ref(`/monthlyReward/${todayDisplay.substring(0, 6)}`).once('value')
+    const monthlyRewardRaw = await database.ref(`/monthlyReward/${todayDisplay.substring(0, 6)}`).once('value')
     if (monthlyRewardRaw.exists()) {
       monthlyReward.items = monthlyRewardRaw.val().split(',')
       monthlyReward.items.unshift('-')
 
       monthlyReward.days = monthDays[message.createdAt.getMonth()]
       if (monthlyReward.days === 28) { // Febularay
-        let year = message.createdAt.getFullYear()
+        const year = message.createdAt.getFullYear()
         if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
           monthlyReward.days = 29
         }
@@ -43,7 +43,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   } else {
     dailyRaw = ',0,0'
   }
-  let dailyData = dailyRaw.split(',')
+  const dailyData = dailyRaw.split(',')
 
   if (dailyData[0] === todayDisplay) {
     return { description: `:calendar: ${message.member.displayName} 已經連續簽到 ${dailyData[1]} 天；本月累計簽到 ${dailyData[2] || 0} 天` }
@@ -84,8 +84,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   // inventory system
   let rewardMessage = ''
   if (monthlyReward.items[dailyData[2]] && monthlyReward.items[dailyData[2]] !== '-') {
-    let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-    let reward = monthlyReward.items[dailyData[2]].split('.')
+    const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+    const reward = monthlyReward.items[dailyData[2]].split('.')
     if (!userInventory.items[reward[0]]) {
       userInventory.items[reward[0]] = 0
     }

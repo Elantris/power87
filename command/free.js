@@ -3,7 +3,7 @@ const inventorySystem = require('../util/inventorySystem')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   // hero system
-  let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+  const userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
   if (!userHero.name) {
     return { errorCode: 'ERROR_NO_HERO' }
   }
@@ -13,7 +13,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // inventory system
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   if (userInventory.status === 'fishing') {
     return { errorCode: 'ERROR_IS_FISHING' }
   }
@@ -35,7 +35,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   // energy system
   let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')
   userEnergy = userEnergy.val()
-  let energyGain = Math.floor(userHero.exp * 0.5 + userHero.rarity * 50)
+  const energyGain = Math.floor(userHero.exp * 0.5 + userHero.rarity * 50)
 
   // update database
   database.ref(`/energy/${guildId}/${userId}`).set(userEnergy + energyGain)

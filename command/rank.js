@@ -2,9 +2,9 @@ const updateInterval = 10 * 60 * 1000 // 10 min
 
 function makeOutput ({ message, rank }) {
   let rankDisplay = `:trophy: 八七能量排行榜\n`
-  for (let i in rank) {
+  for (const i in rank) {
     if (i !== '0') {
-      let tmp = rank[i].split(':')
+      const tmp = rank[i].split(':')
       rankDisplay += `\n${i}. <@${tmp[0]}>: ${tmp[1]}`
     }
   }
@@ -29,7 +29,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // sort guild energy
   let tmpRank = []
-  for (let userId in guildEnergy) {
+  for (const userId in guildEnergy) {
     tmpRank.push({
       userId,
       amount: guildEnergy[userId]

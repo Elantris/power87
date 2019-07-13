@@ -30,9 +30,9 @@ const errors = {
 
   // hero
   ERROR_NO_HERO: '沒有召喚的英雄',
-  ERROR_HERO_DEAD: '英雄已經死亡',
   ERROR_HERO_EXISTS: '只能召喚一隻英雄',
   ERROR_HERO_NAME: '請輸入英雄的名字',
+  ERROR_HERO_BUSY: '英雄在忙',
   ERROR_MAX_RARITY: '已達最高星數',
   ERROR_NO_SPECIES: '不存在的外觀',
   ERROR_NO_FEED: '飽食度不足，你的英雄現在很餓',
@@ -43,7 +43,7 @@ const errors = {
 }
 
 // command history
-let userCmdLogs = {}
+const userCmdLogs = {}
 
 module.exports = async ({ message, content, description = '', errorCode, fade = false }) => {
   let embed = {}
@@ -59,7 +59,7 @@ module.exports = async ({ message, content, description = '', errorCode, fade = 
     }
   }
 
-  let responseMessage = await message.channel.send(content, { embed })
+  const responseMessage = await message.channel.send(content, { embed })
   if (fade) {
     setTimeout(async () => {
       await responseMessage.delete()
@@ -67,8 +67,8 @@ module.exports = async ({ message, content, description = '', errorCode, fade = 
   }
 
   // logger
-  let userId = message.author.id
-  let past = message.createdTimestamp - 10 * 60 * 1000 // 10 min
+  const userId = message.author.id
+  const past = message.createdTimestamp - 10 * 60 * 1000 // 10 min
   let warning = ''
 
   if (!userCmdLogs[userId]) {
@@ -84,7 +84,7 @@ module.exports = async ({ message, content, description = '', errorCode, fade = 
     warning = ':warning:'
   }
 
-  let timeDisplay = moment(message.createdAt).format('HH:mm:ss')
+  const timeDisplay = moment(message.createdAt).format('HH:mm:ss')
   embed.title = `\`[${timeDisplay}]\` ${message.content}`
   embed.fields = [{
     name: 'Guild',

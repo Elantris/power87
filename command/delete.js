@@ -7,10 +7,10 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return { errorCode: 'ERROR_FORMAT' }
   }
 
-  let term = args[1]
-  let position = parseInt(args[2])
+  const term = args[1]
+  const position = parseInt(args[2])
 
-  let note = await database.ref(`/note/${guildId}/${term}/${position}`).once('value')
+  const note = await database.ref(`/note/${guildId}/${term}/${position}`).once('value')
   if (!note.exists()) {
     return { errorCode: 'ERROR_NOT_FOUND' }
   }

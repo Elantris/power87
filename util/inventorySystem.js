@@ -30,7 +30,7 @@ const enhanceChances = {
 }
 
 const read = async (database, guildId, userId, timenow = Date.now()) => {
-  let userInventory = {
+  const userInventory = {
     status: 'stay', // stay or fishing
     tools: {},
     buffs: {},
@@ -41,11 +41,11 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
     maxEquipments: 0
   }
 
-  let inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
+  const inventoryRaw = await database.ref(`/inventory/${guildId}/${userId}`).once('value')
   if (!inventoryRaw.val()) {
     return userInventory
   }
-  let inventoryData = inventoryRaw.val().split(',').filter(v => v)
+  const inventoryData = inventoryRaw.val().split(',').filter(v => v)
 
   inventoryData.forEach(item => {
     let tmp
@@ -83,7 +83,7 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   })
 
   // fishing system
-  let fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
+  const fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
   if (fishingRaw.exists()) {
     fishingSystem(userInventory, fishingRaw.val())
 
@@ -102,15 +102,15 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 }
 
 const write = (database, guildId, userId, userInventory, timenow = Date.now()) => {
-  let inventoryData = []
+  const inventoryData = []
 
-  for (let id in tools) {
+  for (const id in tools) {
     if (userInventory.tools[id]) {
       inventoryData.push(`${id}+${userInventory.tools[id]}`)
     }
   }
 
-  for (let id in buffs) {
+  for (const id in buffs) {
     if (userInventory.buffs[id] && userInventory.buffs[id] > timenow) {
       inventoryData.push(`${id}:${userInventory.buffs[id]}`)
     }
@@ -120,7 +120,7 @@ const write = (database, guildId, userId, userInventory, timenow = Date.now()) =
     inventoryData.push(`&${equipment.id.toString().padStart(4, '0')}+${equipment.level}`)
   })
 
-  for (let id in items) {
+  for (const id in items) {
     if (userInventory.items[id]) {
       inventoryData.push(`${id}.${userInventory.items[id]}`)
     }
@@ -138,7 +138,7 @@ const exchangeEquipment = (userInventory, kind, quality) => {
     return 'ERROR_NOT_FOUND'
   }
 
-  let luck = Math.floor(Math.random() * equipmentMapping[kind][quality].length)
+  const luck = Math.floor(Math.random() * equipmentMapping[kind][quality].length)
   userInventory.equipments.push({
     id: equipmentMapping[kind][quality][luck],
     level: 0

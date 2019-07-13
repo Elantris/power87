@@ -13,7 +13,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     return { description }
   }
 
-  let results = findTargets(args[1].toLowerCase())
+  const results = findTargets(args[1].toLowerCase())
 
   if (results.length === 0) {
     return { errorCode: 'ERROR_NOT_FOUND' }
@@ -33,16 +33,16 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   description = ':diamond_shape_with_a_dot_inside: 道具/物品詳細說明'
 
-  let result = results[0]
+  const result = results[0]
   if (result.type === 'tool') {
-    let tool = tools[result.id]
+    const tool = tools[result.id]
     description += `\n\n${tool.icon}**${tool.displayName}**，\`${tool.name}\`` +
       `\n> 說明：${tool.description}` +
       `\n> 購買價格：` +
       tool.prices.map((price, index) => `\`+${index}\`: **${price}**`).join('、') +
       `，\`87!buy ${tool.name}\``
   } else if (result.type === 'item') {
-    let item = items[result.id]
+    const item = items[result.id]
     description += `\n\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`` +
       `\n> 說明：${item.description}` +
       `\n> 最大堆疊數量：**${item.maxStack}**`
@@ -60,14 +60,14 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       description += `\n> 恢復飽食度：**+${item.feed}**，\`87!feed ${item.name}\``
     }
     if ('content' in item) {
-      let content = item.content.split(',').map(v => {
-        let itemData = v.split('.')
+      const content = item.content.split(',').map(v => {
+        const itemData = v.split('.')
         return `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${parseInt(itemData[1] || 1)}`
       }).join('、')
       description += `\n> 內容物：${content}，\`87!use ${item.name}\``
     }
   } else if (result.type === 'equipment') {
-    let equipment = equipments[result.id]
+    const equipment = equipments[result.id]
     description += `\n\n${equipment.icon}**${equipment.displayName}**，\`${equipment.kind}/${equipment.name}\`` +
       `\n> 說明：${equipment.description}`
 

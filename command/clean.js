@@ -1,4 +1,4 @@
-let isCleaning = {}
+const isCleaning = {}
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   if (isCleaning[guildId]) {
@@ -26,7 +26,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
   })
 
-  let messageCollections = []
+  const messageCollections = []
   let before
   let fetchAmount = 0
 
@@ -47,7 +47,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // delete messages
-  let cleaningMessage = await message.channel.send({
+  const cleaningMessage = await message.channel.send({
     embed: {
       color: 0xffe066,
       description: `:recycle: 清理 ${fetchAmount} 則訊息中...`

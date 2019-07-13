@@ -84,13 +84,13 @@ const hints = [
 ]
 
 const mapping = item => {
-  for (let id in tools) {
+  for (const id in tools) {
     if (item === tools[id].name) {
       return `${tools[id].icon}**${tools[id].displayName}**`
     }
   }
 
-  for (let id in items) {
+  for (const id in items) {
     if (item === items[id].name) {
       return `${items[id].icon}**${items[id].displayName}**`
     }
@@ -109,7 +109,7 @@ module.exports = (luck) => {
   }
 
   let hint = hints[luck - 1]
-  let itemsNotation = hint.match(/\{\{[a-z\\-]*\}\}/g)
+  const itemsNotation = hint.match(/\{\{[a-z\\-]*\}\}/g)
   if (itemsNotation) {
     itemsNotation.forEach(item => {
       hint = hint.replace(item, mapping(item.slice(2, -2)))

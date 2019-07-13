@@ -5,9 +5,9 @@ const energySystem = require('./energySystem')
 const sendResponse = require('./sendResponse')
 
 // * load commands
-let commands = {}
+const commands = {}
 fs.readdirSync('./command/').filter(filename => !filename.startsWith('.')).forEach(filename => {
-  let cmd = filename.split('.js')[0]
+  const cmd = filename.split('.js')[0]
   commands[cmd] = require(`../command/${cmd}`)
 })
 
@@ -45,10 +45,10 @@ const cmdCooldown = {
   res: 3,
   gainFromMessage: 120
 }
-for (let i in cmdCooldown) {
+for (const i in cmdCooldown) {
   cmdCooldown[i] *= 1000 // trasform to minisecond
 }
-let cmdLastUsed = {}
+const cmdLastUsed = {}
 
 // * main message
 module.exports = async ({ database, settings, message, guildId, userId }) => {
@@ -58,7 +58,7 @@ module.exports = async ({ database, settings, message, guildId, userId }) => {
 
   // parse command
   let userCmd = ''
-  let args = message.content.replace(/  +/g, ' ').split(' ')
+  const args = message.content.replace(/  +/g, ' ').split(' ')
 
   if (args[0].startsWith('87!')) {
     userCmd = args[0].substring(3).toLowerCase()
@@ -85,8 +85,8 @@ module.exports = async ({ database, settings, message, guildId, userId }) => {
   cmdLastUsed[userId].global = message.createdTimestamp
 
   // call command
-  let response = await commands[userCmd]({ args, database, message, guildId, userId }) || {}
-  let fade = (guildId in settings && settings[guildId] !== message.channel.id)
+  const response = await commands[userCmd]({ args, database, message, guildId, userId }) || {}
+  const fade = (guildId in settings && settings[guildId] !== message.channel.id)
 
   if (response.errorCode) {
     sendResponse({ message, errorCode: response.errorCode, fade })

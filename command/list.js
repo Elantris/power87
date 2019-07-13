@@ -6,11 +6,11 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     notes = notes.val() || {}
 
     description += '所有關鍵字\n'
-    for (let term in notes) {
+    for (const term in notes) {
       description += `\n${term} (${Object.keys(notes[term]).length})`
     }
   } else {
-    let term = args[1]
+    const term = args[1]
     let responses = await database.ref(`/note/${guildId}/${term}`).once('value')
     if (!responses.val()) {
       return { errorCode: 'ERROR_NOT_FOUND' }
@@ -18,7 +18,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     responses = responses.val()
 
     description += `**${term}** 的回應列表 [${Object.keys(responses).length}/50]\n`
-    for (let index in responses) {
+    for (const index in responses) {
       description += `\n${index}. ${responses[index]}`
     }
   }

@@ -140,7 +140,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   while (slotResults.length !== 3) {
-    let newSlot = Math.floor(Math.random() * 10).toString()
+    const newSlot = Math.floor(Math.random() * 10).toString()
     if (!slotResults.includes(newSlot)) {
       slotResults.splice(Math.floor(Math.random() * 3), 0, newSlot)
     }

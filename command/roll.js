@@ -83,7 +83,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // inventory system
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
   let certainWinChance = 0
   if (userInventory.buffs['%4']) {
@@ -104,7 +104,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let host = rollDice()
   let player = rollDice()
 
-  let luck = Math.random()
+  const luck = Math.random()
   if (luck < certainWinChance) {
     while (resultMapping[host.score]) {
       host = rollDice()

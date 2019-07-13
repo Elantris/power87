@@ -4,9 +4,9 @@ const items = require('./items')
 const equipments = require('./equipments')
 
 module.exports = search => {
-  let results = []
+  const results = []
 
-  for (let id in tools) {
+  for (const id in tools) {
     if (
       search === tools[id].name ||
       search === emoji.emojify(tools[id].icon) ||
@@ -19,7 +19,7 @@ module.exports = search => {
     }
   }
 
-  for (let id in items) {
+  for (const id in items) {
     if (search === 'all' ||
       search === items[id].kind ||
       search === items[id].name ||
@@ -33,7 +33,7 @@ module.exports = search => {
     }
   }
 
-  for (let id in equipments) {
+  for (const id in equipments) {
     if (search === equipments[id].kind ||
       search === equipments[id].quality ||
       search === emoji.emojify(equipments[id].icon) ||

@@ -17,7 +17,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // target
   if (args[1]) {
-    let results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item' && items[result.id].kind in availableKinds)
+    const results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item' && items[result.id].kind in availableKinds)
 
     if (results.length === 0) {
       return { errorCode: 'ERROR_NOT_FOUND' }
@@ -26,7 +26,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     if (results.length > 1) {
       description = `:arrow_double_up: 指定其中一種道具/物品：\n`
       results.forEach(result => {
-        let item = items[result.id]
+        const item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，\`87!use ${item.name}\``
       })
       return { description }
@@ -49,7 +49,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // inventory system
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   if (userInventory.status === 'fishing') {
     return { errorCode: 'ERROR_IS_FISHING' }
   }
@@ -58,7 +58,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args.length === 1) {
     description = `:arrow_double_up: ${message.member.displayName} 背包內可以使用的道具：\n`
 
-    for (let id in userInventory.items) {
+    for (const id in userInventory.items) {
       if (availableKinds[items[id].kind]) {
         description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，\`87!use ${items[id].name} ${userInventory.items[id]}\``
       }
@@ -76,10 +76,10 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   if (target.kind === 'buff') { // extend duration of buff
-    let durationGain = items[target.id].duration * target.amount
+    const durationGain = items[target.id].duration * target.amount
     description = `:arrow_double_up: ${message.member.displayName} 獲得 ${durationGain / 60000} 分鐘 ${items[target.id].icon}**${items[target.id].displayName}** 的效果`
 
-    let buffId = items[target.id].buffId
+    const buffId = items[target.id].buffId
 
     if (!userInventory.buffs[buffId]) {
       userInventory.buffs[buffId] = message.createdTimestamp
@@ -90,16 +90,16 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     description = `:arrow_double_up: ${message.member.displayName} 打開 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}，獲得物品：\n\n`
 
     items[target.id].contains.split(',').forEach(v => {
-      let itemData = v.split('.')
+      const itemData = v.split('.')
       if (!userInventory.items[itemData[0]]) {
         userInventory.items[itemData[0]] = 0
       }
-      let amount = parseInt(itemData[1] || 1) * target.amount
+      const amount = parseInt(itemData[1] || 1) * target.amount
       userInventory.items[itemData[0]] += amount
       description += `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${amount} `
     })
   } else if (target.kind === 'hero') { // hero kind
-    let userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
+    const userHero = await heroSystem.read(database, guildId, userId, message.createdTimestamp)
 
     target.amount = 1
     description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
@@ -145,7 +145,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       return { errorCode }
     }
 
-    let newEquipment = userInventory.equipments.slice(-1)[0]
+    const newEquipment = userInventory.equipments.slice(-1)[0]
     description += `獲得了 ${items[target.id].icon}**${equipments[newEquipment.id].displayName}**+0`
 
     userInventory.equipments.sort((a, b) => a.id - b.id)

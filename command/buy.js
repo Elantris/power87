@@ -19,7 +19,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let target = {}
 
   if (args[1]) {
-    let results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'tool' || (result.type === 'item' && 'price' in items[result.id]))
+    const results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'tool' || (result.type === 'item' && 'price' in items[result.id]))
 
     if (results.length === 0) {
       return { errorCode: 'ERROR_NOT_FOUND' }
@@ -28,7 +28,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     if (results.length > 1) {
       description = `:shopping_cart: 指定其中一種道具/物品：\n`
       results.forEach(result => {
-        let item = items[result.id]
+        const item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，:battery: **${item.price}**，\`87!buy ${item.name}\``
       })
       return { description }
@@ -56,7 +56,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // inventory system
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   if (userInventory.status === 'fishing') {
     return { errorCode: 'ERROR_IS_FISHING' }
   }
@@ -65,7 +65,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     description = `:shopping_cart: ${message.member.displayName} 可購買的商品：`
 
     description += `\n\n__功能道具__：`
-    for (let id in tools) {
+    for (const id in tools) {
       let toolLevel = 0
       if (userInventory.tools[id]) {
         toolLevel = parseInt(userInventory.tools[id]) + 1
@@ -122,7 +122,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     database.ref(`/energy/${guildId}/${userId}`).set(userEnergy)
   }
 
-  let energyCost = target.price * target.amount
+  const energyCost = target.price * target.amount
   if (userEnergy < energyCost) {
     return { errorCode: 'ERROR_NO_ENERGY' }
   }

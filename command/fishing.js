@@ -5,7 +5,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let userAction = ''
   let hint = ''
 
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   if (userInventory.status === 'fishing') {
     userAction = '結束釣魚'
 
