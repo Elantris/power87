@@ -107,10 +107,9 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   if (lastUsed) {
     const nextOpen = lastUsed + config.tick * 10
     if (message.createdTimestamp < nextOpen) {
-      return { description: `:fleur_de_lis: ${message.member.displayName} 能夠挑戰魔神之塔的時間為：${moment(nextOpen).format('HH:mm:ss')}` }
+      return { description: `:fleur_de_lis: ${message.member.displayName} 下次能夠挑戰魔神之塔的時間為：${moment(nextOpen).format('HH:mm:ss')}` }
     }
   }
-  await database.ref(`/lastUsed/tower/${guildId}/${userId}`).set(message.createdTimestamp)
 
   // inventory system
   const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
@@ -139,6 +138,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // tower
+  await database.ref(`/lastUsed/tower/${guildId}/${userId}`).set(message.createdTimestamp)
+
   const enemy = monsterCharacter(monsters[targetFloor], userHero.species)
   userHero.status = 'tower'
   heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
@@ -166,7 +167,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     const expGain = 1 + Math.floor(Math.random() * targetFloor)
     userHero.exp += expGain
-    battleResults.description += `獲得 ${expGain} 點英雄經驗值`
+    battleResults.description += `\n獲得 ${expGain} 點英雄經驗值`
 
     const itemGet = {}
     if (userInventory.items['31'] < targetFloor) {
