@@ -3,7 +3,8 @@ const heroSystem = require('../util/heroSystem')
 const equipments = require('../util/equipments')
 
 const statusMapping = {
-  stay: ['閒置', '發呆', '空閑', '無聊', '站著', '坐著', '躺著']
+  stay: ['閒置', '發呆', '空閑', '無聊', '站著', '坐著', '躺著'],
+  tower: ['挑戰魔神之塔']
 }
 
 const statusDisplay = (status) => {

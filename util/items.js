@@ -49,13 +49,13 @@ const itemsRaw = `id:String | kind:String | name:String | icon:String | displayN
 26 | petfood | sushi | :sushi: | 營養壽司 | 1 | 240 | 24 | buffId | duration | 100 | contains | 《營養食品》推出能夠滿足英雄的口腹之慾的特等壽司。
 27 | petfood | bento | :bento: | 營養便當 | 1 | 500 | 50 | buffId | duration | 300 | contains | 《營養食品》強力推薦菜色多元、豐富口感、多重層次的精緻便當，恢復全部英雄飽食度。
 
-28 | mark | stamp-feed | :heart: | 閃亮的印章-英雄飼養 | 1000 | price | 1 | buffId | duration | feed | contains | 當英雄飽食度恢復時有機率獲得的印章，在英雄公會裡好像可以兌換些什麼。
-29 | mark | stamp-fight | :yellow_heart: | 閃亮的印章-英雄戰鬥 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在戰鬥中勝利之後會獲得的印章，在英雄公會裡好像可以兌換些什麼。
-30 | mark | stamp-adventure | :green_heart: | 閃亮的印章-英雄冒險 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在冒險的旅途上偶爾會獲得的印章，在英雄公會裡好像可以兌換些什麼。
-31 | mark | stamp-tower | :blue_heart: | 閃亮的印章-魔神之塔 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在魔神之塔闖關留下的紀錄證明，擁有越多印章可以指定要攻略的層數。
-32 | mark | stamp-arena | :purple_heart: | 閃亮的印章-競技之王 | 1000 | price | 1 | buffId | duration | feed | contains | 英雄在競技場比賽中贏得勝利時會獲得的印章，是一個榮譽的象徵。
-47 | mark | frustrated-gambler | :broken_heart: | 失落的印章-迷惘賭徒 | 1000 | price | 1 | buffId | duration | feed | contains | 在賭博中失利時會獲得的印章，累積越多枚印章可以提高下次贏得獎勵的機率。
-48 | mark | frustrated-hero | :broken_heart: | 失落的印章-沮喪英雄 | 1000 | price | 1 | buffId | duration | feed | contains | 強化裝備失敗時會獲得的印章，累積越多枚印章可以提高下次強化成功的機率，強化成功時會全數回收。
+28 | mark | stamp-feed | :heart: | 閃亮的印章-英雄飼養 | 1000 | price | value | buffId | duration | feed | contains | 當英雄飽食度恢復時有機率獲得的印章，在英雄公會裡好像可以兌換些什麼。
+29 | mark | stamp-fight | :yellow_heart: | 閃亮的印章-英雄戰鬥 | 1000 | price | value | buffId | duration | feed | contains | 英雄在戰鬥中勝利之後會獲得的印章，在英雄公會裡好像可以兌換些什麼。
+30 | mark | stamp-adventure | :green_heart: | 閃亮的印章-英雄冒險 | 1000 | price | value | buffId | duration | feed | contains | 英雄在冒險的旅途上偶爾會獲得的印章，在英雄公會裡好像可以兌換些什麼。
+31 | mark | stamp-tower | :blue_heart: | 閃亮的印章-魔神之塔 | 1000 | price | value | buffId | duration | feed | contains | 英雄在魔神之塔闖關留下的紀錄證明，擁有越多印章可以指定要攻略的層數。
+32 | mark | stamp-arena | :purple_heart: | 閃亮的印章-競技之王 | 1000 | price | value | buffId | duration | feed | contains | 英雄在競技場比賽中贏得勝利時會獲得的印章，是一個榮譽的象徵。
+47 | mark | frustrated-gambler | :broken_heart: | 失落的印章-迷惘賭徒 | 1000 | price | value | buffId | duration | feed | contains | 在賭博中失利時會獲得的印章，累積越多枚印章可以提高下次贏得獎勵的機率。
+48 | mark | frustrated-hero | :broken_heart: | 失落的印章-沮喪英雄 | 1000 | price | value | buffId | duration | feed | contains | 強化裝備失敗時會獲得的印章，累積越多枚印章可以提高下次強化成功的機率，強化成功時會全數回收。
 
 
 34 | box | bait-box | :package: | 魚餌箱子 | 1 | 170 | 17 | buffId | duration | feed | 18.10 | 一次購買十個魚餌享 85 折優惠！
@@ -105,7 +105,5 @@ itemsData.forEach(v => {
     }
   })
 })
-
-// console.log(JSON.stringify(items))
 
 module.exports = items

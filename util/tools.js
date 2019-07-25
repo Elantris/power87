@@ -30,5 +30,13 @@ module.exports = {
     description: '提升稀有魚種獲得機率。',
     maxLevel: 3,
     prices: [150, 450, 1350, 4050]
+  },
+  $4: {
+    name: 'lucky-seven',
+    icon: ':seven:',
+    displayName: '幸運七',
+    description: '古代文明遺留的聖物，可以永久提升拉霸中獎機率。',
+    maxLevel: 3,
+    prices: [1000, 10000, 100000, 1000000]
   }
 }

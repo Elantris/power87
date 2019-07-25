@@ -36,6 +36,7 @@ const cmdCooldown = {
   feed: 3,
   enhance: 5,
   refine: 5,
+  tower: 30,
 
   help: 3,
   wiki: 3,
@@ -51,7 +52,7 @@ for (const i in cmdCooldown) {
 const cmdLastUsed = {}
 
 // * main message
-module.exports = async ({ database, settings, message, guildId, userId }) => {
+module.exports = async ({ database, message, guildId, userId }) => {
   if (!cmdLastUsed[userId]) {
     cmdLastUsed[userId] = {}
   }
@@ -74,7 +75,7 @@ module.exports = async ({ database, settings, message, guildId, userId }) => {
   }
 
   if (!commands[userCmd]) {
-    sendResponse({ message, errorCode: 'ERROR_NO_COMMAND', fade: true })
+    sendResponse({ message, errorCode: 'ERROR_NO_COMMAND' })
     return
   }
 
@@ -86,12 +87,11 @@ module.exports = async ({ database, settings, message, guildId, userId }) => {
 
   // call command
   const response = await commands[userCmd]({ args, database, message, guildId, userId }) || {}
-  const fade = (guildId in settings && settings[guildId] !== message.channel.id)
 
   if (response.errorCode) {
-    sendResponse({ message, errorCode: response.errorCode, fade })
+    sendResponse({ message, errorCode: response.errorCode })
   } else if (response.description) {
     cmdLastUsed[userId][userCmd] = message.createdTimestamp
-    sendResponse({ message, description: response.description, content: response.content, fade })
+    sendResponse({ message, description: response.description, content: response.content })
   }
 }

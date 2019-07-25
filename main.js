@@ -14,10 +14,6 @@ let banlist = {}
 database.ref('/banlist').on('value', snapshot => {
   banlist = snapshot.val()
 })
-let settings = {}
-database.ref(`/settings`).on('value', snapshot => {
-  settings = snapshot.val()
-})
 
 // handle message
 client.on('message', message => {
@@ -25,8 +21,8 @@ client.on('message', message => {
     return
   }
 
-  let guildId = message.guild.id
-  let userId = message.author.id
+  const guildId = message.guild.id
+  const userId = message.author.id
 
   if (banlist[userId]) {
     if (banlist[userId] > message.createdTimestamp) {
@@ -35,7 +31,7 @@ client.on('message', message => {
     database.ref(`/banlist/${userId}`).remove()
   }
 
-  handleCommand({ database, settings, message, guildId, userId })
+  handleCommand({ database, message, guildId, userId })
 })
 
 client.on('ready', () => {

@@ -4,26 +4,26 @@ const inventorySystem = require('../util/inventorySystem')
 
 const symbols = [':gem:', ':seven:', ':trophy:', ':moneybag:', ':gift:', ':ribbon:', ':balloon:', ':four_leaf_clover:', ':battery:', ':dollar:']
 const prizes = [
-  { chance: 0.0001, pattern: '000', multiplier: 100 },
-  { chance: 0.0002, pattern: '111', multiplier: 77 },
-  { chance: 0.0004, pattern: '222', multiplier: 50 },
-  { chance: 0.0008, pattern: '333', multiplier: 30 },
-  { chance: 0.0016, pattern: '444', multiplier: 20 },
-  { chance: 0.0032, pattern: '555', multiplier: 15 },
-  { chance: 0.0064, pattern: '666', multiplier: 10 },
-  { chance: 0.0128, pattern: '777', multiplier: 5 },
-  { chance: 0.0256, pattern: '888', multiplier: 3 },
-  { chance: 0.0512, pattern: '999', multiplier: 1 },
-
-  { chance: 0.0100, pattern: '00', multiplier: 50 },
-  { chance: 0.0100, pattern: '11', multiplier: 38 },
-  { chance: 0.0200, pattern: '22', multiplier: 25 },
-  { chance: 0.0400, pattern: '33', multiplier: 15 },
-  { chance: 0.0800, pattern: '44', multiplier: 10 },
-  { chance: 0.1200, pattern: '55', multiplier: 7 },
-  { chance: 0.1600, pattern: '66', multiplier: 5 },
+  { chance: 0.2577, pattern: '88', multiplier: 1 },
   { chance: 0.2000, pattern: '77', multiplier: 2 },
-  { chance: 0.2577, pattern: '88', multiplier: 1 }
+  { chance: 0.1600, pattern: '66', multiplier: 5 },
+  { chance: 0.1200, pattern: '55', multiplier: 7 },
+  { chance: 0.0800, pattern: '44', multiplier: 10 },
+  { chance: 0.0400, pattern: '33', multiplier: 15 },
+  { chance: 0.0200, pattern: '22', multiplier: 25 },
+  { chance: 0.0100, pattern: '11', multiplier: 38 },
+  { chance: 0.0100, pattern: '00', multiplier: 50 },
+
+  { chance: 0.0512, pattern: '999', multiplier: 1 },
+  { chance: 0.0256, pattern: '888', multiplier: 3 },
+  { chance: 0.0128, pattern: '777', multiplier: 5 },
+  { chance: 0.0064, pattern: '666', multiplier: 10 },
+  { chance: 0.0032, pattern: '555', multiplier: 15 },
+  { chance: 0.0016, pattern: '444', multiplier: 20 },
+  { chance: 0.0008, pattern: '333', multiplier: 30 },
+  { chance: 0.0004, pattern: '222', multiplier: 50 },
+  { chance: 0.0002, pattern: '111', multiplier: 77 },
+  { chance: 0.0001, pattern: '000', multiplier: 100 }
 ]
 const baseHitChance = 0.08
 const lostMessages = [
@@ -38,22 +38,10 @@ const lostMessages = [
   '獲得更多的印章'
 ]
 const buffMapping = {
-  '%1': {
-    chance: 0.01,
-    icon: ':candy:'
-  },
-  '%2': {
-    chance: 0.02,
-    icon: ':lollipop:'
-  },
-  '%3': {
-    chance: 0.04,
-    icon: ':chocolate_bar:'
-  },
-  '%4': {
-    chance: 0.08,
-    icon: ':popcorn:'
-  }
+  '%1': ':candy:',
+  '%2': ':lollipop:',
+  '%3': ':chocolate_bar:',
+  '%4': ':popcorn:'
 }
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
@@ -93,35 +81,42 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // inventory system
-  let userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
+  const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
 
-  let buffInUse
+  let toolChance = 0
+  let buffChance = 0
+  let markChance = 0
+  let buffInUse = ''
+
+  if (userInventory.tools['$4']) {
+    toolChance = parseInt(userInventory.tools['$4'] + 1) * 0.01
+  }
+
   if (userInventory.buffs['%4']) {
     buffInUse = '%4'
+    buffChance = 0.08
   } else if (userInventory.buffs['%3']) {
     buffInUse = '%3'
+    buffChance = 0.04
   } else if (userInventory.buffs['%2']) {
     buffInUse = '%2'
+    buffChance = 0.02
   } else if (userInventory.buffs['%1']) {
     buffInUse = '%1'
+    buffChance = 0.01
+  }
+
+  if (userInventory.items['47']) {
+    markChance = userInventory.items['47'] * 0.01
   }
 
   // slot
   let slotResults = []
   let winId = -1
   let energyGain = 0
-  let buffChance = 0
-  let markChance = 0
-
-  if (buffInUse) {
-    buffChance = buffMapping[buffInUse].chance
-  }
-  if (userInventory.items['47']) {
-    markChance = userInventory.items['47'] * 0.01
-  }
 
   let luck = Math.random()
-  if (luck < baseHitChance + buffChance + markChance) {
+  if (luck < baseHitChance + toolChance + buffChance + markChance) {
     luck = Math.random()
     prizes.some((prize, index) => {
       if (luck < prize.chance) {
@@ -170,8 +165,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     `增益效果：`
 
   if (buffInUse) {
-    let buffTime = moment.duration(userInventory.buffs[buffInUse] - message.createdTimestamp)
-    description += `${buffMapping[buffInUse].icon} ${Math.floor(buffTime.asHours()).toString().padStart(2, '0')}:${buffTime.minutes().toString().padStart(2, '0')}`
+    const buffTime = moment.duration(userInventory.buffs[buffInUse] - message.createdTimestamp)
+    description += `${buffMapping[buffInUse]} ${Math.floor(buffTime.asHours()).toString().padStart(2, '0')}:${buffTime.minutes().toString().padStart(2, '0')}`
   }
 
   description += `\n-------------------\n` +

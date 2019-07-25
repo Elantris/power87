@@ -9,7 +9,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let description
 
   if (args[1]) {
-    results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item')
+    results = findTargets(args[1].toLowerCase()).filter(result => result.type === 'item' && 'value' in items[result.id])
     if (results.length === 0) {
       return { errorCode: 'ERROR_NOT_FOUND' }
     }
@@ -34,7 +34,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     inventorySystem.kindOrders.forEach(kind => {
       for (const id in userInventory.items) {
-        if (items[id].kind === kind) {
+        if (items[id].kind === kind && 'value' in items[id]) {
           description += `\n${items[id].icon}**${items[id].displayName}**x${userInventory.items[id]}，\`${kind}\`，:battery: **${items[id].value}**，\`87!sell ${items[id].name} ${userInventory.items[id]}\``
         }
       }

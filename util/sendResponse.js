@@ -37,6 +37,8 @@ const errors = {
   ERROR_NO_SPECIES: '不存在的外觀',
   ERROR_NO_FEED: '飽食度不足，你的英雄現在很餓',
   ERROR_MAX_ABILITY: '英雄體質總和超過自身等級',
+  ERROR_NO_ADMISSION: '沒有入場券',
+  ERROR_TOP_FLOOR: '不能再往更上樓層挑戰',
 
   // other
   ERROR_IS_CLEANING: '正在清除訊息中'

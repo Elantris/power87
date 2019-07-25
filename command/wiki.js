@@ -37,49 +37,49 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   if (result.type === 'tool') {
     const tool = tools[result.id]
     description += `\n\n${tool.icon}**${tool.displayName}**，\`${tool.name}\`` +
-      `\n> 說明：${tool.description}` +
-      `\n> 購買價格：` +
+      `\n:small_blue_diamond: 說明：${tool.description}` +
+      `\n:small_blue_diamond: 購買價格：` +
       tool.prices.map((price, index) => `\`+${index}\`: **${price}**`).join('、') +
       `，\`87!buy ${tool.name}\``
   } else if (result.type === 'item') {
     const item = items[result.id]
     description += `\n\n${item.icon}**${item.displayName}**，\`${item.kind}/${item.name}\`` +
-      `\n> 說明：${item.description}` +
-      `\n> 最大堆疊數量：**${item.maxStack}**`
+      `\n:small_blue_diamond: 說明：${item.description}` +
+      `\n:small_blue_diamond: 最大堆疊數量：**${item.maxStack}**`
 
     if ('price' in item) {
-      description += `\n> 購買價格：:battery: **${item.price}**，\`87!buy ${item.name}\``
+      description += `\n:small_blue_diamond: 購買價格：:battery: **${item.price}**，\`87!buy ${item.name}\``
     }
     if ('value' in item) {
-      description += `\n> 販賣價格：:battery: **${item.value || 0}**，\`87!sell ${item.name}\``
+      description += `\n:small_blue_diamond: 販賣價格：:battery: **${item.value || 0}**，\`87!sell ${item.name}\``
     }
     if ('duration' in item) {
-      description += `\n> 持續時間：**${item.duration / 60000}** 分鐘，\`87!use ${item.name}\``
+      description += `\n:small_blue_diamond: 持續時間：**${item.duration / 60000}** 分鐘，\`87!use ${item.name}\``
     }
     if ('feed' in item) {
-      description += `\n> 恢復飽食度：**+${item.feed}**，\`87!feed ${item.name}\``
+      description += `\n:small_blue_diamond: 恢復飽食度：**+${item.feed}**，\`87!feed ${item.name}\``
     }
     if ('content' in item) {
       const content = item.content.split(',').map(v => {
         const itemData = v.split('.')
         return `${items[itemData[0]].icon}**${items[itemData[0]].displayName}**x${parseInt(itemData[1] || 1)}`
       }).join('、')
-      description += `\n> 內容物：${content}，\`87!use ${item.name}\``
+      description += `\n:small_blue_diamond: 內容物：${content}，\`87!use ${item.name}\``
     }
   } else if (result.type === 'equipment') {
     const equipment = equipments[result.id]
     description += `\n\n${equipment.icon}**${equipment.displayName}**，\`${equipment.kind}/${equipment.name}\`` +
-      `\n> 說明：${equipment.description}`
+      `\n:small_blue_diamond: 說明：${equipment.description}`
 
     if (equipment.kind === 'weapon') {
-      description += `\n> 基礎數值：\`ATK\`: ${equipment.blank[0]} / \`HIT\`: ${equipment.blank[1]} / \`SPD\`: ${equipment.blank[2]}` +
-        `\n> 強化提升：\`ATK\`: ${equipment.levelUp[0]} / \`HIT\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
+      description += `\n:small_blue_diamond: 基礎數值：\`ATK\`: ${equipment.blank[0]} / \`HIT\`: ${equipment.blank[1]} / \`SPD\`: ${equipment.blank[2]}` +
+        `\n:small_blue_diamond: 強化提升：\`ATK\`: ${equipment.levelUp[0]} / \`HIT\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
     } else if (equipment.kind === 'armor') {
-      description += `\n> 基礎數值：\`DEF\`: ${equipment.blank[0]} / \`EV\`: ${equipment.blank[1]} / \`SPD\`: ${equipment.blank[2]}` +
-        `\n> 強化提升：\`DEF\`: ${equipment.levelUp[0]} / \`EV\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
+      description += `\n:small_blue_diamond: 基礎數值：\`DEF\`: ${equipment.blank[0]} / \`EV\`: ${equipment.blank[1]} / \`SPD\`: ${equipment.blank[2]}` +
+        `\n:small_blue_diamond: 強化提升：\`DEF\`: ${equipment.levelUp[0]} / \`EV\`: ${equipment.levelUp[1]} / \`SPD\`: ${equipment.levelUp[2]}`
     }
 
-    description += `\n> 強化機率：` +
+    description += `\n:small_blue_diamond: 強化機率：` +
       inventorySystem.enhanceChances[equipment.quality].map(v => `\`${Math.floor(v * 100)}%\``).join(', ')
   }
 
