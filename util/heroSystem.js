@@ -198,55 +198,74 @@ const resetAbility = (userHero) => {
   userHero.luk = 0
 }
 
-const battleRound = (attacker, defender) => {
+const randomRange = (min, max) => Math.random() * (max - min) + min
+
+const battleDamage = (attacker, defender) => {
   // hit detection
-  const hit = attacker.hit * (Math.random() * (1 + attacker.inv * 0.02))
-  const ev = defender.ev * (Math.random() * (1 + defender.luk * 0.02))
-  console.log(`HIT: ${hit.toFixed(4)} / EV: ${ev.toFixed(4)}`)
+  const hit = attacker.hit * randomRange(0.2, 1 + attacker.int * 0.02)
+  const ev = defender.ev * randomRange(0, 1 + defender.luk * 0.02)
   if (hit < ev) {
-    return [attacker.name, defender.name, 'miss', 0]
+    return 0
   }
 
   // damage calculation
-  const atk = attacker.atk * (0.5 + Math.random() * (1 + attacker.str * 0.03))
-  const def = defender.def * (Math.random() * (1 + defender.vit * 0.02))
+  const atk = attacker.atk * randomRange(0.8, 1.2 + attacker.str * 0.02)
+  const def = defender.def * randomRange(0.4, 1 + defender.vit * 0.02)
   let damage = atk - def
-  console.log(`ATK: ${atk.toFixed(4)} / DEF: ${def.toFixed(4)} / Damage: ${damage}`)
   if (damage < 1) {
     damage = 1
   }
   damage = Math.floor(damage)
   defender.hp -= damage
-  return [attacker.name, defender.name, 'hit', damage]
+  if (defender.hp < 0) {
+    defender.hp = 0
+  }
+
+  return damage
 }
 
-const battle = (attacker, defender) => {
-  attacker.hp = 100 + attacker.level * 5
-  defender.hp = 100 + defender.level * 5
+const battleRecords = (attacker, defender) => {
+  attacker.hp = attacker.rarity * 5 + attacker.level * 2
+  defender.hp = defender.rarity * 5 + defender.level * 2
   const records = []
   // attacker, defender, damage, defenderHp
 
-  while (records.length < 10) {
+  while (records.length < 10 && attacker.hp && defender.hp) {
     const spd1 = attacker.spd * Math.random() * (1 + attacker.agi * 0.02)
     const spd2 = defender.spd * Math.random() * (1 + defender.agi * 0.02)
+    let damage = 0
     if (spd1 > spd2) {
-      records.push(battleRound(attacker, defender))
-      if (defender.hp <= 0) {
-        break
-      }
-      records.push(battleRound(defender, attacker))
-      if (attacker.hp <= 0) {
-        break
-      }
+      damage = battleDamage(attacker, defender)
+      records.push({
+        attackerHp: attacker.hp,
+        defenderHp: defender.hp,
+        order: 0,
+        damage
+      })
+
+      damage = battleDamage(defender, attacker)
+      records.push({
+        attackerHp: attacker.hp,
+        defenderHp: defender.hp,
+        order: 1,
+        damage
+      })
     } else {
-      records.push(battleRound(defender, attacker))
-      if (attacker.hp <= 0) {
-        break
-      }
-      records.push(battleRound(attacker, defender))
-      if (defender.hp <= 0) {
-        break
-      }
+      damage = battleDamage(defender, attacker)
+      records.push({
+        attackerHp: attacker.hp,
+        defenderHp: defender.hp,
+        order: 1,
+        damage
+      })
+
+      damage = battleDamage(attacker, defender)
+      records.push({
+        attackerHp: attacker.hp,
+        defenderHp: defender.hp,
+        order: 0,
+        damage
+      })
     }
   }
 
@@ -254,6 +273,9 @@ const battle = (attacker, defender) => {
 }
 
 module.exports = {
+  // properties
+  species,
+
   // methods
   read,
   write,
@@ -264,5 +286,5 @@ module.exports = {
   changeName,
   changeLooks,
   resetAbility,
-  battle
+  battleRecords
 }
