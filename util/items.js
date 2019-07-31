@@ -13,7 +13,7 @@ const itemsRaw = `id:String | kind:String | name:String | icon:String | displayN
 50 | jewel | light-moneybag | :moneybag: | 輕盈的錢袋 | 10 | 101 | 100 | buffId | duration | feed | contains | 裡面裝了一點錢的錢袋。
 51 | jewel | normal-moneybag | :moneybag: | 普通的錢袋 | 10 | 1010 | 1000 | buffId | duration | feed | contains | 這是一個帶出門可以支付一週生活費的錢袋。
 52 | jewel | heavy-moneybag | :moneybag: | 沉重的錢袋 | 10 | 10100 | 10000 | buffId | duration | feed | contains | 感覺有點重量的錢袋。
-53 | jewel | fadacai-moneybag | :moneybag: | 發大財錢袋 | 1 | price | 101000 | buffId | duration | feed | contains | 發大財！Power87 發大財！
+53 | jewel | fadacai-moneybag | :moneybag: | 發大財錢袋 | 1 | 101000 | value | buffId | duration | feed | contains | 發大財！Power87 發大財！
 
 1 | fishing | penguin | :penguin: | 企鵝 | 1 | price | 500 | buffId | duration | 500 | contains | 雖然不曉得為什麼，在水裡游泳的企鵝好像禁不起魚餌的誘惑。
 2 | fishing | whale | :whale: | 比較的大鯨魚 | 1 | price | 500 | buffId | duration | 500 | contains | 這年頭竟然有人不知道大中天，難道是我老了嗎...？

@@ -180,11 +180,11 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     if (userInventory.items['47']) {
       description += `\n\n目前累積 :broken_heart:**失落的印章-迷惘賭徒**x${userInventory.items['47']}`
     }
-  } else if (winId === 0) {
+  } else if (winId === 18) {
     content = '@here 頭獎快訊！'
     description += `| : **CONGRATS** : |\n\n` +
       `<@${message.author.id}> 或成最大贏家，獲得了**頭獎** ${energyGain} 點八七能量`
-  } else if (winId === 1) {
+  } else if (winId === 17) {
     content = '@here 777！'
     description += `| : : **77777777** : : |\n\n` +
       `<@${message.author.id}> 7 起來，獲得了 **777獎** ${energyGain} 點八七能量`
