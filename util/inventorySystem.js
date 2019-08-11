@@ -137,10 +137,6 @@ const write = (database, guildId, userId, userInventory, timenow = Date.now()) =
 }
 
 const exchangeEquipment = (userInventory, kind, quality) => {
-  if (userInventory.equipments.length >= userInventory.maxEquipments) {
-    return 'ERROR_BAG_FULL'
-  }
-
   if (!equipmentMapping[kind][quality]) {
     return 'ERROR_NOT_FOUND'
   }

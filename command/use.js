@@ -125,28 +125,28 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
   } else if (target.kind === 'equipment') {
-    if (userInventory.equipments.length >= 8) {
-      return { errorCode: 'ERROR_ITEM_EXCEED' }
+    if (userInventory.equipments.length + target.amount > userInventory.maxEquipments) {
+      return { errorCode: 'ERROR_BAG_FULL' }
     }
 
-    target.amount = 1
-    description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x1\n\n`
+    description = `:scroll: ${message.member.displayName} 消耗 ${items[target.id].icon}**${items[target.id].displayName}**x${target.amount}\n`
 
-    let errorCode
-    if (items[target.id].name === 'base-weapon') {
-      errorCode = inventorySystem.exchangeEquipment(userInventory, 'weapon', 'base')
-    } else if (items[target.id].name === 'base-armor') {
-      errorCode = inventorySystem.exchangeEquipment(userInventory, 'armor', 'base')
-    } else {
-      errorCode = 'ERROR_NOT_FOUND'
+    for (let i = 0; i < target.amount; i++) {
+      let errorCode
+      if (items[target.id].name === 'base-weapon') {
+        errorCode = inventorySystem.exchangeEquipment(userInventory, 'weapon', 'base')
+      } else if (items[target.id].name === 'base-armor') {
+        errorCode = inventorySystem.exchangeEquipment(userInventory, 'armor', 'base')
+      } else {
+        errorCode = 'ERROR_NOT_FOUND'
+      }
+      if (errorCode) {
+        return { errorCode }
+      }
+
+      const newEquipment = userInventory.equipments.slice(-1)[0]
+      description += `\n獲得了 ${items[target.id].icon}**${equipments[newEquipment.id].displayName}**+0`
     }
-
-    if (errorCode) {
-      return { errorCode }
-    }
-
-    const newEquipment = userInventory.equipments.slice(-1)[0]
-    description += `獲得了 ${items[target.id].icon}**${equipments[newEquipment.id].displayName}**+0`
 
     userInventory.equipments.sort((a, b) => a.id - b.id)
   }
