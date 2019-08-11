@@ -1,4 +1,4 @@
-**Power87** 八七筆記機器人
+**Power87** 八七放置型遊戲機器人
 
 __所有指令__：`87!command`
 筆記：`add` / `delete` / `list`

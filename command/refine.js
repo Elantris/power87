@@ -3,8 +3,8 @@ const equipments = require('../util/equipments')
 
 module.exports = async ({ args, database, message, guildId, userId }) => {
   const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-  if (userInventory.status === 'fishing') {
-    return { errorCode: 'ERROR_IS_FISHING' }
+  if (userInventory.status !== 'stay') {
+    return { errorCode: 'ERROR_IS_BUSY' }
   }
 
   let description

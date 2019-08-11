@@ -113,8 +113,8 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // inventory system
   const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
-  if (userInventory.status === 'fishing') {
-    return { errorCode: 'ERROR_IS_FISHING' }
+  if (userInventory.status !== 'stay') {
+    return { errorCode: 'ERROR_IS_BUSY' }
   }
 
   if (!userInventory.items['28'] || userInventory.items['28'] < 10) {
@@ -141,14 +141,12 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   await database.ref(`/lastUsed/tower/${guildId}/${userId}`).set(message.createdTimestamp)
 
   const enemy = monsterCharacter(monsters[targetFloor], userHero.species)
-  userHero.status = 'tower'
-  heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
 
   const battleResults = {
-    description: `:fleur_de_lis: ${message.member.displayName} 帶著英雄挑戰魔神之塔\n\n` +
+    description: `:fleur_de_lis: ${message.member.displayName} 消耗了 ${items['28'].icon}${items['28'].displayName}x10 帶著英雄挑戰魔神之塔\n\n` +
       `**第 ${targetFloor} 層** \n` +
-      `:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)} **Lv.${userHero.level}**，\`HP\`: ${userHero.rarity * 5 + userHero.level * 2} \n` +
-      `:${enemy.species}: **${enemy.name}** ${heroSystem.rarityDisplay(enemy.rarity)} **Lv.${enemy.level}**，\`HP\`: ${enemy.rarity * 5 + enemy.level * 2}\n`,
+      `:${userHero.species}: **${userHero.name}** ${heroSystem.rarityDisplay(userHero.rarity)} **Lv.${userHero.level}**，\`HP\`: ${10 + userHero.level * 2} \n` +
+      `:${enemy.species}: **${enemy.name}** ${heroSystem.rarityDisplay(enemy.rarity)} **Lv.${enemy.level}**，\`HP\`: ${10 + enemy.level * 2}\n`,
     win: false
   }
 
@@ -158,6 +156,12 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       description: battleResults.description
     }
   })
+
+  userInventory.status = 'tower'
+  userInventory.items['28'] -= 10
+  inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
+  userHero.status = 'tower'
+  heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
 
   await battleProgess(battleMessage, battleResults, userHero, enemy)
 
@@ -199,10 +203,10 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   }
 
   // udpate database
-  userHero.status = 'stay'
-  userInventory.items['28'] -= 10
-  heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
+  userInventory.status = 'stay'
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
+  userHero.status = 'stay'
+  heroSystem.write(database, guildId, userId, userHero, message.createdTimestamp)
 
   return { description: battleResults.description }
 }

@@ -225,8 +225,8 @@ const battleDamage = (attacker, defender) => {
 }
 
 const battleRecords = (attacker, defender) => {
-  attacker.hp = attacker.rarity * 5 + attacker.level * 2
-  defender.hp = defender.rarity * 5 + defender.level * 2
+  attacker.hp = 10 + attacker.level * 2
+  defender.hp = 10 + defender.level * 2
   const records = []
   // attacker, defender, damage, defenderHp
 

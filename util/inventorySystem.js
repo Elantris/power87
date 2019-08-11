@@ -49,7 +49,10 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 
   inventoryData.forEach(item => {
     let tmp
-    if (item[0] === '$') { // tool: $id+level
+
+    if (item[0] === '!') { // status: !status
+      userInventory.status = item.slice(1)
+    } else if (item[0] === '$') { // tool: $id+level
       tmp = item.split('+')
       userInventory.tools[tmp[0]] = tmp[1]
 
@@ -83,19 +86,21 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
   })
 
   // fishing system
-  const fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
-  if (fishingRaw.exists()) {
-    fishingSystem(userInventory, fishingRaw.val())
+  if (userInventory.status === 'fishing') {
+    const fishingRaw = await database.ref(`/fishing/${guildId}/${userId}`).once('value')
+    if (fishingRaw.exists()) {
+      fishingSystem(userInventory, fishingRaw.val())
 
-    if (userInventory.emptySlots > 0) {
-      userInventory.status = 'fishing'
-      await database.ref(`/fishing/${guildId}/${userId}`).set(`0,0;${userInventory.buffs['%0'] || ''}`)
-    } else {
-      userInventory.status = 'return'
-      await database.ref(`/fishing/${guildId}/${userId}`).remove()
+      if (userInventory.emptySlots > 0) {
+        userInventory.status = 'fishing'
+        await database.ref(`/fishing/${guildId}/${userId}`).set(`0,0;${userInventory.buffs['%0'] || ''}`)
+      } else {
+        userInventory.status = 'stay'
+        await database.ref(`/fishing/${guildId}/${userId}`).remove()
+      }
+
+      write(database, guildId, userId, userInventory, timenow)
     }
-
-    write(database, guildId, userId, userInventory, timenow)
   }
 
   return userInventory
@@ -103,6 +108,8 @@ const read = async (database, guildId, userId, timenow = Date.now()) => {
 
 const write = (database, guildId, userId, userInventory, timenow = Date.now()) => {
   const inventoryData = []
+
+  inventoryData.push(`!${userInventory.status}`)
 
   for (const id in tools) {
     if (userInventory.tools[id]) {

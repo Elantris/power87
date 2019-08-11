@@ -8,7 +8,7 @@ const equipments = require('../util/equipments')
 const userStatusMapping = {
   stay: '在村莊裡發呆',
   fishing: '出海捕魚中',
-  return: '從大洋歸來'
+  tower: '挑戰魔神之塔中'
 }
 
 module.exports = async ({ args, database, message, guildId, userId }) => {

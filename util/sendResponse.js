@@ -21,6 +21,7 @@ const errors = {
   ERROR_ENERGY_EXCEED: '投注能量超過範圍',
   ERROR_MAX_LEVEL: '無法再提升等級',
   ERROR_IS_FISHING: '出海捕魚中',
+  ERROR_IS_BUSY: '你在忙',
   ERROR_NO_TOOL: '未持有特定道具',
   ERROR_NO_ITEM: '沒有物品',
   ERROR_BAG_FULL: '背包沒有足夠空間',
