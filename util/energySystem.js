@@ -19,17 +19,24 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
   client.guilds.filter(guild => !banlist[guild.id]).tap(async guild => {
     const guildId = guild.id
 
-    let guildEnergy = await database.ref(`/energy/${guildId}`).once('value')
-    let guildFishing = await database.ref(`/fishing/${guildId}`).once('value')
-    guildEnergy = guildEnergy.val() || {}
-    guildFishing = guildFishing.val() || {}
+    const guildEnergy = (await database.ref(`/energy/${guildId}`).once('value')).val() || {}
+    const guildFishing = (await database.ref(`/fishing/${guildId}`).once('value')).val() || {}
     const guildEnergyUpdates = {}
     const guildFishingUpdates = {}
 
     guild.members.filter(member => !banlist[member.id] && !member.user.bot).tap(async member => {
       const userId = member.id
+
+      if (isQualified(member)) {
+        if (typeof guildEnergy[userId] === 'undefined') {
+          guildEnergy[userId] = INITIAL_USER_ENERGY
+        }
+
+        guildEnergyUpdates[userId] = guildEnergy[userId] + 1
+      }
+
       if (guildFishing[userId]) {
-        if (!isQualified(member) && Math.random() < 0.8) {
+        if (!isQualified(member) && Math.random() < 0.5) {
           return
         }
 
@@ -47,12 +54,6 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
         } else { // stop auto fishing
           await inventorySystem.read(database, guildId, userId, timenow)
         }
-      } else if (isQualified(member)) {
-        if (typeof guildEnergy[userId] === 'undefined') {
-          guildEnergy[userId] = INITIAL_USER_ENERGY
-        }
-
-        guildEnergyUpdates[userId] = guildEnergy[userId] + 1
       }
     })
 

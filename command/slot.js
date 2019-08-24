@@ -93,10 +93,10 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   userInventory.items['47'] = userInventory.items['47'] || 0
 
-  const luckySevelLevel = parseInt(userInventory.tools['$4'] || -1)
+  const luckySevelLevel = parseInt(userInventory.tools.$4 || -1)
   const markNum = userInventory.items['47']
 
-  let chance = baseHitChance + (luckySevelLevel + 1) * 0.01 + markNum * 0.001
+  let chance = baseHitChance + (luckySevelLevel + 1) * 0.01 + markNum * 0.002
   let buffInUse = ''
   let buffLastTime
 
@@ -152,11 +152,13 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   if (winId === -1) {
     if (energyCost === 500) {
       userInventory.items['47'] += 5
-    } else if (energyCost >= 250) {
+    } else if (energyCost >= 400) {
       userInventory.items['47'] += 4
-    } else if (energyCost >= 50) {
+    } else if (energyCost >= 200) {
+      userInventory.items['47'] += 3
+    } else if (energyCost >= 100) {
       userInventory.items['47'] += 2
-    } else if (energyCost >= 10) {
+    } else if (energyCost >= 50) {
       userInventory.items['47'] += 1
     }
   } else {
@@ -178,19 +180,19 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     .replace('{{SLOTS}}', slotResults.map(v => symbols[v]).join(' : '))
     .replace('{{RESULT}}', () => {
       if (winId === -1) {
-        return `| : : : : **LOST** : : : : |\n\n` +
+        return '| : : : : **LOST** : : : : |\n\n' +
           lostMessages[Math.floor(Math.random() * lostMessages.length)] +
           (userInventory.items['47'] - markNum ? `，獲得 ${items[47].icon}**${items[47].displayName}**x${userInventory.items['47'] - markNum}` : '')
       } else if (winId === 18) {
         content = '@here 頭獎快訊！'
-        return `| : **CONGRATS** : |\n\n` +
+        return '| : **CONGRATS** : |\n\n' +
           `<@${message.author.id}> 或成最大贏家，獲得了**頭獎** ${energyGain} 點八七能量`
       } else if (winId === 17) {
         content = '@here 777！'
-        return `| : : **77777777** : : |\n\n` +
+        return '| : : **77777777** : : |\n\n' +
           `<@${message.author.id}> 7 起來，獲得了 **777獎** ${energyGain} 點八七能量`
       } else {
-        return `| : : : : **WIN** : : : : : |\n\n` +
+        return '| : : : : **WIN** : : : : : |\n\n' +
           `贏得了 ${energyGain} 點八七能量`
       }
     })
