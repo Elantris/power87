@@ -24,38 +24,38 @@ const gainFromVoiceChannel = ({ client, banlist, database }) => {
     const guildEnergyUpdates = {}
     const guildFishingUpdates = {}
 
-    guild.members.filter(member => !banlist[member.id] && !member.user.bot).tap(async member => {
-      const userId = member.id
+    guild.members
+      .filter(member => !banlist[member.id] && !member.user.bot)
+      .filter(member => isQualified(member) || Math.random() < 0.3)
+      .tap(async member => {
+        const userId = member.id
 
-      if (isQualified(member)) {
         if (typeof guildEnergy[userId] === 'undefined') {
           guildEnergy[userId] = INITIAL_USER_ENERGY
         }
-
         guildEnergyUpdates[userId] = guildEnergy[userId] + 1
-      }
 
-      if (guildFishing[userId]) {
-        if (!isQualified(member) && Math.random() < 0.5) {
-          return
+        if (isQualified(member) && Math.random() < 0.5) {
+          guildEnergyUpdates[userId] += 1
         }
 
-        const fishingData = guildFishing[userId].split(';')
-        const counts = fishingData[0].split(',').map(v => parseInt(v))
+        if (guildFishing[userId]) {
+          const fishingData = guildFishing[userId].split(';')
+          const counts = fishingData[0].split(',').map(v => parseInt(v))
 
-        if (counts[0] + counts[1] < 240) {
-          if (fishingData[1] && parseInt(fishingData[1]) > timenow) {
-            counts[1]++
-          } else {
-            counts[0]++
+          if (counts[0] + counts[1] < 240) {
+            if (fishingData[1] && parseInt(fishingData[1]) > timenow) {
+              counts[1]++
+            } else {
+              counts[0]++
+            }
+
+            guildFishingUpdates[userId] = counts.join(',') + ';' + fishingData[1]
+          } else { // stop auto fishing
+            await inventorySystem.read(database, guildId, userId, timenow)
           }
-
-          guildFishingUpdates[userId] = counts.join(',') + ';' + fishingData[1]
-        } else { // stop auto fishing
-          await inventorySystem.read(database, guildId, userId, timenow)
         }
-      }
-    })
+      })
 
     database.ref(`/energy/${guildId}`).update(guildEnergyUpdates)
     database.ref(`/fishing/${guildId}`).update(guildFishingUpdates)
