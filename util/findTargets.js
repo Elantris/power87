@@ -8,6 +8,7 @@ module.exports = search => {
 
   for (const id in tools) {
     if (
+      search === 'tool' ||
       search === tools[id].name ||
       search === emoji.emojify(tools[id].icon) ||
       emoji.unemojify(search) === tools[id].icon ||

@@ -15,7 +15,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
 
     if (results.length > 1) {
-      description = `:arrow_double_up: 指定其中一種道具/物品：\n`
+      description = ':arrow_double_up: 指定其中一種道具/物品：\n'
       results.forEach(result => {
         description += `\n${items[result.id].icon}**${items[result.id].displayName}**，**+${items[result.id].feed}**，\`87!feed ${items[result.id].name}\``
       })

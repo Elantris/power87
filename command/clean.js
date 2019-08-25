@@ -22,7 +22,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   await message.channel.send({
     embed: {
       color: 0xffe066,
-      description: `:recycle: 讀取訊息中...`
+      description: ':recycle: 讀取訊息中...'
     }
   })
 

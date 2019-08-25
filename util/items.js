@@ -6,8 +6,15 @@
  * box: contains
  */
 
-const itemsRaw = `id:String | kind:String | name:String | icon:String | displayName:String | maxStack:Number | price:Number | value:Number | buffId:String | duration:Number | feed:Number | contains:String | description:String
+const attrs = ['id', 'kind', 'name', 'icon', 'displayName', 'maxStack:Number', 'price:Number', 'value:Number', 'buffId', 'duration:Number', 'feed:Number', 'contains', 'description'].map(v => {
+  const tmp = v.split(':')
+  return {
+    name: tmp[0],
+    type: tmp[1] || 'String'
+  }
+})
 
+const itemsRaw = `
 0 | jewel | gem | :gem: | 鑽石 | 1 | price | 1000 | buffId | duration | feed | contains | 非常具有價值的寶石，有些人會放在身上當作幸運物，不過大部分的人是買來炫耀自己的財富。
 49 | jewel | shabby-moneybag | :moneybag: | 簡陋的錢袋 | 10 | 11 | 10 | buffId | duration | feed | contains | 非常破舊的錢袋，連當舖都不太想收購的東西。
 50 | jewel | light-moneybag | :moneybag: | 輕盈的錢袋 | 10 | 101 | 100 | buffId | duration | feed | contains | 裡面裝了一點錢的錢袋。
@@ -80,29 +87,24 @@ id | kind | name | icon | displayName | maxStack | price | value | buffId | dura
 const items = {}
 const itemsData = itemsRaw.split('\n').filter(v => v)
 
-const attrs = itemsData.shift().split(' | ').map(v => {
-  const tmp = v.split(':')
-  return {
-    name: tmp[0],
-    type: tmp[1]
-  }
-})
-
 itemsData.forEach(v => {
   let id
   v.split(' | ').forEach((data, index) => {
     if (attrs[index].name === data) {
       return
     }
+
     if (index === 0) {
       id = data
       items[id] = {}
-    } else {
-      if (attrs[index].type === 'Number') {
-        data = parseInt(data)
-      }
-      items[id][attrs[index].name] = data
+      return
     }
+
+    if (attrs[index].type === 'Number') {
+      data = parseInt(data)
+    }
+
+    items[id][attrs[index].name] = data
   })
 })
 

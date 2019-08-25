@@ -53,7 +53,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       total += userHero[i]
     }
     if (total < userHero.level) {
-      description += `\n`
+      description += '\n'
       for (const i in abilities) {
         description += `\n**${abilities[i]}**：需求 ${items['42'].icon}x1，\`87!enhance ${i} ${userHero.level - total}\``
       }
@@ -61,7 +61,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
     const tmpEquipments = userInventory.equipments.filter(v => v.level < inventorySystem.enhanceChances[equipments[v.id].quality].length)
     if (tmpEquipments.length) {
-      description += `\n`
+      description += '\n'
 
       tmpEquipments.forEach(v => {
         const equipment = equipments[v.id]

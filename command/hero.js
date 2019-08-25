@@ -32,13 +32,13 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       `體質：\`STR\`: ${userHero.str} / \`VIT\`: ${userHero.vit} / \`AGI\`: ${userHero.agi} / \`INT\`: ${userHero.int} / \`LUK\`: ${userHero.luk}\n` +
       `戰鬥：\`ATK\`: ${userHero.atk} / \`DEF\`: ${userHero.def} / \`SPD\`: ${userHero.spd} / \`HIT\`: ${userHero.hit} / \`EV\`: ${userHero.ev}`
 
-    description += `\n武器：`
+    description += '\n武器：'
     if (userHero.weapon) {
       const abilities = inventorySystem.calculateAbility(userHero.weapon.id, userHero.weapon.level)
       description += `:crossed_swords:**${equipments[userHero.weapon.id].displayName}**+${userHero.weapon.level}，` +
         `\`ATK\`: ${abilities[0]} / \`HIT\`: ${abilities[1]} / \`SPD\`: ${abilities[2]}`
     }
-    description += `\n防具：`
+    description += '\n防具：'
     if (userHero.armor) {
       const abilities = inventorySystem.calculateAbility(userHero.armor.id, userHero.armor.level)
       description += `:shield:**${equipments[userHero.armor.id].displayName}**+${userHero.armor.level}，` +

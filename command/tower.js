@@ -167,7 +167,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
 
   // tower result
   if (battleResults.win) {
-    battleResults.description += `\n\n討伐任務完成！`
+    battleResults.description += '\n\n討伐任務完成！'
 
     const expGain = 1 + Math.floor(Math.random() * targetFloor)
     userHero.exp += expGain
@@ -199,7 +199,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       battleResults.description += ` ${items[id].icon}**${items[id].displayName}**x${itemGet[id]}`
     }
   } else {
-    battleResults.description += `\n\n任務失敗。英雄鎩羽而歸`
+    battleResults.description += '\n\n任務失敗。英雄鎩羽而歸'
   }
 
   // udpate database

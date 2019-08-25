@@ -17,12 +17,12 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   const userInventory = await inventorySystem.read(database, guildId, userId, message.createdTimestamp)
   description += ` ${userStatusMapping[userInventory.status]}`
 
-  description += `\n功能道具：`
+  description += '\n功能道具：'
   for (const id in userInventory.tools) {
     description += `${tools[id].icon}+${userInventory.tools[id]} `
   }
 
-  description += `\n增益效果：`
+  description += '\n增益效果：'
   for (const id in userInventory.buffs) {
     if (userInventory.buffs[id] > message.createdTimestamp) {
       const buffTime = moment.duration(userInventory.buffs[id] - message.createdTimestamp)

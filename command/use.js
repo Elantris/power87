@@ -24,7 +24,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
 
     if (results.length > 1) {
-      description = `:arrow_double_up: 指定其中一種道具/物品：\n`
+      description = ':arrow_double_up: 指定其中一種道具/物品：\n'
       results.forEach(result => {
         const item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，\`87!use ${item.name}\``

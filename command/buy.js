@@ -26,7 +26,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
     }
 
     if (results.length > 1) {
-      description = `:shopping_cart: 指定其中一種道具/物品：\n`
+      description = ':shopping_cart: 指定其中一種道具/物品：\n'
       results.forEach(result => {
         const item = items[result.id]
         description += `\n${item.icon}**${item.displayName}**，:battery: **${item.price}**，\`87!buy ${item.name}\``
@@ -64,7 +64,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   if (args.length === 1) {
     description = `:shopping_cart: ${message.member.displayName} 可購買的商品：`
 
-    description += `\n\n__功能道具__：`
+    description += '\n\n__功能道具__：'
     for (const id in tools) {
       let toolLevel = 0
       if (userInventory.tools[id]) {
@@ -76,7 +76,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
       description += `\n${tools[id].icon}**${tools[id].displayName}**+${toolLevel}，:battery: **${tools[id].prices[toolLevel]}**，\`87!buy ${tools[id].name}\``
     }
 
-    description += `\n\n__特色商品__：\n`
+    description += '\n\n__特色商品__：\n'
     description += Object.keys(availableKinds).map(kind => `${inventorySystem.kindNames[kind]}，\`87!buy ${kind}\``).join('\n')
 
     return { description }

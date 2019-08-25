@@ -1,7 +1,7 @@
 const updateInterval = 10 * 60 * 1000 // 10 min
 
 function makeOutput ({ message, rank }) {
-  let rankDisplay = `:trophy: 八七能量排行榜\n`
+  let rankDisplay = ':trophy: 八七能量排行榜\n'
   for (const i in rank) {
     if (i !== '0') {
       const tmp = rank[i].split(':')

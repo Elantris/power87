@@ -75,10 +75,10 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   let bonusEnergy = ''
   if (dailyData[1] % 30 === 0) {
     userEnergy += 500
-    bonusEnergy += `，獲得額外 500 點能量`
+    bonusEnergy += '，獲得額外 500 點能量'
   } else if (dailyData[1] % 5 === 0) {
     userEnergy += 50
-    bonusEnergy += `，獲得額外 50 點能量`
+    bonusEnergy += '，獲得額外 50 點能量'
   }
 
   // inventory system

@@ -151,7 +151,7 @@ module.exports = async ({ args, database, message, guildId, userId }) => {
   inventorySystem.write(database, guildId, userId, userInventory, message.createdTimestamp)
 
   // response
-  let description = `:game_die: 碗公裡發出了清脆的聲響\n\n`
+  let description = ':game_die: 碗公裡發出了清脆的聲響\n\n'
 
   if (resultMapping[host.score]) {
     description += `Power87 擲出了 **${resultMapping[host.score]}**！\n\n${host.display}\n\n`
