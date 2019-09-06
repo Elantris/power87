@@ -202,20 +202,21 @@ const randomRange = (min, max) => Math.random() * (max - min) + min
 
 const battleDamage = (attacker, defender) => {
   // hit detection
-  const hit = attacker.hit * randomRange(0.2, 1 + attacker.int * 0.02)
-  const ev = defender.ev * randomRange(0, 1 + defender.luk * 0.02)
+  const hit = attacker.hit * randomRange(0.2 + attacker.int * 0.01, 1 + attacker.int * 0.02)
+  const ev = defender.ev * randomRange(0 + defender.luk * 0.01, 1 + defender.luk * 0.02)
   if (hit < ev) {
     return 0
   }
 
   // damage calculation
-  const atk = attacker.atk * randomRange(0.8, 1.2 + attacker.str * 0.02)
-  const def = defender.def * randomRange(0.4, 1 + defender.vit * 0.02)
+  const atk = attacker.atk * randomRange(0.8 + attacker.str * 0.01, 1.6 + attacker.str * 0.02)
+  const def = defender.def * randomRange(0.6 + defender.vit * 0.01, 1.2 + defender.vit * 0.02)
   let damage = atk - def
   if (damage < 1) {
     damage = 1
   }
   damage = Math.floor(damage)
+
   defender.hp -= damage
   if (defender.hp < 0) {
     defender.hp = 0
@@ -225,8 +226,8 @@ const battleDamage = (attacker, defender) => {
 }
 
 const battleRecords = (attacker, defender) => {
-  attacker.hp = 10 + attacker.level * 2
-  defender.hp = 10 + defender.level * 2
+  attacker.hp = 20 + attacker.level * 2
+  defender.hp = 20 + defender.level * 2
   const records = []
   // attacker, defender, damage, defenderHp
 

@@ -64,7 +64,6 @@ const itemsRaw = `
 47 | mark | frustrated-gambler | :broken_heart: | 失落的印章-迷惘賭徒 | 1000 | price | value | buffId | duration | feed | contains | 在賭博中失利時會獲得的印章，累積越多枚印章可以提高下次贏得獎勵的機率。
 48 | mark | frustrated-hero | :broken_heart: | 失落的印章-沮喪英雄 | 1000 | price | value | buffId | duration | feed | contains | 強化裝備失敗時會獲得的印章，累積越多枚印章可以提高下次強化成功的機率，強化成功時會全數回收。
 
-
 34 | box | bait-box | :package: | 魚餌箱子 | 1 | 170 | 17 | buffId | duration | feed | 18.10 | 一次購買十個魚餌享 85 折優惠！
 35 | box | candy-box | :package: | 糖果箱子 | 1 | 79 | 7 | buffId | duration | feed | 19.10 | 《好棒食品》推出糖果禮包，讓賭客可以用優惠的價格買到更多好運。
 
@@ -79,9 +78,8 @@ const itemsRaw = `
 
 44 | equipment | base-weapon | :crossed_swords: | 初級英雄武器兌換券 | 1 | 100 | 10 | buffId | duration | feed | contains | 使用後可以隨機獲得一種初級英雄武器。
 45 | equipment | base-armor | :shield: | 初級英雄防具兌換券 | 1 | 100 | 10 | buffId | duration | feed | contains | 使用後可以隨機獲得一種初級英雄防具。
-
-id | kind | name | icon | displayName | maxStack | price | value | buffId | duration | feed | contains | description
 `
+// id | kind | name | icon | displayName | maxStack | price | value | buffId | duration | feed | contains | description
 // last item id: 53
 
 const items = {}
