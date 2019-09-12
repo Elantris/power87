@@ -1,5 +1,5 @@
 const fs = require('fs')
-
+const config = require('../config')
 const alias = require('./alias')
 const energySystem = require('./energySystem')
 const sendResponse = require('./sendResponse')
@@ -12,6 +12,7 @@ fs.readdirSync('./command/').filter(filename => !filename.startsWith('.')).forEa
 })
 
 // * cool down
+const cmdLastUsed = {}
 const cmdCooldown = {
   add: 3,
   delete: 3,
@@ -46,10 +47,15 @@ const cmdCooldown = {
   res: 3,
   gainFromMessage: 120
 }
-for (const i in cmdCooldown) {
-  cmdCooldown[i] *= 1000 // trasform to minisecond
+if (config.ENV === 'development') {
+  for (const i in cmdCooldown) {
+    cmdCooldown[i] = 2000
+  }
+} else {
+  for (const i in cmdCooldown) {
+    cmdCooldown[i] *= 1000 // trasform to minisecond
+  }
 }
-const cmdLastUsed = {}
 
 // * main message
 module.exports = async ({ database, message, guildId, userId }) => {

@@ -4,8 +4,11 @@
   "description": "A discord bot filled with 87 power.",
   "main": "index.js",
   "scripts": {
-    "start": "npm i; pm2 start main.js --name power87",
-    "update": "git pull; pm2 stop power87; pm2 reset power87; pm2 start power87; pm2 monit"
+    "start": "pm2 start main.js --name power87; pm2 monit",
+    "update": "git pull; pm2 stop power87; pm2 reset power87; pm2 start power87; pm2 monit",
+    "push-test": "rsync --exclude node_modules --exclude tmp -r * elantris@gcp:/home/elantris/project/power87-test",
+    "start-test": "pm2 start main.js --name power87-test; pm2 monit",
+    "restart-test": "pm2 stop power87-test; pm2 reset power87-test; pm2 start power87-test; pm2 monit"
   },
   "repository": {
     "type": "git",
@@ -20,7 +23,7 @@
   "homepage": "https://github.com/Elantris/power87#readme",
   "dependencies": {
     "discord.js": "^11.5.1",
-    "firebase": "^6.4.2",
+    "firebase": "^6.6.0",
     "moment": "^2.24.0",
     "node-emoji": "^1.10.0"
   }

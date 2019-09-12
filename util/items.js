@@ -1,3 +1,4 @@
+const config = require('../config')
 /*
  * basic: kind, name, icon, displayName, description, maxStack
  * currency: price, value
@@ -6,11 +7,25 @@
  * box: contains
  */
 
-const attrs = ['id', 'kind', 'name', 'icon', 'displayName', 'maxStack:Number', 'price:Number', 'value:Number', 'buffId', 'duration:Number', 'feed:Number', 'contains', 'description'].map(v => {
+const attrs = [
+  'id',
+  'kind',
+  'name',
+  'icon',
+  'displayName',
+  'maxStack:number',
+  'price:number',
+  'value:number',
+  'buffId',
+  'duration:number',
+  'feed:number',
+  'contains',
+  'description'
+].map(v => {
   const tmp = v.split(':')
   return {
     name: tmp[0],
-    type: tmp[1] || 'String'
+    type: tmp[1] || 'string'
   }
 })
 
@@ -37,7 +52,7 @@ const itemsRaw = `
 13 | fishing | tropical_fish | :tropical_fish: | 熱帶魚 | 1 | price | 4 | buffId | duration | 4 | contains | 常見的漁獲。
 14 | fishing | fish | :fish: | 魚 | 1 | price | 3 | buffId | duration | 3 | contains | 常見的漁獲。
 15 | fishing | frog | :frog: | 青蛙 | 1 | price | 2 | buffId | duration | 2 | contains | 常見的漁獲。
-16 | fishing | shrimp | :shrimp: | 瞎子 | 1 | price | 1 | buffId | duration | 1 | contains | 常見的漁獲。
+16 | fishing | shrimp | :shrimp: | 蝦子 | 1 | price | 1 | buffId | duration | 1 | contains | 常見的漁獲。
 
 17 | event | fakegem | :gem: | [活動]愚人節的假鑽石 | 1 | price | 1 | buffId | duration | feed | contains | 2019/4/1 當天我忙完的時候已經 23:45 了，花了 6 分鐘緊急在物品列表裡加了一個應景的假鑽石，接著在每個背包裡面偷偷放進一顆，似乎騙到了不少人 ヽ( ° ▽°)ノ
 23 | event | birthdaycake | :birthday: | [活動]生日蛋糕 | 1 | price | 1000 | buffId | duration | feed | contains | 5/4 是開發者的生日 ヽ( ° ▽°)ノ
@@ -98,12 +113,24 @@ itemsData.forEach(v => {
       return
     }
 
-    if (attrs[index].type === 'Number') {
+    if (attrs[index].type === 'number') {
       data = parseInt(data)
     }
 
     items[id][attrs[index].name] = data
   })
 })
+
+if (config.ENV === 'development') {
+  for (const id in items) {
+    if (items[id].value) {
+      if (items[id].price) {
+        items[id].value = items[id].price
+      } else {
+        items[id].value *= 10
+      }
+    }
+  }
+}
 
 module.exports = items
