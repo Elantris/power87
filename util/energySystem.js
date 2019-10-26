@@ -1,5 +1,5 @@
 const inventorySystem = require('./inventorySystem')
-const INITIAL_USER_ENERGY = 50
+const INITIAL_USER_ENERGY = 500000
 
 const gainFromTextChannel = async ({ database, energy, guildId, userId }) => {
   let userEnergy = await database.ref(`/energy/${guildId}/${userId}`).once('value')

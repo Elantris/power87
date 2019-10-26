@@ -52,17 +52,28 @@ module.exports = async ({ message, content, description = '', errorCode, fade = 
   let embed = {}
   if (errorCode) {
     embed = {
+      title: '加入 eeBots Support',
+      url: 'https://discord.gg/Ctwz4BB',
       color: 0xffa8a8,
-      description: `:no_entry_sign: ${message.member.displayName}，${errors[errorCode] || '未知的錯誤'}`
+      description: `:no_entry_sign: ${message.member.displayName}，${errors[errorCode] || '未知的錯誤'}`,
+      footer: {
+        text: 'Power87 即將關站，感謝各位玩家長久以來的支持'
+      }
     }
   } else {
     embed = {
+      title: '加入 eeBots Support',
+      url: 'https://discord.gg/Ctwz4BB',
       color: 0xffe066,
-      description
+      description,
+      footer: {
+        text: 'Power87 即將關站，感謝各位玩家長久以來的支持'
+      }
     }
   }
 
   const responseMessage = await message.channel.send(content, { embed })
+
   if (fade) {
     setTimeout(async () => {
       await responseMessage.delete()
